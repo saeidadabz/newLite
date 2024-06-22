@@ -42,14 +42,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(RoomController::class)->prefix('rooms')->group(function () {
 //        Route::get('/', 'all');
 //        Route::post('/', 'create');
-        Route::get('/{workspace}/{room}/join', 'get');
+        Route::get('/{room}/join', 'join');
         Route::get('/leave', 'leave');
 //        Route::get('/{workspace}/join', 'get');
 //        Route::get('/{workspace}/rooms', 'rooms');
 //        Route::put('/{workspace}', 'update');
 
     });
-
 
 
     Route::controller(FileController::class)->prefix('files')->group(function () {
