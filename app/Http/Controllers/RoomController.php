@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\RoomResource;
+use Agence104\LiveKit\AccessToken;
+use Agence104\LiveKit\AccessTokenOptions;
+use Agence104\LiveKit\VideoGrant;
+
+class RoomController extends Controller
+{
+    public function get($workspace, $room)
+    {
+        $user = auth()->user();
+        $workspace = $user->workspaces()->find($workspace);
+        if ($workspace === null) {
+            return error('You have no access to this workspace');
+
+        }
+
+        $room = $workspace->rooms()->findOrFail($room);
+
+
+        return api(RoomResource::make($room));
+    }
+
+
+    public function join($workspace, $room)
+    {
+        $user = auth()->user();
+        $workspace = $user->workspaces()->find($workspace);
+        if ($workspace === null) {
+            return error('You have no access to this workspace');
+
+        }
+
+        $room = $workspace->rooms()->findOrFail($room);
+
+        $user->update([
+            'room_id' => $room->id
+        ]);
+
+
+        $roomName = $room->id;
+        $participantName = $user->username;
+
+        $tokenOptions = (new AccessTokenOptions())
+            ->setIdentity($participantName);
+
+        $videoGrant = (new VideoGrant())
+            ->setRoomJoin()
+            ->setRoomName($roomName);
+
+        $token = (new AccessToken('devkey', 'secret'))
+            ->init($tokenOptions)
+            ->setGrant($videoGrant)
+            ->toJwt();
+
+        $room->token = $token;
+
+
+        return api(RoomResource::make($room));
+
+    }
+
+
+    public function leave()
+    {
+        $user = auth()->user();
+
+
+        $user->update([
+            'room_id' => null
+        ]);
+
+
+        return api(true);
+
+    }
+}

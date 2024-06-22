@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Http\Request;
@@ -28,10 +29,27 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::controller(WorkspaceController::class)->prefix('workspaces')->group(function () {
-        Route::get('/me', 'me');
         Route::get('/', 'all');
-        Route::post('/', 'update');
+        Route::post('/', 'create');
+        Route::get('/{workspace}', 'get');
+        Route::get('/{workspace}/join', 'get');
+        Route::get('/{workspace}/rooms', 'rooms');
+        Route::put('/{workspace}', 'update');
+
     });
+
+
+    Route::controller(RoomController::class)->prefix('rooms')->group(function () {
+//        Route::get('/', 'all');
+//        Route::post('/', 'create');
+        Route::get('/{workspace}/{room}', 'get');
+        Route::get('/leave', 'leave');
+//        Route::get('/{workspace}/join', 'get');
+//        Route::get('/{workspace}/rooms', 'rooms');
+//        Route::put('/{workspace}', 'update');
+
+    });
+
 
 
     Route::controller(FileController::class)->prefix('files')->group(function () {
