@@ -49,7 +49,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(InviteController::class)->prefix('invites')->group(function () {
         Route::post('/', 'invite');
-        Route::get('/{code}', 'join');
+        Route::get('/{code}/', 'get');
+        Route::get('/{code}/join', 'join');
 
     });
 
