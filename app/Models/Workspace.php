@@ -39,6 +39,10 @@ class Workspace extends Model
     {
         if (!$this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role]);
+            $user->update([
+                              'workspace_id',
+                              $this->id
+                          ]);
 
         }
 

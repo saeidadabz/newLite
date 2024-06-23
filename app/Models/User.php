@@ -25,6 +25,7 @@ class User extends Authenticatable
         'active',
         'status',
         'bio',
+        'workspace_id',
         'room_id',
         'voice_status',
         'video_status',
@@ -84,6 +85,11 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
+
+    public function workspace()
+    {
+        return $this->belongsTo(Workspace::class);
+    }
 
     public function giveRole($ability)
     {

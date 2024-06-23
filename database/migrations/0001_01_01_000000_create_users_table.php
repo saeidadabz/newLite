@@ -16,10 +16,11 @@ return new class extends Migration {
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password')->nullable();
-            $table->boolean('active')->default(true);
+            $table->boolean('active')->default(TRUE);
             $table->string('status')->nullable();
             $table->string('bio')->nullable();
 
+            $table->integer('workspace_id')->nullable();
             $table->integer('room_id')->nullable();
             $table->string('voice_status')->nullable();
             $table->string('video_status')->nullable();
