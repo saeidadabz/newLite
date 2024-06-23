@@ -15,13 +15,14 @@ class InviteResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'        => $this->id,
-            'workspace' => WorkspaceResource::make($this->workspace),
-            'room'      => RoomResource::make($this->room),
-            'owner'     => UserResource::make($this->owner),
-            'user'      => UserResource::make($this->user),
-            'status'    => $this->status,
-            'code'      => $this->code
+            'id'         => $this->id,
+            'workspace'  => WorkspaceResource::make($this->workspace),
+            'room'       => RoomResource::make($this->room),
+            'owner'      => UserResource::make($this->owner),
+            'user'       => UserResource::make($this->user),
+            'status'     => $this->status,
+            'code'       => $this->code,
+            'created_at' => $this->created_at->timestamp
         ];
     }
 }
