@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'email' => $this->email,
             'token' => $this->token,
-            'avatar' => $this->avatar,
+            'avatar' => FileResource::make($this->avatar),
             'active' => $this->active,
             'status' => $this->status,
             'bio' => $this->bio,

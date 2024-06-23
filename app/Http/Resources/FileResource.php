@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserMinimalResource extends JsonResource
+class FileResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,12 @@ class UserMinimalResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'       => $this->id,
-            'name'     => $this->name,
-            'username' => $this->username,
-            'avatar'   => FileResource::make($this->avatar),
+            'id'        => $this->id,
+            'path'      => $this->path,
+            'url'       => $this->url,
+            'mime_type' => $this->mime_type,
+            'type'      => $this->type,
+            //            'owner' => $this->fileable
         ];
     }
 }
