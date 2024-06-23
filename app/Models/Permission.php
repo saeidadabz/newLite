@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class Permission extends Model
 {
-    const PERMISSIONS = [
+    use HasFactory;
+
+    const permissions = [
         'get-ws',
         'add-member-to-ws',
         'remove-member-from-ws',
@@ -22,22 +25,4 @@ class Role extends Model
         'update-messages-in-room' //delete message,ping message,edit message
 
     ];
-    const ROLES = [
-        'member' => [
-            'get-ws',
-            'get-room'
-        ],
-        'admin'  => [
-            'get-ws', 'add-member-to-ws', 'remove-member-from-ws', 'add-rooms-to-ws', 'change-rooms-position',
-            'get-room', 'update-room', 'delete-room', 'update-messages-in-room'
-        ],
-
-        'owner' => ['*']
-    ];
-
-    protected $fillable = [
-        'title', 'description'
-    ];
-
-
 }

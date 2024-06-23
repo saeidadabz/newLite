@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class InviteResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id'        => $this->id,
+            'workspace' => WorkspaceResource::make($this->workspace),
+            'room'      => RoomResource::make($this->room),
+            'owner'     => UserResource::make($this->owner),
+            'user'      => UserResource::make($this->user),
+            'status'    => $this->status,
+            'code'      => $this->code
+        ];
+    }
+}

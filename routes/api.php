@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\InviteController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
@@ -31,8 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(WorkspaceController::class)->prefix('workspaces')->group(function () {
         Route::get('/', 'all');
         Route::post('/', 'create');
-        Route::get('/{workspace}', 'get')->middleware('ownedWorkspace');
-        Route::get('/{workspace}/join', 'get');
+//        Route::get('/{workspace}', 'get')->middleware('ownedWorkspace');
+        Route::get('/{workspace}', 'get');
+        Route::get('/{workspace}/join', 'join');
         Route::get('/{workspace}/rooms', 'rooms');
         Route::put('/{workspace}', 'update');
 
@@ -40,13 +42,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::controller(RoomController::class)->prefix('rooms')->group(function () {
-//        Route::get('/', 'all');
-//        Route::post('/', 'create');
         Route::get('/{room}/join', 'join');
         Route::get('/leave', 'leave');
-//        Route::get('/{workspace}/join', 'get');
-//        Route::get('/{workspace}/rooms', 'rooms');
-//        Route::put('/{workspace}', 'update');
+
+    });
+
+    Route::controller(InviteController::class)->prefix('invites')->group(function () {
+        Route::post('/', 'invite');
+        Route::get('/{code}', 'join');
 
     });
 

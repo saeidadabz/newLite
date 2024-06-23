@@ -14,6 +14,11 @@ return new class extends Migration {
             $table->id();
 
 
+            $table->unsignedBigInteger('owner_id');
+
+            $table->foreign('owner_id')->references('id')->on('users');
+
+
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('workspace_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('room_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
