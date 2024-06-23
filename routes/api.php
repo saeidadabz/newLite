@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', 'invite');
         Route::get('/{code}/', 'get');
         Route::get('/{code}/join', 'join');
+        Route::get('/{code}/decline', 'decline');
 
     });
 

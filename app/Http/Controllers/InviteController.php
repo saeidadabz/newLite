@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Agence104\LiveKit\AccessToken;
+use Agence104\LiveKit\AccessTokenOptions;
+use Agence104\LiveKit\VideoGrant;
 use App\Http\Resources\InviteResource;
+use App\Http\Resources\RoomResource;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Invite;
 use App\Models\Room;
@@ -45,6 +49,17 @@ class InviteController extends Controller
 
     }
 
+    public function decline($code)
+    {
+        $invite = Invite::findByCode($code);
+        $user = auth()->user();
+        if ($invite->user_id !== $user->id) {
+            $invite->status = 'declined';
+            $invite->save();
+        }
+        return api(InviteResource::make($invite));
+    }
+
     public function join($code)
     {
         $invite = Invite::findByCode($code);
@@ -65,7 +80,33 @@ class InviteController extends Controller
             // Socket, user joined to ws.
         }
         if ($invite->room_id !== NULL) {
-            //TODO:Join to workspace
+
+            $room = $invite->room;
+            $workspace = $room->workspace;
+            $user->update([
+                              'room_id' => $room->id
+                          ]);
+
+
+            $roomName = $room->id;
+            $participantName = $user->username;
+
+            $tokenOptions = (new AccessTokenOptions())
+                ->setIdentity($participantName);
+
+            $videoGrant = (new VideoGrant())
+                ->setRoomJoin()
+                ->setRoomName($roomName);
+
+            $token = (new AccessToken('devkey', 'secret'))
+                ->init($tokenOptions)
+                ->setGrant($videoGrant)
+                ->toJwt();
+
+            $room->token = $token;
+
+
+            return api(RoomResource::make($room));
         }
 
 
