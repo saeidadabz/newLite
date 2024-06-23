@@ -14,6 +14,9 @@ class Workspace extends Model
         'is_private'
     ];
 
+    protected $appends = [
+        'channel'
+    ];
 
     public function logo()
     {
@@ -45,6 +48,12 @@ class Workspace extends Model
                           ]);
 
         }
+
+    }
+
+    public function getChannelAttribute($value)
+    {
+        return 'workspace-' . $this->id;
 
     }
 

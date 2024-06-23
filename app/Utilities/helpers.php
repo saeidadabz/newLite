@@ -1,11 +1,12 @@
 <?php
 
 
+use Illuminate\Support\Facades\Http;
 
 function getPhoneNumber($phone)
 {
-    if ($phone === null) {
-        return null;
+    if ($phone === NULL) {
+        return NULL;
     }
     // Remove any non-digit characters
     $phone = convert($phone);
@@ -26,15 +27,27 @@ function getPhoneNumber($phone)
 }
 
 
+function sendSocket($eventName, $channel, $data)
+{
+    //TODO: has to go to queue.
+    $data = [
+        'eventName' => $eventName,
+        'channel'   => $channel,
+        'data'      => $data
+    ];
+    Http::post('http://localhost:3000/emit', $data);
+
+}
 
 function sendSms($phone, $code)
 {
-    return \Illuminate\Support\Facades\Http::asForm()->withHeader('apikey', '001a87a26baf886222895114bff20fcde5a54706f09e22487645b422fbd4dd15')->post('https://api.ghasedak.me/v2/verification/send/simple', [
-        'param1' => $code,
-        'template' => 'resanaAuth',
-        'type' => '1',
-        'receptor' => $phone,
-    ])->json();
+    return Http::asForm()->withHeader('apikey', '001a87a26baf886222895114bff20fcde5a54706f09e22487645b422fbd4dd15')
+               ->post('https://api.ghasedak.me/v2/verification/send/simple', [
+                   'param1'   => $code,
+                   'template' => 'resanaAuth',
+                   'type'     => '1',
+                   'receptor' => $phone,
+               ])->json();
 
     //TODO: // Have to go in queue.
 }
@@ -42,7 +55,8 @@ function sendSms($phone, $code)
 
 /*---------------------------------------------------------------------API--------------------------------------------------------------------------------------------*/
 
-function api($data = NULL, $message = 'success', $code = 1000, $http_code = 200): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+function api($data = NULL, $message = 'success', $code = 1000,
+             $http_code = 200): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
 {
     if ($message === 'success') {
         $status = 'success';
@@ -51,11 +65,11 @@ function api($data = NULL, $message = 'success', $code = 1000, $http_code = 200)
     }
     $response = [
         'status' => $status,
-        'meta' => [
-            'code' => $code,
+        'meta'   => [
+            'code'    => $code,
             'message' => $message,
         ],
-        'data' => $data,
+        'data'   => $data,
     ];
 
     return response($response, $http_code);

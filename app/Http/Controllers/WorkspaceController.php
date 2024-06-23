@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\RoomListResource;
 use App\Http\Resources\WorkspaceResource;
-use App\Models\Invite;
-use App\Models\Role;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
 
@@ -46,16 +44,22 @@ class WorkspaceController extends Controller
         $user = auth()->user();
 
         $workspace = Workspace::create($request->all());
+        $workspace->joinUser($user, 'owner');
 
-        $user->workspaces()->attach($workspace->id, ['role_id', 2]);
+
+        return api(WorkspaceResource::make($workspace));
 
     }
 
 
-    public function update($workspace, Request $request)
+    public function update(Workspace $workspace, Request $request)
     {
 
         //TODO: has to check with sanctum permissions
+        $workspace->update($request->all());
+
+        sendSocket('workspaceUpdated', $workspace->channel, $workspace);
+
 
         return api(WorkspaceResource::make($workspace));
 
