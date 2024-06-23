@@ -53,7 +53,7 @@ class InviteController extends Controller
     {
         $invite = Invite::findByCode($code);
         $user = auth()->user();
-        if ($invite->user_id !== $user->id) {
+        if ($invite->user_id === $user->id) {
             $invite->status = 'declined';
             $invite->save();
         }
