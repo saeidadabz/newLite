@@ -14,6 +14,11 @@ class InviteController extends Controller
     public function invite(Request $request)
     {
         $user = auth()->user();
+        $request->validate([
+                               'user_id'      => 'required|integer|exists:users,id',
+                               'workspace_id' => 'required_unless:room_id',
+                               'room_id'      => 'required_unless:workspace_id',
+                           ]);
 
         $invite = Invite::create([
                                      'owner_id'     => $user->id,
