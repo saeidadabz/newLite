@@ -29,7 +29,7 @@ class Workspace extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class)->withPivot('role_id');
+        return $this->belongsToMany(User::class)->withPivot('role');
     }
 
     public function settings()

@@ -54,7 +54,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
@@ -66,7 +66,7 @@ class User extends Authenticatable
 
     public function workspaces()
     {
-        return $this->belongsToMany(Workspace::class)->withPivot('role_id');
+        return $this->belongsToMany(Workspace::class)->withPivot('role');
     }
 
     public function room()
@@ -82,5 +82,15 @@ class User extends Authenticatable
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+
+    public function giveRole($ability)
+    {
+        $currentToken = $this->currentAccessToken();
+        $abilities = $currentToken->abilities;
+        $abilities[] = 'get-' . $workspace->id;
+        $currentToken->abilities = $abilities;
+        $currentToken->save();
     }
 }
