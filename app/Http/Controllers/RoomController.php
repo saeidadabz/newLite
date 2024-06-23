@@ -6,6 +6,7 @@ use App\Http\Resources\RoomResource;
 use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
 use Agence104\LiveKit\VideoGrant;
+use App\Models\Room;
 
 class RoomController extends Controller
 {
@@ -25,16 +26,16 @@ class RoomController extends Controller
     }
 
 
-    public function join($workspace, $room)
+    public function join(Room $room)
     {
         $user = auth()->user();
-        $workspace = $user->workspaces()->find($workspace);
+        $workspace = $room->workspace;
+        $workspace = $user->workspaces->find($workspace->id);
         if ($workspace === null) {
             return error('You have no access to this workspace');
 
         }
 
-        $room = $workspace->rooms()->findOrFail($room);
 
         $user->update([
             'room_id' => $room->id

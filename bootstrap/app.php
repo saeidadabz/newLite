@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectGuestsTo(fn(Request $request) => error('Unauthorized', 401));
+        $middleware->append(\App\Http\Middleware\CorsMiddleware::class);
         $middleware->alias([
             'ownedWorkspace' => checkWorkspaceOwner::class
         ]);
