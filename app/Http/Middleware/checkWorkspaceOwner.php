@@ -15,6 +15,7 @@ class checkWorkspaceOwner
      */
     public function handle(Request $request, Closure $next): Response
     {
+        dd($request->workspace);
         return $next($request);
     }
 }

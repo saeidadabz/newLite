@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(WorkspaceController::class)->prefix('workspaces')->group(function () {
         Route::get('/', 'all');
         Route::post('/', 'create');
-        Route::get('/{workspace}', 'get');
+        Route::get('/{workspace}', 'get')->middleware('ownedWorkspace');
         Route::get('/{workspace}/join', 'get');
         Route::get('/{workspace}/rooms', 'rooms');
         Route::put('/{workspace}', 'update');
@@ -49,7 +49,6 @@ Route::middleware('auth:sanctum')->group(function () {
 //        Route::put('/{workspace}', 'update');
 
     });
-
 
 
     Route::controller(FileController::class)->prefix('files')->group(function () {
