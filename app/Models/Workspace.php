@@ -8,7 +8,10 @@ class Workspace extends Model
 {
 
     protected $fillable = [
-        'title', 'description', 'active', 'is_private'
+        'title',
+        'description',
+        'active',
+        'is_private'
     ];
 
 
@@ -30,6 +33,15 @@ class Workspace extends Model
     public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('role');
+    }
+
+    public function joinUser($user, $role = 'member')
+    {
+        if (!$this->users->contains($user->id)) {
+            $this->users()->attach($user, ['role' => $role]);
+
+        }
+
     }
 
     public function settings()

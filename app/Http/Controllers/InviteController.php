@@ -68,7 +68,7 @@ class InviteController extends Controller
             return error('Invite code expired');
         }
 
-        $invite->user->workspaces()->attach($invite->workspace_id, ['role' => 'member']);
+        $invite->workspace->joinUser($invite->user);
         $invite->status = 'joined';
         $invite->save();
 
