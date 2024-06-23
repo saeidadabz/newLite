@@ -25,7 +25,7 @@ class Invite extends Model
 
     public static function findByCode($value)
     {
-        return self::find(10000000 - base_convert($value, 36, 10));
+        return self::findOrFail(10000000 - base_convert($value, 36, 10));
 
     }
 

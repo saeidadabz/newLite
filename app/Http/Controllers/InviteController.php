@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\InviteResource;
+use App\Http\Resources\WorkspaceResource;
 use App\Models\Invite;
 use App\Models\Room;
 use App\Models\Workspace;
@@ -30,20 +31,37 @@ class InviteController extends Controller
     }
 
 
-    public function join($code)
+    public function get($code)
     {
         $invite = Invite::findByCode($code);
 
+        return api(InviteResource::make($invite));
+
+
+    }
+
+    public function join($code)
+    {
+        $invite = Invite::findByCode($code);
+        $user = auth()->user();
+        if ($invite->status !== 'pending' || $invite->user_id !== $user->id) {
+            return error('Invite code expired');
+        }
+
+
         if ($invite->workspace_id !== NULL) {
             $invite->user->workspaces()->attach($invite->workspace_id, ['role' => 'member']);
+            $invite->status = 'joined';
+            $invite->save();
+
+            return api(WorkspaceResource::make($invite->workspace));
 
             //TODO:Join to workspace
+            // Socket, user joined to ws.
         }
         if ($invite->room_id !== NULL) {
             //TODO:Join to workspace
         }
-
-        return api(InviteResource::make($invite));
 
 
     }
