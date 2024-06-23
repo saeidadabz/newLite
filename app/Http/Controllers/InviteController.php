@@ -20,9 +20,9 @@ class InviteController extends Controller
         $user = auth()->user();
         $request->validate([
                                'user_id'      => 'required|integer|exists:users,id',
-                               'workspace_id' => 'required_unless:room_id',
-                               'room_id'      => 'required_unless:workspace_id',
+                               'workspace_id' => 'required|integer|exists:workspaces,id',
                            ]);
+
 
         $invite = Invite::create([
                                      'owner_id'     => $user->id,
@@ -68,46 +68,14 @@ class InviteController extends Controller
             return error('Invite code expired');
         }
 
+        $invite->user->workspaces()->attach($invite->workspace_id, ['role' => 'member']);
+        $invite->status = 'joined';
+        $invite->save();
 
-        if ($invite->workspace_id !== NULL) {
-            $invite->user->workspaces()->attach($invite->workspace_id, ['role' => 'member']);
-            $invite->status = 'joined';
-            $invite->save();
+        return api(WorkspaceResource::make($invite->workspace));
 
-            return api(WorkspaceResource::make($invite->workspace));
-
-            //TODO:Join to workspace
-            // Socket, user joined to ws.
-        }
-        if ($invite->room_id !== NULL) {
-
-            $room = $invite->room;
-            $workspace = $room->workspace;
-            $user->update([
-                              'room_id' => $room->id
-                          ]);
-
-
-            $roomName = $room->id;
-            $participantName = $user->username;
-
-            $tokenOptions = (new AccessTokenOptions())
-                ->setIdentity($participantName);
-
-            $videoGrant = (new VideoGrant())
-                ->setRoomJoin()
-                ->setRoomName($roomName);
-
-            $token = (new AccessToken('devkey', 'secret'))
-                ->init($tokenOptions)
-                ->setGrant($videoGrant)
-                ->toJwt();
-
-            $room->token = $token;
-
-
-            return api(RoomResource::make($room));
-        }
+        //TODO:Join to workspace
+        // Socket, user joined to ws.
 
 
     }
