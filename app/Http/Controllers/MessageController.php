@@ -13,13 +13,15 @@ use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    public function send(Request $request, $room = null)
+    public function send(Request $request)
     {
         $request->validate([
             'text' => 'required'
         ]);
 
         $user = auth()->user();
+
+        $room = $request->room;
 
         if ($room === null) {
 

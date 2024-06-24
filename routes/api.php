@@ -66,7 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(MessageController::class)->prefix('messages')->group(function () {
         Route::get('/{room}', 'get');
-        Route::post('/{room?}', 'send');
+        Route::post('/', 'send');
         Route::put('/{message}', 'update');
         Route::delete('/{message}', 'delete');
     });
