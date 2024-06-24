@@ -16,13 +16,16 @@ class File extends Model
 
     public static function syncFile($file_id, $model, $type = null)
     {
-        $file = self::find($file_id);
-        if ($file !== null) {
-            $file->update([
-                'fileable_type' => get_class($model),
-                'fileable_id' => $model->id,
-                'type' => $type,
-            ]);
+        if ($file_id !== null) {
+            $file = self::find($file_id);
+            if ($file !== null) {
+                $file->update([
+                    'fileable_type' => get_class($model),
+                    'fileable_id' => $model->id,
+                    'type' => $type,
+                ]);
+            }
+
         }
 
     }

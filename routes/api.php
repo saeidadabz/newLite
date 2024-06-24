@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
@@ -60,6 +61,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'all');
         Route::post('/', 'upload');
         Route::delete('/{file}', 'delete');
+    });
+
+
+    Route::controller(MessageController::class)->prefix('messages')->group(function () {
+        Route::get('/{room}', 'get');
+        Route::post('/{room?}', 'send');
+        Route::put('/{message}', 'update');
+        Route::delete('/{message}', 'delete');
     });
 
 
