@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\checkIsInWorkspace;
 use App\Http\Middleware\checkWorkspaceOwner;
+use App\Http\Middleware\CorsMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
                   )
                   ->withMiddleware(function (Middleware $middleware) {
                       $middleware->redirectGuestsTo(fn (Request $request) => error('Unauthorized', 401));
-                      $middleware->append(\App\Http\Middleware\CorsMiddleware::class);
+                      $middleware->append(CorsMiddleware::class);
                       $middleware->alias([
                                              'ownedWorkspace' => checkWorkspaceOwner::class,
                                              'isInWorkspace'  => checkIsInWorkspace::class,

@@ -17,10 +17,6 @@ class CorsMiddleware
     {
 
 
-        $response = $next($request);
-
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-
-        return $response;
+        return $next($request)->header('Access-Control-Allow-Origin', '*');
     }
 }
