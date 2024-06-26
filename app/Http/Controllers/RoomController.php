@@ -39,8 +39,8 @@ class RoomController extends Controller
 
 
         $user->update([
-                          'room_id' => $room->id
-                      ]);
+            'room_id' => $room->id
+        ]);
 
 
         $roomName = $room->id;
@@ -67,7 +67,7 @@ class RoomController extends Controller
 
     public function messages(Room $room)
     {
-        return api(MessageResource::collection($room->messages()->paginate(10)));
+        return api(MessageResource::collection($room->messages()->orderByDesc('id')->paginate(10)));
     }
 
     public function leave()
@@ -76,8 +76,8 @@ class RoomController extends Controller
 
 
         $user->update([
-                          'room_id' => NULL
-                      ]);
+            'room_id' => NULL
+        ]);
 
 
         return api(TRUE);
