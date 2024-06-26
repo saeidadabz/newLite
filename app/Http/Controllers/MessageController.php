@@ -20,10 +20,9 @@ class MessageController extends Controller
                            ]);
 
         $user = auth()->user();
-        $room = $request->room;
         $eventName = 'roomMessages';
 
-        if ($room === NULL) {
+        if ($request->room_id === NULL) {
             $request->validate([
                                    'user_id' => 'required'
                                ]);
@@ -50,6 +49,8 @@ class MessageController extends Controller
             $eventName = 'directMessages';
 
 
+        } else {
+            $room = Room::findOrFail($request->room_id);
         }
 
 
