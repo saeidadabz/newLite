@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'room'                    => $this->room,
             'workspace'               => $this->workspace,
             'workspaces'              => WorkspaceResource::collection($this->workspaces),
+            'directs'                 => RoomResource::collection($this->directs()),
             'voice_status'            => $this->voice_status,
             'video_status'            => $this->video_status,
             'coordinates'             => $this->coordinates,

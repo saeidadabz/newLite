@@ -8,7 +8,18 @@ class Room extends Model
 {
 
     protected $fillable = [
-        'title', 'active', 'is_private', 'password', 'status', 'landing_spot', 'workspace_id', 'user_id'
+        'title',
+        'active',
+        'is_private',
+        'password',
+        'status',
+        'landing_spot',
+        'workspace_id',
+        'user_id'
+    ];
+
+    protected $appends = [
+        'channel'
     ];
 
     public function workspace()
@@ -29,6 +40,12 @@ class Room extends Model
     public function logo()
     {
         return $this->files->where('type', 'logo')->first();
+    }
+
+    public function getChannelAttribute($value)
+    {
+        return 'room-' . $this->id;
+
     }
 
     public function user()

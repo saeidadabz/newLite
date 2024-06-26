@@ -21,6 +21,7 @@ class MessageController extends Controller
 
         $user = auth()->user();
         $room = $request->room;
+        $eventName = 'roomMessages';
 
         if ($room === NULL) {
             $request->validate([
@@ -46,6 +47,7 @@ class MessageController extends Controller
                                          'is_private' => TRUE,
                                      ]);
             }
+            $eventName = 'directMessages';
 
 
         }
@@ -59,7 +61,7 @@ class MessageController extends Controller
 
 
         //EMIT TO USER
-//        sendSocket('workspaceUpdated', $workspace->channel, $workspace);
+        sendSocket($eventName, $room->channel, $message);
 
 
         File::syncFile($request->file_id, $message);
