@@ -16,44 +16,51 @@ class MessageController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-            'text' => 'required'
-        ]);
+                               'text' => 'required'
+                           ]);
 
         $user = auth()->user();
-
         $room = $request->room;
 
-        if ($room === null) {
+        if ($room === NULL) {
+            $request->validate([
+                                   'user_id' => 'required'
+                               ]);
+
 
             $receiver = User::find($request->user_id);
-            $directs = $user->directs();
 
-            $directs_with_receiver = Direct::whereIn('room_id', $directs->pluck('room_id')->toArray())->where('user_id', $receiver->id)->first();
-            if ($directs_with_receiver === null) {
+
+            $users = [
+                $receiver->id,
+                $user->id
+            ];
+            asort($users);
+            $roomTitle = implode('-', $users);
+
+            $room = Room::where('title', $roomTitle)->first();
+            if ($room === NULL) {
                 $room = Room::create([
 
-                    'title' => 'Chat With ' . $receiver->username, 'is_private' => true, 'user_id' => $user->id
-                ]);
-                Direct::create([
-                    'room_id' => $room->id,
-                    'user_id' => $user->id
-                ]);
-                Direct::create([
-                    'room_id' => $room->id,
-                    'user_id' => $receiver->id
-                ]);
-            } else {
-                $room = $directs_with_receiver->room;
+                                         'title'      => implode('-', $users),
+                                         'is_private' => TRUE,
+                                     ]);
             }
+
 
         }
 
 
         $message = $room->messages()->create([
-            'text' => $request->text,
-            'reply_to' => $request->reply_to,
-            'user_id' => $user->id
-        ]);
+                                                 'text'     => $request->text,
+                                                 'reply_to' => $request->reply_to,
+                                                 'user_id'  => $user->id
+                                             ]);
+
+
+        //EMIT TO USER
+//        sendSocket('workspaceUpdated', $workspace->channel, $workspace);
+
 
         File::syncFile($request->file_id, $message);
 
@@ -80,8 +87,8 @@ class MessageController extends Controller
 
 
         $message->update([
-            'text' => $request->text
-        ]);
+                             'text' => $request->text
+                         ]);
 
 
         File::syncFile($request->file_id, $message);

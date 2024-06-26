@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{workspace}', 'get');
         Route::get('/{workspace}/join', 'join');
         Route::get('/{workspace}/rooms', 'rooms');
+        Route::get('/{workspace}/users', 'users');
         Route::put('/{workspace}', 'update');
 
     });

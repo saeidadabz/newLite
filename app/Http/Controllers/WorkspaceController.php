@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\RoomListResource;
+use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
@@ -22,6 +23,13 @@ class WorkspaceController extends Controller
     {
 
         return api(RoomListResource::collection($workspace->rooms));
+    }
+
+
+    public function users(Workspace $workspace)
+    {
+        return api(UserMinimalResource::collection($workspace->users));
+
     }
 
     public function get(Workspace $workspace)
