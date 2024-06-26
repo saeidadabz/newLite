@@ -38,6 +38,10 @@ class Workspace extends Model
         return $this->belongsToMany(User::class)->withPivot('role');
     }
 
+    public function hasUser($user)
+    {
+        return $this->users->contains($user->id);
+    }
     public function joinUser($user, $role = 'member')
     {
         if (!$this->users->contains($user->id)) {

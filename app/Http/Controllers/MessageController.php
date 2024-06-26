@@ -51,6 +51,9 @@ class MessageController extends Controller
 
         } else {
             $room = Room::findOrFail($request->room_id);
+            if (!$room->workspace->hasUser($user)) {
+                return error('You are not authorized');
+            }
         }
 
 
