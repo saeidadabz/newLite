@@ -16,16 +16,16 @@ class MessageController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-                               'text' => 'required'
-                           ]);
+            'text' => 'required'
+        ]);
 
         $user = auth()->user();
         $eventName = 'roomMessages';
 
         if ($request->room_id === NULL) {
             $request->validate([
-                                   'user_id' => 'required'
-                               ]);
+                'user_id' => 'required'
+            ]);
 
 
             $receiver = User::find($request->user_id);
@@ -42,9 +42,9 @@ class MessageController extends Controller
             if ($room === NULL) {
                 $room = Room::create([
 
-                                         'title'      => implode('-', $users),
-                                         'is_private' => TRUE,
-                                     ]);
+                    'title' => implode('-', $users),
+                    'is_private' => TRUE,
+                ]);
             }
             $eventName = 'directMessages';
 
@@ -55,14 +55,14 @@ class MessageController extends Controller
 
 
         $message = $room->messages()->create([
-                                                 'text'     => $request->text,
-                                                 'reply_to' => $request->reply_to,
-                                                 'user_id'  => $user->id
-                                             ]);
+            'text' => $request->text,
+            'reply_to' => $request->reply_to,
+            'user_id' => $user->id
+        ]);
 
 
         //EMIT TO USER
-        sendSocket($eventName, $room->channel, $message);
+        sendSocket($eventName, $room->channel, MessageResource::make($message));
 
 
         if ($request->get('files')) {
@@ -95,8 +95,8 @@ class MessageController extends Controller
 
 
         $message->update([
-                             'text' => $request->text
-                         ]);
+            'text' => $request->text
+        ]);
 
 
         File::syncFile($request->file_id, $message);
