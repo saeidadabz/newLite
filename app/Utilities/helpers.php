@@ -30,13 +30,14 @@ function getPhoneNumber($phone)
 function sendSocket($eventName, $channel, $data)
 {
     //TODO: has to go to queue.
+
     try {
         $data = [
             'eventName' => $eventName,
             'channel' => $channel,
             'data' => $data
         ];
-        Http::post('http://localhost:3010/emit', $data);
+        Http::post(env('SOCKET_URL', 'http://localhost:3010') . '/emit', $data);
     } catch (Exception $e) {
 
     }
