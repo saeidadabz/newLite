@@ -35,7 +35,7 @@ function sendSocket($eventName, $channel, $data)
         'channel'   => $channel,
         'data'      => $data
     ];
-    Http::post('http://localhost:3000/emit', $data);
+    Http::post('http://localhost:3010/emit', $data);
 
 }
 

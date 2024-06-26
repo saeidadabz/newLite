@@ -9,7 +9,8 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-
+    $user = \App\Models\User::first();
+    dd($user->giveRole('member', 1));
     $data = [
         'eventName' => 'workspaceUpdated',
         'channel'   => 'workspace-1',

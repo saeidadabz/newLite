@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
 use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
@@ -14,7 +15,7 @@ class RoomController extends Controller
     {
         $user = auth()->user();
         $workspace = $user->workspaces()->find($workspace);
-        if ($workspace === null) {
+        if ($workspace === NULL) {
             return error('You have no access to this workspace');
 
         }
@@ -31,15 +32,15 @@ class RoomController extends Controller
         $user = auth()->user();
         $workspace = $room->workspace;
         $workspace = $user->workspaces->find($workspace->id);
-        if ($workspace === null) {
+        if ($workspace === NULL) {
             return error('You have no access to this workspace');
 
         }
 
 
         $user->update([
-            'room_id' => $room->id
-        ]);
+                          'room_id' => $room->id
+                      ]);
 
 
         $roomName = $room->id;
@@ -64,6 +65,10 @@ class RoomController extends Controller
 
     }
 
+    public function messages(Room $room)
+    {
+        return api(MessageResource::collection($room->messages()->paginate(10)));
+    }
 
     public function leave()
     {
@@ -71,11 +76,11 @@ class RoomController extends Controller
 
 
         $user->update([
-            'room_id' => null
-        ]);
+                          'room_id' => NULL
+                      ]);
 
 
-        return api(true);
+        return api(TRUE);
 
     }
 }

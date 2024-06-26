@@ -47,6 +47,8 @@ class Workspace extends Model
                               $this->id
                           ]);
 
+            $user->giveRole($role,$this);
+
         }
 
     }

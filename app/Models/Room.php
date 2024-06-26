@@ -37,6 +37,19 @@ class Room extends Model
         return $this->files->where('type', 'background')->first();
     }
 
+
+    public function participants()
+    {
+        if ($this->workspace_id === NULL) {
+            return User::find(explode('-', $this->title));
+
+        }
+
+        return $this->users;
+
+
+    }
+
     public function logo()
     {
         return $this->files->where('type', 'logo')->first();
@@ -46,6 +59,11 @@ class Room extends Model
     {
         return 'room-' . $this->id;
 
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
     }
 
     public function user()

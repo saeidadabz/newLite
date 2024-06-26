@@ -97,11 +97,16 @@ class User extends Authenticatable
         return Room::where('title', 'regexp', "[[:<:]]$this->id[[:>:]]")->get();
     }
 
-    public function giveRole($ability)
+    public function giveRole($ability, $workspace)
     {
+        $permissions = Role::ROLES[$ability];
         $currentToken = $this->currentAccessToken();
         $abilities = $currentToken->abilities;
-        $abilities[] = 'get-' . $workspace->id;
+
+        foreach ($permissions as $permission) {
+            $abilities[] = $permission . '-' . $workspace->id;
+
+        }
         $currentToken->abilities = $abilities;
         $currentToken->save();
     }

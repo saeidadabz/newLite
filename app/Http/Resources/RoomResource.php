@@ -15,9 +15,11 @@ class RoomResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'token' => $this->token
+            'id'           => $this->id,
+            'title'        => $this->title,
+            'token'        => $this->token,
+            'is_private'   => $this->is_private,
+            'participants' => UserMinimalResource::collection($this->participants())
         ];
     }
 }

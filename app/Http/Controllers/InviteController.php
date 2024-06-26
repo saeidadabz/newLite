@@ -74,8 +74,7 @@ class InviteController extends Controller
 
         return api(WorkspaceResource::make($invite->workspace));
 
-        //TODO:Join to workspace
-        // Socket, user joined to ws.
+        //TODO: Socket, user joined to ws.
 
 
     }

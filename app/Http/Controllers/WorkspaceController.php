@@ -79,15 +79,9 @@ class WorkspaceController extends Controller
     {
         $user = auth()->user();
 
-//        $user->workspaces()->attach($workspace->id, ['role_id' => 1]);
 
         $workspace->joinUser($user);
 
-//        $currentToken = $user->currentAccessToken();
-//        $abilities = $user->currentAccessToken()->abilities;
-//        $abilities[] = 'get-' . $workspace->id;
-//        $currentToken->abilities = $abilities;
-//        $currentToken->save();
 
         return api(TRUE);
 

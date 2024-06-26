@@ -64,7 +64,12 @@ class MessageController extends Controller
         sendSocket($eventName, $room->channel, $message);
 
 
-        File::syncFile($request->file_id, $message);
+        if ($request->get('files')) {
+            foreach ($request->get('files') as $file) {
+                File::syncFile($file, $message);
+
+            }
+        }
 
         return api(MessageResource::make($message));
 
