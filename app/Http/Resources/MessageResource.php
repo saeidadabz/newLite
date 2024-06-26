@@ -21,7 +21,7 @@ class MessageResource extends JsonResource
             'files' => FileResource::collection($this->files),
             'room' => RoomResource::make($this->room),
             'created_at' => $this->created_at->timestamp,
-            'updated_at' => $this->updated_at->timestamp,
+            'updated_at' => $this->updated_at?->timestamp,
         ];
     }
 }
