@@ -30,24 +30,28 @@ function getPhoneNumber($phone)
 function sendSocket($eventName, $channel, $data)
 {
     //TODO: has to go to queue.
-    $data = [
-        'eventName' => $eventName,
-        'channel'   => $channel,
-        'data'      => $data
-    ];
-    Http::post('http://localhost:3010/emit', $data);
+    try {
+        $data = [
+            'eventName' => $eventName,
+            'channel' => $channel,
+            'data' => $data
+        ];
+        Http::post('http://localhost:3010/emit', $data);
+    } catch (Exception $e) {
+
+    }
 
 }
 
 function sendSms($phone, $code)
 {
     return Http::asForm()->withHeader('apikey', '001a87a26baf886222895114bff20fcde5a54706f09e22487645b422fbd4dd15')
-               ->post('https://api.ghasedak.me/v2/verification/send/simple', [
-                   'param1'   => $code,
-                   'template' => 'resanaAuth',
-                   'type'     => '1',
-                   'receptor' => $phone,
-               ])->json();
+        ->post('https://api.ghasedak.me/v2/verification/send/simple', [
+            'param1' => $code,
+            'template' => 'resanaAuth',
+            'type' => '1',
+            'receptor' => $phone,
+        ])->json();
 
     //TODO: // Have to go in queue.
 }
@@ -65,11 +69,11 @@ function api($data = NULL, $message = 'success', $code = 1000,
     }
     $response = [
         'status' => $status,
-        'meta'   => [
-            'code'    => $code,
+        'meta' => [
+            'code' => $code,
             'message' => $message,
         ],
-        'data'   => $data,
+        'data' => $data,
     ];
 
     return response($response, $http_code);
