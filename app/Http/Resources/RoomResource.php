@@ -19,7 +19,8 @@ class RoomResource extends JsonResource
             'title'        => $this->title,
             'token'        => $this->token,
             'is_private'   => $this->is_private,
-            'participants' => UserMinimalResource::collection($this->participants())
+            'participants' => UserMinimalResource::collection($this->participants()),
+            'landing_spot' => $this->landing_spot,
         ];
     }
 }

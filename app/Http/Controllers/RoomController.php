@@ -11,16 +11,16 @@ use App\Models\Room;
 
 class RoomController extends Controller
 {
-    public function get($workspace, $room)
+    public function get(Room $room)
     {
-        $user = auth()->user();
-        $workspace = $user->workspaces()->find($workspace);
-        if ($workspace === NULL) {
-            return error('You have no access to this workspace');
-
-        }
-
-        $room = $workspace->rooms()->findOrFail($room);
+//        $user = auth()->user();
+//        $workspace = $user->workspaces()->find($workspace);
+//        if ($workspace === NULL) {
+//            return error('You have no access to this workspace');
+//
+//        }
+//
+//        $room = $workspace->rooms()->findOrFail($room);
 
 
         return api(RoomResource::make($room));
@@ -39,8 +39,8 @@ class RoomController extends Controller
 
 
         $user->update([
-            'room_id' => $room->id
-        ]);
+                          'room_id' => $room->id
+                      ]);
 
 
         $roomName = $room->id;
@@ -76,8 +76,8 @@ class RoomController extends Controller
 
 
         $user->update([
-            'room_id' => NULL
-        ]);
+                          'room_id' => NULL
+                      ]);
 
 
         return api(TRUE);
