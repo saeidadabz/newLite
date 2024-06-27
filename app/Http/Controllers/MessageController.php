@@ -51,20 +51,20 @@ class MessageController extends Controller
 //            }
         }
 
-        $message = new Message([
-                                   'text'       => $request->text,
-                                   'reply_to'   => $request->reply_to,
-                                   'user_id'    => $user->id,
-                                   'room_id'    => $room->id,
-                                   'created_at' => now(),
-                                   'updated_at' => now()
-                               ]);
+
+        $message = Message::create([
+                                       'text'       => $request->text,
+                                       'reply_to'   => $request->reply_to,
+                                       'user_id'    => $user->id,
+                                       'room_id'    => $room->id,
+                                       'created_at' => now(),
+                                       'updated_at' => now()
+                                   ]);
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
         sendSocket($eventName, $room->channel, $messageResponse);
 
 
-        $message->save();
         if ($request->get('files')) {
             foreach ($request->get('files') as $file) {
                 File::syncFile($file, $message);
