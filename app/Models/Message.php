@@ -8,7 +8,13 @@ class Message extends Model
 {
 
     protected $fillable = [
-        'text', 'room_id', 'user_id', 'edited', 'reply_to'
+        'text',
+        'room_id',
+        'user_id',
+        'edited',
+        'reply_to',
+        'created_at',
+        'updated_at'
     ];
 
     public function room()

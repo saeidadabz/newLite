@@ -52,15 +52,16 @@ class MessageController extends Controller
         }
 
         $message = new Message([
-                                   'text'     => $request->text,
-                                   'reply_to' => $request->reply_to,
-                                   'user_id'  => $user->id,
-                                   'room_id'  => $room->id
+                                   'text'       => $request->text,
+                                   'reply_to'   => $request->reply_to,
+                                   'user_id'    => $user->id,
+                                   'room_id'    => $room->id,
+                                   'created_at' => now(),
+                                   'updated_at' => now()
                                ]);
-
-
+        $messageResponse = MessageResource::make($message);
         //EMIT TO USER
-        sendSocket($eventName, $room->channel, MessageResource::make($message));
+        sendSocket($eventName, $room->channel, $messageResponse);
 
 
         $message->save();
@@ -71,7 +72,7 @@ class MessageController extends Controller
             }
         }
 
-        return api(MessageResource::make($message));
+        return api($messageResponse);
 
     }
 
