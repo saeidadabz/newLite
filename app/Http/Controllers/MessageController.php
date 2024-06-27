@@ -54,7 +54,8 @@ class MessageController extends Controller
         $message = new Message([
                                    'text'     => $request->text,
                                    'reply_to' => $request->reply_to,
-                                   'user_id'  => $user->id
+                                   'user_id'  => $user->id,
+                                   'room_id'  => $room->id
                                ]);
 
 
