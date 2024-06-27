@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\RoomResource;
+use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class UserController extends Controller
                           'coordinates' => $request->coordinates
                       ]);
 
-        $response = UserResource::make($user);
+        $response = UserMinimalResource::make($user);
         sendSocket(Constants::userUpdated, $user->room->channel, $response);
 
         return api($response);
