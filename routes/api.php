@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/directs', 'directs');
         Route::get('/', 'all');
         Route::post('/', 'update');
+        Route::post('/updateCoordinates', 'updateCoordinates');
     });
 
 

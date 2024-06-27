@@ -6,6 +6,7 @@ use App\Http\Resources\RoomListResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
+use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
 class WorkspaceController extends Controller
@@ -66,7 +67,7 @@ class WorkspaceController extends Controller
         //TODO: has to check with sanctum permissions
         $workspace->update($request->all());
 
-        sendSocket('workspaceUpdated', $workspace->channel, $workspace);
+        sendSocket(Constants::workspaceUpdated, $workspace->channel, $workspace);
 
 
         return api(WorkspaceResource::make($workspace));

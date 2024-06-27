@@ -9,6 +9,7 @@ use App\Models\File;
 use App\Models\Message;
 use App\Models\Room;
 use App\Models\User;
+use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -16,58 +17,52 @@ class MessageController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-            'text' => 'required'
-        ]);
+                               'text' => 'required'
+                           ]);
 
         $user = auth()->user();
-        $eventName = 'roomMessages';
+        $eventName = Constants::roomMessages;
 
         if ($request->room_id === NULL) {
             $request->validate([
-                'user_id' => 'required'
-            ]);
-
-
-            $receiver = User::find($request->user_id);
+                                   'user_id' => 'required'
+                               ]);
 
 
             $users = [
-                $receiver->id,
+                $request->user_id,
                 $user->id
             ];
             asort($users);
             $roomTitle = implode('-', $users);
 
-            $room = Room::where('title', $roomTitle)->first();
-            if ($room === NULL) {
-                $room = Room::create([
 
-                    'title' => implode('-', $users),
-                    'is_private' => TRUE,
-                ]);
-            }
-            $eventName = 'directMessages';
+            $room = Room::firstOrCreate(
+                ['title' => $roomTitle],
+                ['is_private' => TRUE]
+            );
+            $eventName = Constants::directMessages;
 
 
         } else {
             $room = Room::findOrFail($request->room_id);
-            if (!$room->workspace->hasUser($user)) {
-                return error('You are not authorized');
-            }
+//            if (!$room->workspace->hasUser($user)) {
+//                return error('You are not authorized');
+//            }
         }
 
-
-        $message = $room->messages()->create([
-            'text' => $request->text,
-            'reply_to' => $request->reply_to,
-            'user_id' => $user->id
-        ]);
+        $message = new Message([
+                                   'text'     => $request->text,
+                                   'reply_to' => $request->reply_to,
+                                   'user_id'  => $user->id
+                               ]);
 
 
         //EMIT TO USER
         sendSocket($eventName, $room->channel, MessageResource::make($message));
 
 
+        $message->save();
         if ($request->get('files')) {
             foreach ($request->get('files') as $file) {
                 File::syncFile($file, $message);
@@ -98,8 +93,8 @@ class MessageController extends Controller
 
 
         $message->update([
-            'text' => $request->text
-        ]);
+                             'text' => $request->text
+                         ]);
 
 
         File::syncFile($request->file_id, $message);
