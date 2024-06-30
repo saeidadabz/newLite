@@ -8,22 +8,26 @@ use Illuminate\Support\Facades\Storage;
 class File extends Model
 {
     protected $fillable = [
-        'path', 'type', 'fileable_id', 'fileable_type', 'mime_type'
+        'path',
+        'type',
+        'fileable_id',
+        'fileable_type',
+        'mime_type'
     ];
 
     protected $appends = ['url'];
 
 
-    public static function syncFile($file_id, $model, $type = null)
+    public static function syncFile($file_id, $model, $type = NULL)
     {
-        if ($file_id !== null) {
+        if ($file_id !== NULL) {
             $file = self::find($file_id);
-            if ($file !== null) {
+            if ($file !== NULL) {
                 $file->update([
-                    'fileable_type' => get_class($model),
-                    'fileable_id' => $model->id,
-                    'type' => $type,
-                ]);
+                                  'fileable_type' => get_class($model),
+                                  'fileable_id'   => $model->id,
+                                  'type'          => $type,
+                              ]);
             }
 
         }
