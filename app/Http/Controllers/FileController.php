@@ -18,14 +18,16 @@ class FileController extends Controller
 
         if ($request->hasFile('file')) {
             $path = Storage::disk('public')->put('images', $request->file);
+            $mime = $request->file('file')->getClientMimeType();
 
         } else {
             $path = $request->path;
+            $mime = NULL;
         }
         $file = File::create([
                                  'path'      => $path,
                                  'type'      => $request->type,
-                                 'mime_type' => $request->file('file')->getClientMimeType()
+                                 'mime_type' => $mime
                              ]);
         return api(FileResource::make($file));
 
