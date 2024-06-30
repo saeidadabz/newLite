@@ -21,6 +21,8 @@ class RoomResource extends JsonResource
             'is_private'   => $this->is_private,
             'participants' => UserMinimalResource::collection($this->participants()),
             'landing_spot' => $this->landing_spot,
+            'background'   => FileResource::make($this->background()),
+            'logo'         => FileResource::make($this->logo()),
         ];
     }
 }

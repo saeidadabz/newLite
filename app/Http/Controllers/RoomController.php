@@ -7,10 +7,30 @@ use App\Http\Resources\RoomResource;
 use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
 use Agence104\LiveKit\VideoGrant;
+use App\Models\File;
 use App\Models\Room;
+use App\Utilities\Constants;
+use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
+
+
+    public function update(Room $room, Request $request)
+    {
+        //TODO CHECK PERMISSION
+        $room->update($request->all());
+
+        File::syncFile($request->background_id, $room, 'background');
+        File::syncFile($request->logo_id, $room, 'logo');
+
+        sendSocket(Constants::roomUpdated,$room->channel,RoomResource::make($room));
+
+        return api(RoomResource::make($room));
+
+
+    }
+
     public function get(Room $room)
     {
 //        $user = auth()->user();

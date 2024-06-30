@@ -9,8 +9,8 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    $user = \App\Models\User::first();
-    dd($user->giveRole('member', 1));
+
+    $before = now();
     $data = [
         'eventName' => 'workspaceUpdated',
         'channel'   => 'workspace-1',
@@ -18,6 +18,8 @@ Route::get('/tester', function () {
             'title' => 'SALAM 123'
         ]
     ];
-    $res = \Illuminate\Support\Facades\Http::post('http://localhost:3000/emit', $data);
-    dd($res->json());
+    \Illuminate\Support\Facades\Http::post('http://localhost:3010/emit', $data);
+    $after = now();
+
+    dd($before->diffInMilliseconds($after));
 });
