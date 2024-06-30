@@ -34,7 +34,7 @@ class Room extends Model
 
     public function background()
     {
-        return $this->files->where('type', 'background')->first();
+        return $this->files->where('type', 'background')->last();
     }
 
 
@@ -52,7 +52,7 @@ class Room extends Model
 
     public function logo()
     {
-        return $this->files->where('type', 'logo')->first();
+        return $this->files->where('type', 'logo')->last();
     }
 
     public function getChannelAttribute($value)
