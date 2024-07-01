@@ -4,16 +4,18 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PostmanExportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
 //})->middleware('auth:sanctum');
-require __DIR__ . '/socket.php';
+require __DIR__.'/socket.php';
+
+Route::get('export-postman', PostmanExportController::class)->name('postman');
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('/login', 'login');
