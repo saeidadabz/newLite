@@ -16,6 +16,11 @@ class Calendar extends Model
         'workspace_id',
     ];
 
+    protected $casts = [
+        'owner_id'     => 'int',
+        'workspace_id' => 'int',
+    ];
+
     public function owner()
     {
         return $this->belongsTo(User::class);

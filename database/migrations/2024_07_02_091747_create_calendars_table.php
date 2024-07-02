@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('owner_id')->constrained('users');
-            $table->foreignId('workspace_id')->nullable()->constrained();
+            $table->foreignId('workspace_id')->constrained();
 
             $table->timestamps();
         });

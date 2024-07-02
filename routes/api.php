@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostmanExportController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +27,10 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource("calendars", CalendarController::class);
+
+    Route::apiResource('schedules', ScheduleController::class);
+
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/me', 'me');
         Route::get('/directs', 'directs');
