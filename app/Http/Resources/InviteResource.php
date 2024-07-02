@@ -21,6 +21,7 @@ class InviteResource extends JsonResource
             'inviteable' => $this->getResponseModel(),
             'status'     => $this->status,
             'code'       => $this->code,
+            'type'       => $this->type(),
             'created_at' => $this->created_at->timestamp
         ];
     }

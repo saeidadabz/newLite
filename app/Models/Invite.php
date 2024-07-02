@@ -42,10 +42,26 @@ class Invite extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function type()
+    {
+        if ($this->inviteable instanceof Workspace) {
+
+            return 'workspace';
+        }
+        if ($this->inviteable instanceof Job) {
+
+            return 'job';
+        }
+        if ($this->inviteable instanceof Room) {
+
+            return 'room';
+        }
+    }
+
 
     public function getResponseModel($inviteable = NULL)
     {
-        if ($inviteable = null){
+        if ($inviteable = NULL) {
             $inviteable = $this->inviteable;
         }
         if ($this->inviteable instanceof Workspace) {
