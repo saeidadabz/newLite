@@ -14,6 +14,13 @@ class RoomListResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'           => $this->id,
+            'title'        => $this->title,
+            'is_private'   => $this->is_private,
+            'background'   => FileResource::make($this->background()),
+            'logo'         => FileResource::make($this->logo()),
+            'unseens'      => $this->unseens(auth()->user())
+        ];
     }
 }
