@@ -65,6 +65,7 @@ class MessageController extends Controller
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
         sendSocket($eventName, $room->channel, $messageResponse);
+        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
 
         if ($request->get('files')) {
@@ -73,6 +74,9 @@ class MessageController extends Controller
 
             }
         }
+
+
+
 
         return api($messageResponse);
 
