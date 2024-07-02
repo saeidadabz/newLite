@@ -45,15 +45,15 @@ class Invite extends Model
 
     public function getResponseModel()
     {
-        if ($this->inviteable() instanceof Workspace) {
+        if ($this->inviteable instanceof Workspace) {
 
             return WorkspaceResource::make($this->inviteable);
         }
-        if ($this->inviteable() instanceof Job) {
+        if ($this->inviteable instanceof Job) {
 
             return JobResource::make($this->inviteable);
         }
-        if ($this->inviteable() instanceof Room) {
+        if ($this->inviteable instanceof Room) {
 
             return RoomResource::make($this->inviteable);
         }

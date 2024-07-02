@@ -43,7 +43,6 @@ class InviteController extends Controller
 
                                  ]);
 
-
         return api(InviteResource::make($invite));
 
 
@@ -55,10 +54,10 @@ class InviteController extends Controller
         $invite = Invite::findByCode($code);
         $user = auth()->user();
 
-        if ($invite->user_id !== $user->id) {
-            return error('Invite code expired');
-
-        }
+//        if ($invite->user_id !== $user->id) {
+//            return error('Invite code expired');
+//
+//        }
         return api(InviteResource::make($invite));
 
 
