@@ -68,6 +68,9 @@ class MessageController extends Controller
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
 
+
+
+
         if ($request->get('files')) {
             foreach ($request->get('files') as $file) {
                 File::syncFile($file, $message);
@@ -75,7 +78,11 @@ class MessageController extends Controller
             }
         }
 
-
+        Seen::create([
+                         'user_id'    => $user->id,
+                         'room_id'    => $room->id,
+                         'message_id' => $message->id
+                     ]);
 
 
         return api($messageResponse);
