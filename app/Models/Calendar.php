@@ -35,4 +35,11 @@ class Calendar extends Model
     {
         return $this->hasMany(Schedule::class);
     }
+
+    public function canUserAccess(User $user)
+    {
+        $ownership = intval($user->id) === $this->owner_id;
+
+        return $ownership || $this->workspace->hasUser($user);
+    }
 }

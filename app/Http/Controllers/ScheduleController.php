@@ -6,7 +6,9 @@ use App\Http\Requests\ScheduleRequest;
 use App\Http\Resources\ScheduleResource;
 use App\Models\Calendar;
 use App\Models\Schedule;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class ScheduleController extends Controller
@@ -18,6 +20,10 @@ class ScheduleController extends Controller
     {
         $data = $request->validated();
         $cal = Calendar::findOrFail($data['calendar_id']);
+
+        $hasPerm = $request->user()->id !== $cal->owner_id;
+        abort_if($hasPerm, Response::HTTP_FORBIDDEN);
+
         $data['owner_id'] = $cal->owner_id;
         $res = ScheduleResource::make(
             Schedule::create($data)
@@ -31,6 +37,12 @@ class ScheduleController extends Controller
      */
     public function show(Request $request, Schedule $schedule)
     {
+        /** @var Calendar $cal */
+        $cal = $schedule->calendar;
+
+        $hasPerm = $cal->canUserAccess($request->user());
+        throw_if(! $hasPerm, new AuthorizationException);
+
         if ($expand = $request->get('expand')) {
             $schedule->loadExpands($expand);
         }
