@@ -16,12 +16,12 @@ class InviteResource extends JsonResource
     {
         return [
             'id'         => $this->id,
-            'workspace'  => WorkspaceResource::make($this->workspace),
-            'room'       => RoomResource::make($this->room),
             'owner'      => UserMinimalResource::make($this->owner),
             'user'       => UserMinimalResource::make($this->user),
+            'inviteable' => $this->getResponseModel(),
             'status'     => $this->status,
             'code'       => $this->code,
+            'type'       => $this->type(),
             'created_at' => $this->created_at->timestamp
         ];
     }

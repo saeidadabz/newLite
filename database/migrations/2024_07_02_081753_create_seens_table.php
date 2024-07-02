@@ -10,23 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('invites', function (Blueprint $table) {
+        Schema::create('seens', function (Blueprint $table) {
             $table->id();
 
 
-            $table->unsignedBigInteger('owner_id');
-
-            $table->foreign('owner_id')->references('id')->on('users');
-
-
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-
-
-            $table->nullableMorphs('inviteable');
-
-
-            $table->string('status')->default('pending');
-
+            $table->foreignId('message_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('room_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();
         });
@@ -37,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('invites');
+        Schema::dropIfExists('seens');
     }
 };

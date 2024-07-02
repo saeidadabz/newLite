@@ -50,22 +50,24 @@ class Workspace extends Model
 
     public function joinUser($user, $role = 'member')
     {
-        if (! $this->users->contains($user->id)) {
+        if (!$this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role]);
             $user->update([
-                'workspace_id',
-                $this->id
-            ]);
+                              'workspace_id' => $this->id
+                          ]);
+//            $user->giveRole($role, $this);
+            //TODO: Socket, user joined to ws.
 
-            $user->giveRole($role, $this);
+            $user->giveRole($role,$this);
 
         }
+        return $this;
 
     }
 
     public function getChannelAttribute($value)
     {
-        return 'workspace-'.$this->id;
+        return 'workspace-' . $this->id;
 
     }
 

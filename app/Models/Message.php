@@ -41,4 +41,15 @@ class Message extends Model
     {
         return $this->hasMany(Message::class, 'reply_to');
     }
+
+    public function seens()
+    {
+        return $this->hasMany(Seen::class);
+    }
+
+    public function saw($user)
+    {
+        return $this->seens()->whereUserId($user->id)->first() !== NULL;
+
+    }
 }

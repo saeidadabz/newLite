@@ -24,7 +24,7 @@ class RoomController extends Controller
         File::syncFile($request->background_id, $room, 'background');
         File::syncFile($request->logo_id, $room, 'logo');
 
-        sendSocket(Constants::roomUpdated,$room->channel,RoomResource::make($room));
+        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
         return api(RoomResource::make($room));
 
@@ -50,35 +50,8 @@ class RoomController extends Controller
     public function join(Room $room)
     {
         $user = auth()->user();
-        $workspace = $room->workspace;
-        $workspace = $user->workspaces->find($workspace->id);
-        if ($workspace === NULL) {
-            return error('You have no access to this workspace');
 
-        }
-
-
-        $user->update([
-                          'room_id' => $room->id
-                      ]);
-
-
-        $roomName = $room->id;
-        $participantName = $user->username;
-
-        $tokenOptions = (new AccessTokenOptions())
-            ->setIdentity($participantName);
-
-        $videoGrant = (new VideoGrant())
-            ->setRoomJoin()
-            ->setRoomName($roomName);
-
-        $token = (new AccessToken('devkey', 'secret'))
-            ->init($tokenOptions)
-            ->setGrant($videoGrant)
-            ->toJwt();
-
-        $room->token = $token;
+        $room = $room->joinUser($user);
 
 
         return api(RoomResource::make($room));

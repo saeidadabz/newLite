@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
 //})->middleware('auth:sanctum');
-require __DIR__.'/socket.php';
+require __DIR__ . '/socket.php';
 
 Route::get('export-postman', PostmanExportController::class)->name('postman');
 
@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(MessageController::class)->prefix('messages')->group(function () {
         Route::get('/{room}', 'get');
+        Route::get('/{message}/seen', 'seen');
         Route::post('/', 'send');
         Route::put('/{message}', 'update');
         Route::delete('/{message}', 'delete');
