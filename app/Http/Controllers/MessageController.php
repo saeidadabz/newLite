@@ -65,10 +65,16 @@ class MessageController extends Controller
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
         sendSocket($eventName, $room->channel, $messageResponse);
+
+
+        Seen::create([
+                         'user_id'    => $user->id,
+                         'room_id'    => $room->id,
+                         'message_id' => $message->id
+                     ]);
+
+
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
-
-
-
 
 
         if ($request->get('files')) {
@@ -77,12 +83,6 @@ class MessageController extends Controller
 
             }
         }
-
-        Seen::create([
-                         'user_id'    => $user->id,
-                         'room_id'    => $room->id,
-                         'message_id' => $message->id
-                     ]);
 
 
         return api($messageResponse);
