@@ -38,20 +38,26 @@ class Workspace extends Model
         return $this->belongsToMany(User::class)->withPivot('role');
     }
 
+    public function calendars()
+    {
+        return $this->hasMany(Calendar::class);
+    }
+
     public function hasUser($user)
     {
         return $this->users->contains($user->id);
     }
+
     public function joinUser($user, $role = 'member')
     {
-        if (!$this->users->contains($user->id)) {
+        if (! $this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role]);
             $user->update([
-                              'workspace_id',
-                              $this->id
-                          ]);
+                'workspace_id',
+                $this->id
+            ]);
 
-            $user->giveRole($role,$this);
+            $user->giveRole($role, $this);
 
         }
 
@@ -59,7 +65,7 @@ class Workspace extends Model
 
     public function getChannelAttribute($value)
     {
-        return 'workspace-' . $this->id;
+        return 'workspace-'.$this->id;
 
     }
 

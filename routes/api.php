@@ -27,9 +27,13 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource("calendars", CalendarController::class);
 
-    Route::apiResource('schedules', ScheduleController::class);
+    Route::apiResource('calendars', CalendarController::class);
+    Route::prefix('calendars')->controller(CalendarController::class)->group(function () {
+        Route::get('{calendar}/schedules', 'schedules');
+    });
+
+    Route::apiResource('schedules', ScheduleController::class)->except('index');
 
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/me', 'me');
@@ -48,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{workspace}/join', 'join');
         Route::get('/{workspace}/rooms', 'rooms');
         Route::get('/{workspace}/users', 'users');
+        Route::get('/{workspace}/calendars', 'calendars');
         Route::put('/{workspace}', 'update');
 
     });

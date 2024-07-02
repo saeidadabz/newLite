@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CalendarRequest;
 use App\Http\Resources\CalendarResource;
+use App\Http\Resources\ScheduleResource;
 use App\Models\Calendar;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -76,5 +77,21 @@ class CalendarController extends Controller
         }
 
         return api();
+    }
+
+    public function schedules(Request $request, Calendar $calendar): \Illuminate\Foundation\Application|Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        $dateFrom = $request->get(
+            'date_from',
+            today()->startOfMonth()
+        );
+        $dateTo = $request->get(
+            'date_to',
+            today()->endOfMonth()
+        );
+        $query = $calendar->schedules()->whereBetween('starts_at', [$dateFrom, $dateTo]);
+        $res = ScheduleResource::make($query->get());
+
+        return api($res);
     }
 }

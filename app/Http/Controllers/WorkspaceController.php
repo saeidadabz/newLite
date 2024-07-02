@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CalendarResource;
 use App\Http\Resources\RoomListResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\WorkspaceResource;
@@ -15,14 +16,12 @@ class WorkspaceController extends Controller
     {
         $user = auth()->user();
 
-
         return api(WorkspaceResource::collection($user->workspaces));
     }
 
 
     public function rooms(Workspace $workspace)
     {
-
         return api(RoomListResource::collection($workspace->rooms));
     }
 
@@ -30,19 +29,20 @@ class WorkspaceController extends Controller
     public function users(Workspace $workspace)
     {
         return api(UserMinimalResource::collection($workspace->users));
+    }
 
+    public function calendars(Workspace $workspace)
+    {
+        return api(CalendarResource::make($workspace->calendars));
     }
 
     public function get(Workspace $workspace)
     {
-
-        if (auth()->user()->can('get-' . $workspace->id)) {
+        if (auth()->user()->can('get-'.$workspace->id)) {
             return api(WorkspaceResource::make($workspace));
 
         }
         dd('Cant');
-
-
     }
 
 
@@ -57,7 +57,6 @@ class WorkspaceController extends Controller
 
 
         return api(WorkspaceResource::make($workspace));
-
     }
 
 
@@ -71,8 +70,6 @@ class WorkspaceController extends Controller
 
 
         return api(WorkspaceResource::make($workspace));
-
-
     }
 
 
@@ -85,7 +82,5 @@ class WorkspaceController extends Controller
 
 
         return api(TRUE);
-
-
     }
 }

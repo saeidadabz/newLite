@@ -30,4 +30,9 @@ class Calendar extends Model
     {
         return $this->belongsTo(Workspace::class);
     }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }
