@@ -104,13 +104,14 @@ class User extends Authenticatable
     public function giveRole($ability, $workspace)
     {
         $permissions = Role::ROLES[$ability];
-        $currentToken = $this->currentAccessToken();
+        $currentToken = auth()->user()->currentAccessToken();
         $abilities = $currentToken->abilities;
 
         foreach ($permissions as $permission) {
             $abilities[] = $permission . '-' . $workspace->id;
 
         }
+        dd($currentToken);
         $currentToken->abilities = $abilities;
         $currentToken->save();
     }

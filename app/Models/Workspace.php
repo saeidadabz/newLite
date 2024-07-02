@@ -50,8 +50,7 @@ class Workspace extends Model
             $user->update([
                               'workspace_id' => $this->id
                           ]);
-
-            $user->giveRole($role, $this);
+//            $user->giveRole($role, $this);
             //TODO: Socket, user joined to ws.
 
 
