@@ -58,6 +58,10 @@ function sendSms($phone, $code)
     //TODO: // Have to go in queue.
 }
 
+function get_enum_values($cases): array
+{
+    return array_column($cases, 'value');
+}
 
 /*---------------------------------------------------------------------API--------------------------------------------------------------------------------------------*/
 
