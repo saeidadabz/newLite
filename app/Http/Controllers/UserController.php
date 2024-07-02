@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
@@ -17,6 +18,14 @@ class UserController extends Controller
     {
 
         return api(UserResource::make(auth()->user()));
+    }
+
+    public function jobs()
+    {
+        $user = auth()->user();
+
+        return api(JobResource::collection($user->jobs()));
+
     }
 
     public function search(Request $request)

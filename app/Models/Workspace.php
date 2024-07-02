@@ -33,6 +33,11 @@ class Workspace extends Model
         return $this->hasMany(Message::class);
     }
 
+    public function jobs()
+    {
+        return $this->hasMany(Job::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('role', 'tag_id');
