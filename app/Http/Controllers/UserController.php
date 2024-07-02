@@ -6,6 +6,7 @@ use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
+use App\Models\File;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\Workspace;
@@ -73,6 +74,25 @@ class UserController extends Controller
 
         return api($response);
 
+    }
+
+
+    public function update(Request $request)
+    {
+        $user = auth()->user();
+        $user->update([
+                          'name' => $request->name,
+                      ]);
+
+        File::syncFile($request->avatar_id, $user, 'avatar');
+        $response = UserMinimalResource::make($user);
+
+        if ($user->room !== NULL) {
+            sendSocket(Constants::userUpdated, $user->room->channel, $response);
+
+        }
+
+        return api($response);
     }
 
 
