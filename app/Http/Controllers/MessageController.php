@@ -67,7 +67,7 @@ class MessageController extends Controller
         sendSocket($eventName, $room->channel, $messageResponse);
 
 
-        Seen::create([
+        Seen::firstOrCreate([
                          'user_id'    => $user->id,
                          'room_id'    => $room->id,
                          'message_id' => $message->id
@@ -97,7 +97,7 @@ class MessageController extends Controller
 //            return error('You cant seen this message');
 //        }
 
-        Seen::create([
+        Seen::firstOrCreate([
                          'user_id'    => $user->id,
                          'room_id'    => $room->id,
                          'message_id' => $message->id
