@@ -84,6 +84,7 @@ class UserController extends Controller
                           'name' => $request->name,
                       ]);
 
+        dd($request->avatar_id);
         File::syncFile($request->avatar_id, $user, 'avatar');
         $response = UserMinimalResource::make($user);
 
