@@ -13,7 +13,9 @@ class Invite extends Model
     protected $fillable = [
         'owner_id',
         'user_id',
-        'status'
+        'status',
+        'inviteable_type',
+        'inviteable_id'
     ];
 
     protected $appends = ['code'];
