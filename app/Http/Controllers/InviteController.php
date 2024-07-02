@@ -82,12 +82,12 @@ class InviteController extends Controller
             return error('Invite code expired');
         }
 
-        $invite->inviteable->joinUser($invite->user);
+        $inviteable = $invite->inviteable->joinUser($invite->user);
         $invite->status = 'joined';
         $invite->save();
 
 
-        return api($invite->getResponseModel());
+        return api($invite->getResponseModel($inviteable));
 
 
     }

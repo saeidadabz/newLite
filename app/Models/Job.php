@@ -35,6 +35,8 @@ class Job extends Model
 
 
         }
+        return $this;
+
 
     }
 

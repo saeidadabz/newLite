@@ -55,6 +55,7 @@ class Workspace extends Model
 
 
         }
+        return $this;
 
     }
 
