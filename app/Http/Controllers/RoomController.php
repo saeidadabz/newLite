@@ -64,18 +64,18 @@ class RoomController extends Controller
         $user = auth()->user();
 
         $messages = $room->messages()->orderByDesc('id')->paginate(10);
-        foreach ($messages->items() as $msg) {
-
-            Seen::firstOrCreate([
-                                    'user_id'    => $user->id,
-                                    'room_id'    => $room->id,
-                                    'message_id' => $msg->id
-                                ]);
-        }
-
-        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
-
-        // TODO: CODE UPPER HAS TO DELETED, JUST SET FOR MEHDI RASTI TILL SEEN MESSAGES ON VIEWPORT
+//        foreach ($messages->items() as $msg) {
+//
+//            Seen::firstOrCreate([
+//                                    'user_id'    => $user->id,
+//                                    'room_id'    => $room->id,
+//                                    'message_id' => $msg->id
+//                                ]);
+//        }
+//
+//        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+//
+//        // TODO: CODE UPPER HAS TO DELETED, JUST SET FOR MEHDI RASTI TILL SEEN MESSAGES ON VIEWPORT
 
 
         return api(MessageResource::collection($messages));
