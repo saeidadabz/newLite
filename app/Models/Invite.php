@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Http\Resources\JobResource;
+use App\Http\Resources\RoomResource;
+use App\Http\Resources\WorkspaceResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,8 +13,6 @@ class Invite extends Model
     protected $fillable = [
         'owner_id',
         'user_id',
-        'workspace_id',
-        'room_id',
         'status'
     ];
 
@@ -39,13 +40,26 @@ class Invite extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function workspace()
+
+    public function getResponseModel()
     {
-        return $this->belongsTo(Workspace::class);
+        if ($this->inviteable() instanceof Workspace) {
+
+            return WorkspaceResource::make($this->inviteable);
+        }
+        if ($this->inviteable() instanceof Job) {
+
+            return JobResource::make($this->inviteable);
+        }
+        if ($this->inviteable() instanceof Room) {
+
+            return RoomResource::make($this->inviteable);
+        }
     }
 
-    public function room()
+    public function inviteable()
     {
-        return $this->belongsTo(Room::class);
+        return $this->morphTo();
     }
+
 }

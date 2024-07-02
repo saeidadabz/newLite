@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     public function workspaces()
     {
-        return $this->belongsToMany(Workspace::class)->withPivot('role');
+        return $this->belongsToMany(Workspace::class)->withPivot('role', 'tag_id');
     }
 
     public function room()
@@ -91,6 +91,10 @@ class User extends Authenticatable
         return $this->belongsTo(Workspace::class);
     }
 
+    public function jobs()
+    {
+        return $this->belongsToMany(Job::class)->withPivot('role');
+    }
 
     public function directs()
     {

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Agence104\LiveKit\AccessToken;
+use Agence104\LiveKit\AccessTokenOptions;
+use Agence104\LiveKit\VideoGrant;
 use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
@@ -80,6 +83,47 @@ class Room extends Model
     {
 
         return $this->messages()->whereUserId($user->id)->count() - $this->seens()->whereUserId($user->id)->count();
+
+    }
+
+    public function joinUser($user)
+    {
+        if ($user->room_id !== $this->id) {
+            $workspace = $this->workspace;
+            $workspace = $user->workspaces->find($workspace->id);
+            if ($workspace === NULL) {
+                return error('You have no access to this workspace');
+
+            }
+
+
+            $user->update([
+                              'room_id' => $this->id
+                          ]);
+
+
+            $roomName = $this->id;
+            $participantName = $user->username;
+
+            $tokenOptions = (new AccessTokenOptions())
+                ->setIdentity($participantName);
+
+            $videoGrant = (new VideoGrant())
+                ->setRoomJoin()
+                ->setRoomName($roomName);
+
+            $token = (new AccessToken('devkey', 'secret'))
+                ->init($tokenOptions)
+                ->setGrant($videoGrant)
+                ->toJwt();
+
+            //TODO: Socket, user joined to room.
+
+            $this->token = $token;
+
+        }
+        return $this;
+
 
     }
 

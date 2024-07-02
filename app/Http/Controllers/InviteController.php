@@ -6,9 +6,11 @@ use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
 use Agence104\LiveKit\VideoGrant;
 use App\Http\Resources\InviteResource;
+use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Invite;
+use App\Models\Job;
 use App\Models\Room;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
@@ -19,17 +21,18 @@ class InviteController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-                               'user_id'      => 'required|integer|exists:users,id',
-                               'workspace_id' => 'required|integer|exists:workspaces,id',
+                               'user_id'  => 'required|integer|exists:users,id',
+                               'model_id' => 'required|integer',
+                               'model'    => 'required|integer',
                            ]);
 
 
         $invite = Invite::create([
-                                     'owner_id'     => $user->id,
-                                     'user_id'      => $request->user_id,
-                                     'workspace_id' => $request->workspace_id,
-                                     'room_id'      => $request->room_id,
-                                     'status'       => 'pending'
+                                     'owner_id'        => $user->id,
+                                     'user_id'         => $request->user_id,
+                                     'inviteable_type' => get_class($request->model),
+                                     'inviteable_id'   => $request->model_id,
+                                     'status'          => 'pending'
 
                                  ]);
 
@@ -43,7 +46,12 @@ class InviteController extends Controller
     public function get($code)
     {
         $invite = Invite::findByCode($code);
+        $user = auth()->user();
 
+        if ($invite->user_id !== $user->id) {
+            return error('Invite code expired');
+
+        }
         return api(InviteResource::make($invite));
 
 
@@ -68,13 +76,12 @@ class InviteController extends Controller
             return error('Invite code expired');
         }
 
-        $invite->workspace->joinUser($invite->user);
+        $invite->inviteable->joinUser($invite->user);
         $invite->status = 'joined';
         $invite->save();
 
-        return api(WorkspaceResource::make($invite->workspace));
 
-        //TODO: Socket, user joined to ws.
+        return api($invite->getResponseModel());
 
 
     }
