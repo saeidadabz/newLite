@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ScheduleRequest;
 use App\Http\Resources\ScheduleResource;
+use App\Jobs\RecurSchedule;
 use App\Models\Calendar;
 use App\Models\Schedule;
+use App\Params\RecurParam;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -25,11 +27,13 @@ class ScheduleController extends Controller
         abort_if($hasPerm, Response::HTTP_FORBIDDEN);
 
         $data['owner_id'] = $cal->owner_id;
-        $res = ScheduleResource::make(
-            Schedule::create($data)
-        );
+        $sch = Schedule::create($data);
+        if (isset($data['recurrence_pattern'])) {
+            $param = new RecurParam($data['recurrence_pattern'], $data['recurrence_end_date'], $data['recurrence_days'] ?? []);
+            dispatch(new RecurSchedule($sch, $param));
+        }
 
-        return api($res);
+        return api();
     }
 
     /**
@@ -57,6 +61,9 @@ class ScheduleController extends Controller
      */
     public function update(ScheduleRequest $request, Schedule $schedule)
     {
+        $hasPerm = $request->user()->id !== $schedule->owner_id;
+        abort_if($hasPerm, Response::HTTP_FORBIDDEN);
+
         if (! $schedule->update($request->validated())) {
             Log::error("Schedule Controller: Could not delete schedule ".$schedule->id);
 
@@ -72,8 +79,11 @@ class ScheduleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Schedule $schedule)
+    public function destroy(Request $request, Schedule $schedule)
     {
+        $hasPerm = $request->user()->id !== $schedule->owner_id;
+        abort_if($hasPerm, Response::HTTP_FORBIDDEN);
+
         if (! $schedule->delete()) {
             Log::error("Schedule Controller: Could not delete schedule ".$schedule->id);
 

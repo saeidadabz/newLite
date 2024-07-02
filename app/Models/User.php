@@ -111,7 +111,7 @@ class User extends Authenticatable
             $abilities[] = $permission . '-' . $workspace->id;
 
         }
-        dd($currentToken);
+
         $currentToken->abilities = $abilities;
         $currentToken->save();
     }

@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum AvailabilityTypes: int
+enum AvailabilityType: int
 {
     case VIDEO = 0;
 

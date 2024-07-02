@@ -15,7 +15,7 @@ return new class extends Migration {
 
             $table->tinyInteger('availability_type');
             $table->foreignId('calendar_id')->constrained();
-            $table->foreignId('owner_id')->constrained();
+            $table->foreignId('owner_id')->constrained('users');
             $table->datetime('starts_at');
             $table->datetime('ends_at');
 
