@@ -6,6 +6,7 @@ use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Models\Room;
+use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
@@ -18,6 +19,18 @@ class UserController extends Controller
         return api(UserResource::make(auth()->user()));
     }
 
+    public function search(Request $request)
+    {
+
+        //TODO: have to use meiliserach instead
+        $search = $request->search;
+        $users = User::where(function ($query) use ($search) {
+            $query->where('name', 'LIKE', $search . '%')
+                  ->orWhere('username', 'LIKE', $search . '%')
+                  ->orWhere('email', 'LIKE', $search . '%');
+        })->get();
+        return api(UserMinimalResource::collection($users));
+    }
 
     public function updateCoordinates(Request $request)
     {
