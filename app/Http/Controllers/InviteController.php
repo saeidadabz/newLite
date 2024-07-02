@@ -23,14 +23,21 @@ class InviteController extends Controller
         $request->validate([
                                'user_id'  => 'required|integer|exists:users,id',
                                'model_id' => 'required|integer',
-                               'model'    => 'required|integer',
+                               'model'    => 'required',
                            ]);
+
+
+        $models = [
+            'job'       => Job::class,
+            'room'      => Room::class,
+            'workspace' => Workspace::class,
+        ];
 
 
         $invite = Invite::create([
                                      'owner_id'        => $user->id,
                                      'user_id'         => $request->user_id,
-                                     'inviteable_type' => get_class($request->model),
+                                     'inviteable_type' => $models[$request->model],
                                      'inviteable_id'   => $request->model_id,
                                      'status'          => 'pending'
 
