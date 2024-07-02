@@ -40,7 +40,12 @@ class Workspace extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class)->withPivot('role', 'tag_id');
+        return $this->belongsToMany(User::class)->withPivot('role');
+    }
+
+    public function calendars()
+    {
+        return $this->hasMany(Calendar::class);
     }
 
     public function tags()
@@ -63,6 +68,7 @@ class Workspace extends Model
 //            $user->giveRole($role, $this);
             //TODO: Socket, user joined to ws.
 
+            $user->giveRole($role,$this);
 
         }
         return $this;
