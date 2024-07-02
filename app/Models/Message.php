@@ -49,7 +49,7 @@ class Message extends Model
 
     public function saw($user)
     {
-        return $this->seens->whereUserId($user->id)->first() !== NULL;
+        return $this->seens()->whereUserId($user->id)->first() !== NULL;
 
     }
 }
