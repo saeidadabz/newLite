@@ -19,7 +19,8 @@ class Role extends Model
         'update-room',
         'delete-room',
         'update-user-in-room', //mute,unmute,stop screen,change position of user.
-        'update-messages-in-room', //delete message,ping message,edit message
+        'update-messages-in-room', //delete message,pin message,edit message
+        'add-job-to-ws',
         'get-job',
         'invite-member-to-job',
         'remove-member-from-job',
@@ -30,7 +31,10 @@ class Role extends Model
     const ROLES = [
         'member' => [
             'get-ws',
-            'get-room'
+            'get-room',
+            'add-job-to-ws',
+            'get-job',
+            'invite-member-to-job'
         ],
         'admin'  => [
             'get-ws',

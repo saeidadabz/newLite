@@ -33,6 +33,11 @@ class Workspace extends Model
         return $this->hasMany(Message::class);
     }
 
+    public function jobs()
+    {
+        return $this->hasMany(Job::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('role');
@@ -43,15 +48,20 @@ class Workspace extends Model
         return $this->hasMany(Calendar::class);
     }
 
+    public function tags()
+    {
+        return $this->hasMany(Tag::class);
+    }
+
     public function hasUser($user)
     {
         return $this->users->contains($user->id);
     }
 
-    public function joinUser($user, $role = 'member')
+    public function joinUser($user, $role = 'member', $tag = NULL)
     {
         if (!$this->users->contains($user->id)) {
-            $this->users()->attach($user, ['role' => $role]);
+            $this->users()->attach($user, ['role' => $role, 'tag' => $tag]);
             $user->update([
                               'workspace_id' => $this->id
                           ]);

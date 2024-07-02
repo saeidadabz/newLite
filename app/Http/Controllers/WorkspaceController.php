@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\JobResource;
 use App\Http\Resources\CalendarResource;
 use App\Http\Resources\RoomListResource;
+use App\Http\Resources\TagResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\WorkspaceResource;
+use App\Models\User;
 use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
@@ -23,6 +26,18 @@ class WorkspaceController extends Controller
     public function rooms(Workspace $workspace)
     {
         return api(RoomListResource::collection($workspace->rooms));
+    }
+
+    public function tags(Workspace $workspace)
+    {
+
+        return api(TagResource::collection($workspace->tags));
+    }
+
+    public function jobs(Workspace $workspace)
+    {
+
+        return api(JobResource::collection($workspace->jobs));
     }
 
 
@@ -70,8 +85,38 @@ class WorkspaceController extends Controller
 
 
         return api(WorkspaceResource::make($workspace));
+
+
     }
 
+
+    public function addRole(Workspace $workspace, Request $request)
+    {
+        $request->validate([
+                               'role'    => 'required',
+                               'user_id' => 'required',
+                           ]);
+
+
+        $wsUser = User::find($request->user_id);
+        $workspace->users()->updateExistingPivot($wsUser, ['role' => $request->role]);
+        return api(WorkspaceResource::make($workspace));
+
+    }
+
+    public function addTag(Workspace $workspace, Request $request)
+    {
+        $request->validate([
+                               'tag'     => 'required',
+                               'user_id' => 'required',
+                           ]);
+
+
+        $wsUser = User::find($request->user_id);
+        $workspace->users()->updateExistingPivot($wsUser, ['tag' => $request->role]);
+        return api(WorkspaceResource::make($workspace));
+
+    }
 
     public function join(Workspace $workspace)
     {

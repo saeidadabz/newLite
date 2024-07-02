@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InviteController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostmanExportController;
 use App\Http\Controllers\RoomController;
@@ -38,9 +39,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/me', 'me');
         Route::get('/directs', 'directs');
+        Route::get('/jobs', 'directs');
         Route::get('/', 'all');
         Route::post('/', 'update');
         Route::post('/updateCoordinates', 'updateCoordinates');
+        Route::get('/toggleMegaphone', 'toggleMegaphone');
+        Route::post('/search', 'search');
+        Route::put('/update', 'update');
     });
 
 
@@ -51,8 +56,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{workspace}', 'get');
         Route::get('/{workspace}/join', 'join');
         Route::get('/{workspace}/rooms', 'rooms');
+        Route::get('/{workspace}/jobs', 'jobs');
         Route::get('/{workspace}/users', 'users');
         Route::get('/{workspace}/calendars', 'calendars');
+        Route::get('/{workspace}/tags', 'tags');
+        Route::post('/{workspace}/addRole', 'addRole');
+        Route::post('/{workspace}/addTag', 'addTag');
         Route::put('/{workspace}', 'update');
 
     });
@@ -91,5 +100,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{message}', 'delete');
     });
 
+
+    Route::controller(JobController::class)->prefix('jobs')->group(function () {
+        Route::post('/', 'create');
+        Route::get('/{job}', 'get');
+        Route::put('/{job}', 'update');
+        Route::delete('/{job}', 'delete');
+
+    });
 
 });

@@ -82,9 +82,9 @@ class MessageController extends Controller
     {
         $user = auth()->user();
         $room = $message->room;
-        if (!$room->participants()->contains('id', $user->id)) {
-            return error('You cant seen this message');
-        }
+//        if (!$room->participants()->contains('id', $user->id)) {
+//            return error('You cant seen this message');
+//        }
 
         Seen::create([
                          'user_id'    => $user->id,
@@ -111,14 +111,25 @@ class MessageController extends Controller
 
     }
 
+    public function pin(Message $message)
+    {
+        //TODO: check user can pin message in this room
+
+        $message->update([
+                             'is_pinned' => TRUE
+                         ]);
+
+    }
+
 
     public function update(Message $message, Request $request)
     {
-        $user = auth()->user();
+//        $user = auth()->user();
 
-
+        //TODO: check user owned msg
         $message->update([
-                             'text' => $request->text
+                             'text'      => $request->text,
+                             'is_edited' => TRUE
                          ]);
 
 

@@ -34,6 +34,7 @@ class User extends Authenticatable
         'screenshare_size',
         'video_coordinates',
         'video_size',
+        'is_megaphone'
     ];
 
     /**

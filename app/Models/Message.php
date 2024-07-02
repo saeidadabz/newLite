@@ -11,8 +11,9 @@ class Message extends Model
         'text',
         'room_id',
         'user_id',
-        'edited',
+        'is_edited',
         'reply_to',
+        'is_pinned',
         'created_at',
         'updated_at'
     ];
