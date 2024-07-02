@@ -59,6 +59,22 @@ class UserController extends Controller
 
     }
 
+    public function toggleMegaphone()
+    {
+        $user = auth()->user();
+
+
+        $user->update([
+                          'is_megaphone' => !$user->is_megaphone
+                      ]);
+
+        $response = UserMinimalResource::make($user);
+        sendSocket(Constants::userUpdated, $user->room->channel, $response);
+
+        return api($response);
+
+    }
+
 
     public function directs()
     {

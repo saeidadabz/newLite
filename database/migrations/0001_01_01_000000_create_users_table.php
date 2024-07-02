@@ -29,6 +29,7 @@ return new class extends Migration {
             $table->string('screenshare_size')->nullable();
             $table->string('video_coordinates')->nullable();
             $table->string('video_size')->nullable();
+            $table->boolean('is_megaphone')->default(FALSE);
 
             $table->rememberToken();
             $table->timestamps();

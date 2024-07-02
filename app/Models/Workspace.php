@@ -43,15 +43,20 @@ class Workspace extends Model
         return $this->belongsToMany(User::class)->withPivot('role', 'tag_id');
     }
 
+    public function tags()
+    {
+        return $this->hasMany(Tag::class);
+    }
+
     public function hasUser($user)
     {
         return $this->users->contains($user->id);
     }
 
-    public function joinUser($user, $role = 'member')
+    public function joinUser($user, $role = 'member', $tag = NULL)
     {
         if (!$this->users->contains($user->id)) {
-            $this->users()->attach($user, ['role' => $role]);
+            $this->users()->attach($user, ['role' => $role, 'tag' => $tag]);
             $user->update([
                               'workspace_id' => $this->id
                           ]);

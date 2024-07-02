@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'all');
         Route::post('/', 'update');
         Route::post('/updateCoordinates', 'updateCoordinates');
+        Route::get('/toggleMegaphone', 'toggleMegaphone');
         Route::post('/search', 'search');
     });
 
@@ -46,6 +47,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{workspace}/rooms', 'rooms');
         Route::get('/{workspace}/jobs', 'jobs');
         Route::get('/{workspace}/users', 'users');
+        Route::get('/{workspace}/tags', 'tags');
+        Route::post('/{workspace}/addRole', 'addRole');
+        Route::post('/{workspace}/addTag', 'addTag');
         Route::put('/{workspace}', 'update');
 
     });

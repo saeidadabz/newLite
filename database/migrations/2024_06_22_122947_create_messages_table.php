@@ -13,7 +13,8 @@ return new class extends Migration {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->text('text');
-            $table->boolean('edited')->nullable();
+            $table->boolean('is_edited')->nullable();
+            $table->boolean('is_pinned')->default(FALSE);
 
             $table->integer('reply_to')->nullable();
 
