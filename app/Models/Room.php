@@ -82,7 +82,7 @@ class Room extends Model
     public function unseens($user)
     {
 
-        return $this->messages()->whereUserId($user->id)->count() - $this->seens()->whereUserId($user->id)->count();
+        return $this->messages()->count() - $this->seens()->whereUserId($user->id)->count();
 
     }
 
