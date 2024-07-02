@@ -61,7 +61,7 @@ class Invite extends Model
 
     public function getResponseModel($inviteable = NULL)
     {
-        if ($inviteable = NULL) {
+        if ($inviteable === NULL) {
             $inviteable = $this->inviteable;
         }
         if ($this->inviteable instanceof Workspace) {
