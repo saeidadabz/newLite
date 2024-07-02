@@ -71,6 +71,18 @@ class Room extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function seens()
+    {
+        return $this->hasMany(Seen::class);
+    }
+
+    public function unseens($user)
+    {
+
+        return $this->messages()->whereUserId($user->id)->count() - $this->seens()->whereUserId($user->id)->count();
+
+    }
+
     public function messages()
     {
         return $this->hasMany(Message::class);

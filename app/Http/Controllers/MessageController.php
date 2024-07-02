@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\MessageListResource;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\RoomResource;
 use App\Models\Direct;
 use App\Models\File;
 use App\Models\Message;
 use App\Models\Room;
+use App\Models\Seen;
 use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
@@ -76,6 +78,27 @@ class MessageController extends Controller
 
     }
 
+    public function seen(Message $message)
+    {
+        $user = auth()->user();
+        $room = $message->room;
+        if (!$room->participants()->contains('id', $user->id)) {
+            return error('You cant seen this message');
+        }
+
+        Seen::create([
+                         'user_id'    => $user->id,
+                         'room_id'    => $room->id,
+                         'message_id' => $message->id
+                     ]);
+
+        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+
+
+        return api(TRUE);
+
+
+    }
 
     public function get(Room $room)
     {

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
+use App\Models\Room;
+use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
@@ -15,6 +17,7 @@ class UserController extends Controller
 
         return api(UserResource::make(auth()->user()));
     }
+
 
     public function updateCoordinates(Request $request)
     {

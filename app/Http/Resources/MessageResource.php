@@ -22,6 +22,7 @@ class MessageResource extends JsonResource
             'room' => RoomResource::make($this->room),
             'created_at' => $this->created_at->timestamp,
             'updated_at' => $this->updated_at?->timestamp,
+            'seen'=> $this->saw(auth()->user())
         ];
     }
 }
