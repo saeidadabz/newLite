@@ -6,6 +6,7 @@ use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
 use App\Models\File;
 use App\Models\Room;
+use App\Models\Seen;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
@@ -51,7 +52,24 @@ class RoomController extends Controller
 
     public function messages(Room $room)
     {
-        return api(MessageResource::collection($room->messages()->orderByDesc('id')->paginate(10)));
+        $user = auth()->user();
+
+        $messages = $room->messages()->orderByDesc('id')->paginate(10);
+        //        foreach ($messages->items() as $msg) {
+        //
+        //            Seen::firstOrCreate([
+        //                                    'user_id'    => $user->id,
+        //                                    'room_id'    => $room->id,
+        //                                    'message_id' => $msg->id
+        //                                ]);
+        //        }
+        //
+        //        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+        //
+        //        // TODO: CODE UPPER HAS TO DELETED, JUST SET FOR MEHDI RASTI TILL SEEN MESSAGES ON VIEWPORT
+
+
+        return api(MessageResource::collection($messages));
     }
 
     public function leave()

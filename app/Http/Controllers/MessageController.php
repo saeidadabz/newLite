@@ -18,29 +18,32 @@ class MessageController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-            'text' => 'required',
-        ]);
+                               'text' => 'required'
+                           ]);
 
         $user = auth()->user();
         $eventName = Constants::roomMessages;
 
         if ($request->room_id === null) {
             $request->validate([
-                'user_id' => 'required',
-            ]);
+                                   'user_id' => 'required'
+                               ]);
+
 
             $users = [
                 $request->user_id,
-                $user->id,
+                $user->id
             ];
             asort($users);
             $roomTitle = implode('-', $users);
+
 
             $room = Room::firstOrCreate(
                 ['title' => $roomTitle],
                 ['is_private' => true]
             );
             $eventName = Constants::directMessages;
+
 
         } else {
             $room = Room::findOrFail($request->room_id);
@@ -49,17 +52,29 @@ class MessageController extends Controller
             //            }
         }
 
+
         $message = Message::create([
-            'text'       => $request->text,
-            'reply_to'   => $request->reply_to,
-            'user_id'    => $user->id,
-            'room_id'    => $room->id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+                                       'text'       => $request->text,
+                                       'reply_to'   => $request->reply_to,
+                                       'user_id'    => $user->id,
+                                       'room_id'    => $room->id,
+                                       'created_at' => now(),
+                                       'updated_at' => now()
+                                   ]);
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
         sendSocket($eventName, $room->channel, $messageResponse);
+
+
+        Seen::firstOrCreate([
+                         'user_id'    => $user->id,
+                         'room_id'    => $room->id,
+                         'message_id' => $message->id
+                     ]);
+
+
+        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+
 
         if ($request->get('files')) {
             foreach ($request->get('files') as $file) {
@@ -67,6 +82,7 @@ class MessageController extends Controller
 
             }
         }
+
 
         return api($messageResponse);
 
@@ -80,15 +96,17 @@ class MessageController extends Controller
         //            return error('You cant seen this message');
         //        }
 
-        Seen::create([
-            'user_id'    => $user->id,
-            'room_id'    => $room->id,
-            'message_id' => $message->id,
-        ]);
+        Seen::firstOrCreate([
+                         'user_id'    => $user->id,
+                         'room_id'    => $room->id,
+                         'message_id' => $message->id
+                     ]);
 
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
+
         return api(true);
+
 
     }
 
@@ -108,10 +126,11 @@ class MessageController extends Controller
         //TODO: check user can pin message in this room
 
         $message->update([
-            'is_pinned' => true,
-        ]);
+                             'is_pinned' => true
+                         ]);
 
     }
+
 
     public function update(Message $message, Request $request)
     {
@@ -119,13 +138,17 @@ class MessageController extends Controller
 
         //TODO: check user owned msg
         $message->update([
-            'text'      => $request->text,
-            'is_edited' => true,
-        ]);
+                             'text'      => $request->text,
+                             'is_edited' => true
+                         ]);
+
 
         File::syncFile($request->file_id, $message);
 
         return api(MessageResource::make($message));
 
+
     }
+
+
 }
