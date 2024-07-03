@@ -37,7 +37,7 @@ class ScheduleRequest extends FormRequest
             'ends_at'             => ['required', 'date', 'date_format:'.Constants::SCHEDULE_DATE_FORMAT, 'after:starts_at'],
             'recurrence_pattern'  => ['nullable', Rule::in($patterns)],
             'recurrence_end_date' => ['required_with:recurrence_pattern', 'after:today', 'date', 'date_format:'.Constants::SCHEDULE_DATE_FORMAT],
-            'recurrence_days'     => ['required_if:recurrence_pattern,'.RecurrencePattern::CUSTOM->value, Rule::in($days)],
+            'recurrence_days'     => ['required_if:recurrence_pattern,'.RecurrencePattern::CUSTOM->value, 'array', Rule::in($days)],
         ];
     }
 }

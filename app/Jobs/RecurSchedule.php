@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\RecurrenceDay;
 use App\Enums\RecurrencePattern;
 use App\Models\Schedule;
 use App\Params\RecurParam;
@@ -22,9 +23,10 @@ class RecurSchedule
      * Create a new job instance.
      */
     public function __construct(
-        private Schedule $schedule,
+        private Schedule   $schedule,
         private RecurParam $recurParam
-    ) {
+    )
+    {
         //
     }
 
@@ -40,40 +42,62 @@ class RecurSchedule
         /** @var Carbon $currDate */
         $currDate = $schedule->starts_at;
         $dateIntervalInSeconds = $currDate->diffInSeconds($schedule->ends_at);
+        $data = $schedule->toArray();
 
-        while (true) {
-            switch ($param->pattern) {
-                case RecurrencePattern::Daily->value:
-                    $currDate->addDay();
+        if ($param->pattern === RecurrencePattern::CUSTOM->value) {
+            $days = $param->days;
+            if (empty($days)) {
 
-                    break;
-                case RecurrencePattern::Weekly->value:
-                    $currDate->addWeek();
-
-                    break;
-                case RecurrencePattern::Monthly->value:
-                    $currDate->addMonth();
-
-                    break;
-                case RecurrencePattern::CUSTOM->value:
-                    // TODO - Custom recurrences
-
-                    break;
-                default:
-                    throw new \Exception('Invalid recurrence pattern.');
+                return;
             }
+            asort($days);
+            while (true) {
+                foreach ($days as $day) {
+                    $recDay = RecurrenceDay::from($day);
+                    $currDate = Carbon::parse($currDate->format('Y-m-d H:i:s').' next '.$recDay->name);
+                    if (! $currDate->lessThan($param->endDate)) {
 
-            if (! $currDate->lessThan($param->endDate)) {
+                        return;
+                    }
 
-                break;
+                    $this->createSchedule($data, $currDate, $dateIntervalInSeconds);
+                }
             }
+        } else {
+            while (true) {
+                switch ($param->pattern) {
+                    case RecurrencePattern::Daily->value:
+                        $currDate->addDay();
 
-            $data = $schedule->toArray();
-            $data['starts_at'] = $currDate;
-            $endDate = clone $currDate;
-            $data['ends_at'] = $endDate->addSeconds($dateIntervalInSeconds);
+                        break;
+                    case RecurrencePattern::Weekly->value:
+                        $currDate->addWeek();
 
-            Schedule::create($data);
+                        break;
+                    case RecurrencePattern::Monthly->value:
+                        $currDate->addMonth();
+
+                        break;
+                    default:
+                        throw new \Exception('Invalid recurrence pattern.');
+                }
+
+                if (! $currDate->lessThan($param->endDate)) {
+
+                    return;
+                }
+
+                $this->createSchedule($data, $currDate, $dateIntervalInSeconds);
+            }
         }
+    }
+
+    private function createSchedule(array $data, Carbon $currDate, $dateIntervalInSeconds)
+    {
+        $data['starts_at'] = $currDate;
+        $endDate = clone $currDate;
+        $data['ends_at'] = $endDate->addSeconds($dateIntervalInSeconds);
+
+        return Schedule::create($data);
     }
 }
