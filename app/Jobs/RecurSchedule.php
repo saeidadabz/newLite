@@ -41,6 +41,9 @@ class RecurSchedule
         $schedule = $this->schedule;
         /** @var Carbon $currDate */
         $currDate = $schedule->starts_at;
+        $hour = $currDate->hour;
+        $minute = $currDate->minuteOfHour;
+        $second = $currDate->second;
         $dateIntervalInSeconds = $currDate->diffInSeconds($schedule->ends_at);
         $data = $schedule->toArray();
 
@@ -50,11 +53,17 @@ class RecurSchedule
 
                 return;
             }
-            asort($days);
+            $days = $this->getOrganizedDays($days, $currDate->dayName);
+
             while (true) {
                 foreach ($days as $day) {
                     $recDay = RecurrenceDay::from($day);
-                    $currDate = Carbon::parse($currDate->format('Y-m-d H:i:s').' next '.$recDay->name);
+                    // When carbon parses to next matched day it won't match the H:i:s, so we should set it manually
+                    $currDate = Carbon::parse($currDate->format('Y-m-d').' next '.$recDay->name);
+                    $currDate->setHour($hour);
+                    $currDate->setMinute($minute);
+                    $currDate->setSecond($second);
+
                     if (! $currDate->lessThan($param->endDate)) {
 
                         return;
@@ -99,5 +108,25 @@ class RecurSchedule
         $data['ends_at'] = $endDate->addSeconds($dateIntervalInSeconds);
 
         return Schedule::create($data);
+    }
+
+    private function getOrganizedDays(array $days, $currentDayName): array
+    {
+        asort($days);
+        $enumDays = get_enum_values(RecurrenceDay::cases(), true);
+        $currentDayName = strtoupper($currentDayName);
+        $todayNum = $enumDays[$currentDayName];
+
+        // Organize days for correct functionality
+        foreach ($days as $key => $day) {
+            if ($day > $todayNum) {
+                $slicedDays = array_slice($days, $key - 1, count($days));
+                $days = array_merge($slicedDays, array_slice($days, 0, $key));
+
+                break;
+            }
+        }
+
+        return $days;
     }
 }
