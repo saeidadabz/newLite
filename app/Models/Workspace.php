@@ -61,7 +61,7 @@ class Workspace extends Model
     public function joinUser($user, $role = 'member', $tag = NULL)
     {
         if (!$this->users->contains($user->id)) {
-            $this->users()->attach($user, ['role' => $role, 'tag' => $tag]);
+            $this->users()->attach($user, ['role' => $role, 'tag_id' => $tag]);
             $user->update([
                               'workspace_id' => $this->id
                           ]);
