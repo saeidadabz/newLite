@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Workspace extends Model
 {
+
     protected $fillable = [
         'title',
         'description',
         'active',
-        'is_private',
+        'is_private'
     ];
 
     protected $appends = [
-        'channel',
+        'channel'
     ];
 
     public function logo()
@@ -57,27 +58,26 @@ class Workspace extends Model
         return $this->users->contains($user->id);
     }
 
-    public function joinUser($user, $role = 'member', $tag = null)
+    public function joinUser($user, $role = 'member', $tag = NULL)
     {
-        if (! $this->users->contains($user->id)) {
-            $this->users()->attach($user, ['role' => $role, 'tag' => $tag]);
+        if (!$this->users->contains($user->id)) {
+            $this->users()->attach($user, ['role' => $role, 'tag_id' => $tag]);
             $user->update([
-                'workspace_id' => $this->id,
-            ]);
-            //            $user->giveRole($role, $this);
+                              'workspace_id' => $this->id
+                          ]);
+//            $user->giveRole($role, $this);
             //TODO: Socket, user joined to ws.
 
-            $user->giveRole($role, $this);
+            $user->giveRole($role,$this);
 
         }
-
         return $this;
 
     }
 
     public function getChannelAttribute($value)
     {
-        return 'workspace-'.$this->id;
+        return 'workspace-' . $this->id;
 
     }
 
