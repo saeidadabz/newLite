@@ -90,7 +90,7 @@ class CalendarController extends Controller
             today()->endOfMonth()
         );
         $query = $calendar->schedules()->whereBetween('starts_at', [$dateFrom, $dateTo]);
-        $res = ScheduleResource::make($query->get());
+        $res = ScheduleResource::make($query->paginate());
 
         return api($res);
     }
