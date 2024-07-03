@@ -5,6 +5,8 @@ namespace App\Utilities;
 class Constants
 {
     const SCHEDULE_DATE_FORMAT = 'Y-m-d H:i:s';
+    const ONLINE = 'online';
+    const OFFLINE = 'offline';
 
     const API_SUCCESS_MSG = 'success';
     const API_FAILED_MSG = 'failed';

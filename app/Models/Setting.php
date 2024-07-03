@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Setting extends Model
 {
     protected $fillable = [
-        'key', 'value', 'workspace_id'
+        'key',
+        'value',
+        'settingable_type',
+        'settingable_id',
     ];
 
-    public function workspace()
+    public function settingable()
     {
-        return $this->belongsTo(Workspace::class);
+        return $this->morphTo();
     }
 }

@@ -31,6 +31,10 @@ return new class extends Migration {
             $table->string('video_size')->nullable();
             $table->boolean('is_megaphone')->default(FALSE);
 
+
+            $table->string('socket_id')->nullable();
+
+
             $table->rememberToken();
             $table->timestamps();
         });

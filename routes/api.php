@@ -7,8 +7,10 @@ use App\Http\Controllers\InviteController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostmanExportController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
@@ -106,6 +108,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{job}', 'get');
         Route::put('/{job}', 'update');
         Route::delete('/{job}', 'delete');
+
+    });
+
+
+    Route::controller(ReportController::class)->prefix('reports')->group(function () {
+        Route::post('/', 'create');
+
+    });
+    Route::controller(SettingController::class)->prefix('settings')->group(function () {
+        Route::post('/', 'set');
 
     });
 

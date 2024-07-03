@@ -5,10 +5,12 @@ namespace App\Models;
 use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
 use Agence104\LiveKit\VideoGrant;
+use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
+    use Settingable;
 
     protected $fillable = [
         'title',
@@ -24,6 +26,11 @@ class Room extends Model
     protected $appends = [
         'channel'
     ];
+
+    public function mentionedBy()
+    {
+        return $this->title;
+    }
 
     public function workspace()
     {

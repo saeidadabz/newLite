@@ -29,6 +29,8 @@ class UserController extends Controller
 
     }
 
+
+
     public function search(Request $request)
     {
 
@@ -81,7 +83,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $user->update([
-                          'name' => $request->name,
+                          'name' => $request->name ?? $user->name,
                       ]);
 
         File::syncFile($request->avatar_id, $user, 'avatar');
