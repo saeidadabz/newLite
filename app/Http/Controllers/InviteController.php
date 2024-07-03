@@ -81,6 +81,9 @@ class InviteController extends Controller
         if ($invite->status !== 'pending' || $invite->user_id !== $user->id) {
             return error('Invite code expired');
         }
+        if ($invite->inviteable instanceof Room) {
+            $invite->inviteable->workspace->joinUser($invite->user);
+        }
 
         $inviteable = $invite->inviteable->joinUser($invite->user);
         $invite->status = 'joined';
