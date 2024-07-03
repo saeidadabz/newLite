@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
-use Agence104\LiveKit\AccessToken;
-use Agence104\LiveKit\AccessTokenOptions;
-use Agence104\LiveKit\VideoGrant;
 use App\Models\File;
 use App\Models\Room;
 use App\Utilities\Constants;
@@ -14,8 +11,6 @@ use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
-
-
     public function update(Room $room, Request $request)
     {
         //TODO CHECK PERMISSION
@@ -28,31 +23,27 @@ class RoomController extends Controller
 
         return api(RoomResource::make($room));
 
-
     }
 
     public function get(Room $room)
     {
-//        $user = auth()->user();
-//        $workspace = $user->workspaces()->find($workspace);
-//        if ($workspace === NULL) {
-//            return error('You have no access to this workspace');
-//
-//        }
-//
-//        $room = $workspace->rooms()->findOrFail($room);
-
+        //        $user = auth()->user();
+        //        $workspace = $user->workspaces()->find($workspace);
+        //        if ($workspace === NULL) {
+        //            return error('You have no access to this workspace');
+        //
+        //        }
+        //
+        //        $room = $workspace->rooms()->findOrFail($room);
 
         return api(RoomResource::make($room));
     }
-
 
     public function join(Room $room)
     {
         $user = auth()->user();
 
         $room = $room->joinUser($user);
-
 
         return api(RoomResource::make($room));
 
@@ -67,13 +58,11 @@ class RoomController extends Controller
     {
         $user = auth()->user();
 
-
         $user->update([
-                          'room_id' => NULL
-                      ]);
+            'room_id' => null,
+        ]);
 
-
-        return api(TRUE);
+        return api(true);
 
     }
 }

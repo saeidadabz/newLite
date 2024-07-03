@@ -24,7 +24,7 @@ class RoomResource extends JsonResource
             'landing_spot' => $this->landing_spot,
             'background'   => FileResource::make($this->background()),
             'logo'         => FileResource::make($this->logo()),
-            'unseens'      => $this->unseens(auth()->user())
+            'unseens'      => $this->unseens(auth()->user()),
         ];
     }
 }

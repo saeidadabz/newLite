@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\WorkspaceResource;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Invite extends Model
@@ -15,7 +14,7 @@ class Invite extends Model
         'user_id',
         'status',
         'inviteable_type',
-        'inviteable_id'
+        'inviteable_id',
     ];
 
     protected $appends = ['code'];
@@ -58,10 +57,9 @@ class Invite extends Model
         }
     }
 
-
-    public function getResponseModel($inviteable = NULL)
+    public function getResponseModel($inviteable = null)
     {
-        if ($inviteable === NULL) {
+        if ($inviteable === null) {
             $inviteable = $this->inviteable;
         }
         if ($this->inviteable instanceof Workspace) {
@@ -82,5 +80,4 @@ class Invite extends Model
     {
         return $this->morphTo();
     }
-
 }

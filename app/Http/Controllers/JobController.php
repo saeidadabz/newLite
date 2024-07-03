@@ -5,20 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Resources\JobResource;
 use App\Models\Job;
 use App\Models\User;
-use App\Models\Workspace;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
 {
-
-
     public function create(Request $request)
     {
         $request->validate([
-                               'title'        => 'required',
-                               'description'  => 'required',
-                               'workspace_id' => 'required|exists:workspaces,id',
-                           ]);
+            'title'        => 'required',
+            'description'  => 'required',
+            'workspace_id' => 'required|exists:workspaces,id',
+        ]);
 
         $user = auth()->user();
         $job = Job::create($request->all());
@@ -31,11 +28,10 @@ class JobController extends Controller
     public function get(Job $job)
     {
         $user = auth()->user();
-        if (!$user->jobs->contains($job)) {
+        if (! $user->jobs->contains($job)) {
             abort(404);
         }
         //TODO: code upper, need to changed to user->can('update-job-1') method.
-
 
         return api(JobResource::make($job));
 
@@ -45,38 +41,38 @@ class JobController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user->jobs->contains($job)) {
+        if (! $user->jobs->contains($job)) {
             abort(404);
         }
         //TODO: code upper, need to changed to user->can('update-job-1') method.
 
         $job->update($request->all());
+
         return api(JobResource::make($job));
     }
-
 
     public function delete(Job $job)
     {
         $user = auth()->user();
 
-        if (!$user->jobs->contains($job)) {
+        if (! $user->jobs->contains($job)) {
             abort(404);
         }
         //TODO: code upper, need to changed to user->can('update-job-1') method.
         $job->users()->detach();
         $job->delete();
-        return api(TRUE);
-    }
 
+        return api(true);
+    }
 
     public function removeUser(Job $job, Request $request)
     {
         $request->validate([
-                               'user_id' => 'required|exists:users,id',
-                           ]);
+            'user_id' => 'required|exists:users,id',
+        ]);
 
         $user = auth()->user();
-        if (!$user->jobs->contains($job)) {
+        if (! $user->jobs->contains($job)) {
             abort(404);
         }
 
@@ -85,7 +81,6 @@ class JobController extends Controller
         $job->users()->detach($jobUser->id);
 
         return api(JobResource::make($job));
-
 
     }
 }

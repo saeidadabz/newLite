@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-
     protected $fillable = [
         'text',
         'room_id',
@@ -15,7 +14,7 @@ class Message extends Model
         'reply_to',
         'is_pinned',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public function room()
@@ -50,7 +49,7 @@ class Message extends Model
 
     public function saw($user)
     {
-        return $this->seens()->whereUserId($user->id)->first() !== NULL;
+        return $this->seens()->whereUserId($user->id)->first() !== null;
 
     }
 }

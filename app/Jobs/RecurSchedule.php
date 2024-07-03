@@ -13,21 +13,24 @@ use Illuminate\Support\Carbon;
 
 class RecurSchedule
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new job instance.
      */
     public function __construct(
-        private Schedule   $schedule,
+        private Schedule $schedule,
         private RecurParam $recurParam
-    )
-    {
+    ) {
         //
     }
 
     /**
      * Execute the job.
+     *
      * @throws \Exception
      */
     public function handle(): void
@@ -57,7 +60,7 @@ class RecurSchedule
 
                     break;
                 default:
-                    throw new \Exception("Invalid recurrence pattern.");
+                    throw new \Exception('Invalid recurrence pattern.');
             }
 
             if (! $currDate->lessThan($param->endDate)) {

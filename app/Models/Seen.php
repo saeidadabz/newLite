@@ -6,14 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Seen extends Model
 {
-
-
     protected $fillable = [
         'room_id',
         'user_id',
-        'message_id'
+        'message_id',
     ];
-
 
     public function room()
     {

@@ -12,22 +12,21 @@ class File extends Model
         'type',
         'fileable_id',
         'fileable_type',
-        'mime_type'
+        'mime_type',
     ];
 
     protected $appends = ['url'];
 
-
-    public static function syncFile($file_id, $model, $type = NULL)
+    public static function syncFile($file_id, $model, $type = null)
     {
-        if ($file_id !== NULL) {
+        if ($file_id !== null) {
             $file = self::find($file_id);
-            if ($file !== NULL) {
+            if ($file !== null) {
                 $file->update([
-                                  'fileable_type' => get_class($model),
-                                  'fileable_id'   => $model->id,
-                                  'type'          => $type,
-                              ]);
+                    'fileable_type' => get_class($model),
+                    'fileable_id'   => $model->id,
+                    'type'          => $type,
+                ]);
             }
 
         }

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
-
     protected $fillable = [
         'title',
         'active',
@@ -18,11 +17,11 @@ class Room extends Model
         'status',
         'landing_spot',
         'workspace_id',
-        'user_id'
+        'user_id',
     ];
 
     protected $appends = [
-        'channel'
+        'channel',
     ];
 
     public function workspace()
@@ -40,16 +39,14 @@ class Room extends Model
         return $this->files->where('type', 'background')->last();
     }
 
-
     public function participants()
     {
-        if ($this->workspace_id === NULL) {
+        if ($this->workspace_id === null) {
             return User::find(explode('-', $this->title));
 
         }
 
         return $this->users;
-
 
     }
 
@@ -60,7 +57,7 @@ class Room extends Model
 
     public function getChannelAttribute($value)
     {
-        return 'room-' . $this->id;
+        return 'room-'.$this->id;
 
     }
 
@@ -90,16 +87,14 @@ class Room extends Model
     {
         $workspace = $this->workspace;
         $workspace = $user->workspaces->find($workspace->id);
-        if ($workspace === NULL) {
+        if ($workspace === null) {
             return error('You have no access to this workspace');
 
         }
 
-
         $user->update([
-                          'room_id' => $this->id
-                      ]);
-
+            'room_id' => $this->id,
+        ]);
 
         $roomName = $this->id;
         $participantName = $user->username;
@@ -119,8 +114,8 @@ class Room extends Model
         //TODO: Socket, user joined to room.
 
         $this->token = $token;
-        return $this;
 
+        return $this;
 
     }
 

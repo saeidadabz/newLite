@@ -10,7 +10,7 @@ class Direct extends Model
     use HasFactory;
 
     protected $fillable = [
-        'room_id', 'user_id'
+        'room_id', 'user_id',
     ];
 
     public function room()

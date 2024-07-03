@@ -10,7 +10,9 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -34,7 +36,7 @@ class User extends Authenticatable
         'screenshare_size',
         'video_coordinates',
         'video_size',
-        'is_megaphone'
+        'is_megaphone',
     ];
 
     /**
@@ -59,7 +61,6 @@ class User extends Authenticatable
             'password'          => 'hashed',
         ];
     }
-
 
     public function avatar()
     {
@@ -86,7 +87,6 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
-
     public function workspace()
     {
         return $this->belongsTo(Workspace::class);
@@ -109,7 +109,7 @@ class User extends Authenticatable
         $abilities = $currentToken->abilities;
 
         foreach ($permissions as $permission) {
-            $abilities[] = $permission . '-' . $workspace->id;
+            $abilities[] = $permission.'-'.$workspace->id;
 
         }
 

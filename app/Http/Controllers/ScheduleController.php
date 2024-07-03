@@ -45,7 +45,7 @@ class ScheduleController extends Controller
         $cal = $schedule->calendar;
 
         $hasPerm = $cal->canUserAccess($request->user());
-        throw_if(! $hasPerm, new AuthorizationException);
+        throw_if(! $hasPerm, new AuthorizationException());
 
         if ($expand = $request->get('expand')) {
             $schedule->loadExpands($expand);
@@ -65,7 +65,7 @@ class ScheduleController extends Controller
         abort_if($hasPerm, Response::HTTP_FORBIDDEN);
 
         if (! $schedule->update($request->validated())) {
-            Log::error("Schedule Controller: Could not delete schedule ".$schedule->id);
+            Log::error('Schedule Controller: Could not delete schedule '.$schedule->id);
 
             return api_gateway_error();
         }
@@ -85,7 +85,7 @@ class ScheduleController extends Controller
         abort_if($hasPerm, Response::HTTP_FORBIDDEN);
 
         if (! $schedule->delete()) {
-            Log::error("Schedule Controller: Could not delete schedule ".$schedule->id);
+            Log::error('Schedule Controller: Could not delete schedule '.$schedule->id);
 
             return api_gateway_error();
         }

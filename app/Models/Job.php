@@ -9,11 +9,10 @@ class Job extends Model
 {
     use HasFactory;
 
-
-    const STATUSES = [
+    public const STATUSES = [
         'in_progress',
         'paused',
-        'completed'
+        'completed',
     ];
 
     protected $fillable = [
@@ -21,22 +20,22 @@ class Job extends Model
         'title',
         'description',
         'status',
-        'end_at'
+        'end_at',
     ];
+
     protected $casts = [
         'end_at' => 'datetime',
     ];
 
     public function joinUser($user, $role = 'developer')
     {
-        if (!$this->users->contains($user->id)) {
+        if (! $this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role]);
             //TODO: Socket, user joined to job.
 
-
         }
-        return $this;
 
+        return $this;
 
     }
 

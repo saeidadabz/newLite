@@ -7,9 +7,7 @@ use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Models\File;
-use App\Models\Room;
 use App\Models\User;
-use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
@@ -35,10 +33,11 @@ class UserController extends Controller
         //TODO: have to use meiliserach instead
         $search = $request->search;
         $users = User::where(function ($query) use ($search) {
-            $query->where('name', 'LIKE', $search . '%')
-                  ->orWhere('username', 'LIKE', $search . '%')
-                  ->orWhere('email', 'LIKE', $search . '%');
+            $query->where('name', 'LIKE', $search.'%')
+                ->orWhere('username', 'LIKE', $search.'%')
+                ->orWhere('email', 'LIKE', $search.'%');
         })->get();
+
         return api(UserMinimalResource::collection($users));
     }
 
@@ -46,12 +45,12 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-                               'coordinates' => 'required'
-                           ]);
+            'coordinates' => 'required',
+        ]);
 
         $user->update([
-                          'coordinates' => $request->coordinates
-                      ]);
+            'coordinates' => $request->coordinates,
+        ]);
 
         $response = UserMinimalResource::make($user);
         sendSocket(Constants::userUpdated, $user->room->channel, $response);
@@ -64,10 +63,9 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-
         $user->update([
-                          'is_megaphone' => !$user->is_megaphone
-                      ]);
+            'is_megaphone' => ! $user->is_megaphone,
+        ]);
 
         $response = UserMinimalResource::make($user);
         sendSocket(Constants::userUpdated, $user->room->channel, $response);
@@ -76,25 +74,23 @@ class UserController extends Controller
 
     }
 
-
     public function update(Request $request)
     {
         $user = auth()->user();
         $user->update([
-                          'name' => $request->name,
-                      ]);
+            'name' => $request->name,
+        ]);
 
         File::syncFile($request->avatar_id, $user, 'avatar');
         $response = UserMinimalResource::make($user);
 
-        if ($user->room !== NULL) {
+        if ($user->room !== null) {
             sendSocket(Constants::userUpdated, $user->room->channel, $response);
 
         }
 
         return api($response);
     }
-
 
     public function directs()
     {

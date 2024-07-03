@@ -8,8 +8,7 @@ class RecurParam
         public readonly int $pattern,
         public readonly string $endDate,
         public readonly array $days = [],
-    )
-    {
+    ) {
         //
     }
 }

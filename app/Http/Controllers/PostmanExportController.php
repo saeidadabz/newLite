@@ -12,15 +12,13 @@ class PostmanExportController extends Controller
     /**
      * Export postman collection of routes
      *
-     * @param Request $request
-     * @return BinaryFileResponse
      * @group General
      */
-    public function __invoke(Request $request) : BinaryFileResponse
+    public function __invoke(Request $request): BinaryFileResponse
     {
         if ($request->has('base_url')) {
             config([
-                'api-postman.base_url' => $request->input('base_url')
+                'api-postman.base_url' => $request->input('base_url'),
             ]);
         }
 

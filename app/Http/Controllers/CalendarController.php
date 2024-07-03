@@ -54,7 +54,7 @@ class CalendarController extends Controller
     public function update(CalendarRequest $request, Calendar $calendar)
     {
         if (! $calendar->update($request->validated())) {
-            Log::error("Calendar Controller: Could not update calendar ".$calendar->id);
+            Log::error('Calendar Controller: Could not update calendar '.$calendar->id);
 
             return api_gateway_error();
         }
@@ -71,7 +71,7 @@ class CalendarController extends Controller
     public function destroy(Calendar $calendar)
     {
         if (! $calendar->delete()) {
-            Log::error("Calendar Controller: Could not delete calendar ".$calendar->id);
+            Log::error('Calendar Controller: Could not delete calendar '.$calendar->id);
 
             return api_gateway_error();
         }

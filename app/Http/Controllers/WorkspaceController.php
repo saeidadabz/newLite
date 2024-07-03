@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\JobResource;
 use App\Http\Resources\CalendarResource;
+use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomListResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\UserMinimalResource;
@@ -22,7 +22,6 @@ class WorkspaceController extends Controller
         return api(WorkspaceResource::collection($user->workspaces));
     }
 
-
     public function rooms(Workspace $workspace)
     {
         return api(RoomListResource::collection($workspace->rooms));
@@ -39,7 +38,6 @@ class WorkspaceController extends Controller
 
         return api(JobResource::collection($workspace->jobs));
     }
-
 
     public function users(Workspace $workspace)
     {
@@ -60,7 +58,6 @@ class WorkspaceController extends Controller
         dd('Cant');
     }
 
-
     public function create(Request $request)
     {
 
@@ -70,10 +67,8 @@ class WorkspaceController extends Controller
         $workspace = Workspace::create($request->all());
         $workspace->joinUser($user, 'owner');
 
-
         return api(WorkspaceResource::make($workspace));
     }
-
 
     public function update(Workspace $workspace, Request $request)
     {
@@ -83,23 +78,20 @@ class WorkspaceController extends Controller
 
         sendSocket(Constants::workspaceUpdated, $workspace->channel, $workspace);
 
-
         return api(WorkspaceResource::make($workspace));
 
-
     }
-
 
     public function addRole(Workspace $workspace, Request $request)
     {
         $request->validate([
-                               'role'    => 'required',
-                               'user_id' => 'required',
-                           ]);
-
+            'role'    => 'required',
+            'user_id' => 'required',
+        ]);
 
         $wsUser = User::find($request->user_id);
         $workspace->users()->updateExistingPivot($wsUser, ['role' => $request->role]);
+
         return api(WorkspaceResource::make($workspace));
 
     }
@@ -107,13 +99,13 @@ class WorkspaceController extends Controller
     public function addTag(Workspace $workspace, Request $request)
     {
         $request->validate([
-                               'tag'     => 'required',
-                               'user_id' => 'required',
-                           ]);
-
+            'tag'     => 'required',
+            'user_id' => 'required',
+        ]);
 
         $wsUser = User::find($request->user_id);
         $workspace->users()->updateExistingPivot($wsUser, ['tag' => $request->role]);
+
         return api(WorkspaceResource::make($workspace));
 
     }
@@ -122,10 +114,8 @@ class WorkspaceController extends Controller
     {
         $user = auth()->user();
 
-
         $workspace->joinUser($user);
 
-
-        return api(TRUE);
+        return api(true);
     }
 }

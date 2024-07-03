@@ -22,7 +22,7 @@ class InviteResource extends JsonResource
             'status'     => $this->status,
             'code'       => $this->code,
             'type'       => $this->type(),
-            'created_at' => $this->created_at->timestamp
+            'created_at' => $this->created_at->timestamp,
         ];
     }
 }

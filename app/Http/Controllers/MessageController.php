@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\MessageListResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
-use App\Models\Direct;
 use App\Models\File;
 use App\Models\Message;
 use App\Models\Room;
@@ -19,53 +18,48 @@ class MessageController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-                               'text' => 'required'
-                           ]);
+            'text' => 'required',
+        ]);
 
         $user = auth()->user();
         $eventName = Constants::roomMessages;
 
-        if ($request->room_id === NULL) {
+        if ($request->room_id === null) {
             $request->validate([
-                                   'user_id' => 'required'
-                               ]);
-
+                'user_id' => 'required',
+            ]);
 
             $users = [
                 $request->user_id,
-                $user->id
+                $user->id,
             ];
             asort($users);
             $roomTitle = implode('-', $users);
 
-
             $room = Room::firstOrCreate(
                 ['title' => $roomTitle],
-                ['is_private' => TRUE]
+                ['is_private' => true]
             );
             $eventName = Constants::directMessages;
 
-
         } else {
             $room = Room::findOrFail($request->room_id);
-//            if (!$room->workspace->hasUser($user)) {
-//                return error('You are not authorized');
-//            }
+            //            if (!$room->workspace->hasUser($user)) {
+            //                return error('You are not authorized');
+            //            }
         }
 
-
         $message = Message::create([
-                                       'text'       => $request->text,
-                                       'reply_to'   => $request->reply_to,
-                                       'user_id'    => $user->id,
-                                       'room_id'    => $room->id,
-                                       'created_at' => now(),
-                                       'updated_at' => now()
-                                   ]);
+            'text'       => $request->text,
+            'reply_to'   => $request->reply_to,
+            'user_id'    => $user->id,
+            'room_id'    => $room->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
         sendSocket($eventName, $room->channel, $messageResponse);
-
 
         if ($request->get('files')) {
             foreach ($request->get('files') as $file) {
@@ -82,21 +76,19 @@ class MessageController extends Controller
     {
         $user = auth()->user();
         $room = $message->room;
-//        if (!$room->participants()->contains('id', $user->id)) {
-//            return error('You cant seen this message');
-//        }
+        //        if (!$room->participants()->contains('id', $user->id)) {
+        //            return error('You cant seen this message');
+        //        }
 
         Seen::create([
-                         'user_id'    => $user->id,
-                         'room_id'    => $room->id,
-                         'message_id' => $message->id
-                     ]);
+            'user_id'    => $user->id,
+            'room_id'    => $room->id,
+            'message_id' => $message->id,
+        ]);
 
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
-
-        return api(TRUE);
-
+        return api(true);
 
     }
 
@@ -116,29 +108,24 @@ class MessageController extends Controller
         //TODO: check user can pin message in this room
 
         $message->update([
-                             'is_pinned' => TRUE
-                         ]);
+            'is_pinned' => true,
+        ]);
 
     }
 
-
     public function update(Message $message, Request $request)
     {
-//        $user = auth()->user();
+        //        $user = auth()->user();
 
         //TODO: check user owned msg
         $message->update([
-                             'text'      => $request->text,
-                             'is_edited' => TRUE
-                         ]);
-
+            'text'      => $request->text,
+            'is_edited' => true,
+        ]);
 
         File::syncFile($request->file_id, $message);
 
         return api(MessageResource::make($message));
 
-
     }
-
-
 }

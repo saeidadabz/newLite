@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Setting extends Model
 {
     protected $fillable = [
-        'key', 'value', 'workspace_id'
+        'key', 'value', 'workspace_id',
     ];
 
     public function workspace()
