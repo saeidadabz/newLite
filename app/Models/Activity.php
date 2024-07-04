@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
-
     protected $fillable = [
         'event_id',
         'state',
@@ -16,7 +15,6 @@ class Activity extends Model
         'user_id',
         'room_id',
     ];
-
 
     public function user()
     {

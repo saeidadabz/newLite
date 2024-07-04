@@ -54,7 +54,7 @@ class CalendarController extends Controller
     public function update(CalendarRequest $request, Calendar $calendar)
     {
         if (! $calendar->update($request->validated())) {
-            Log::error("Calendar Controller: Could not update calendar ".$calendar->id);
+            Log::error('Calendar Controller: Could not update calendar '.$calendar->id);
 
             return api_gateway_error();
         }
@@ -71,7 +71,7 @@ class CalendarController extends Controller
     public function destroy(Calendar $calendar)
     {
         if (! $calendar->delete()) {
-            Log::error("Calendar Controller: Could not delete calendar ".$calendar->id);
+            Log::error('Calendar Controller: Could not delete calendar '.$calendar->id);
 
             return api_gateway_error();
         }
@@ -90,7 +90,7 @@ class CalendarController extends Controller
             today()->endOfMonth()
         );
         $query = $calendar->schedules()->whereBetween('starts_at', [$dateFrom, $dateTo]);
-        $res = ScheduleResource::make($query->get());
+        $res = ScheduleResource::make($query->paginate());
 
         return api($res);
     }

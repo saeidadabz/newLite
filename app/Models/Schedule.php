@@ -39,7 +39,7 @@ class Schedule extends Model
     public function loadExpands(string $relations)
     {
         $relations = explode(',', $relations);
-        array_map(fn($r) => in_array($r, ['owner', 'calendar']) && $this->load($r), $relations);
+        array_map(fn ($r) => in_array($r, ['owner', 'calendar']) && $this->load($r), $relations);
 
         return $this;
     }

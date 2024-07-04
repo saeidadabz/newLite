@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->redirectGuestsTo(fn(Request $request) => error('Unauthorized', 401));
+        $middleware->redirectGuestsTo(fn (Request $request) => error('Unauthorized', 401));
         $middleware->append(CorsMiddleware::class);
         $middleware->alias([
             'ownedWorkspace' => checkWorkspaceOwner::class,
@@ -30,8 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $status = 400;
             if ($request->is('api/*')) {
 
-                return api(NULL, $message, $code, $status);
-
+                return api(null, $message, $code, $status);
 
             }
         });

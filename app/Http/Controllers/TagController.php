@@ -12,12 +12,11 @@ class TagController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-                               'title'        => 'required',
-                               'workspace_id' => 'required|exists:workspaces,id',
-                           ]);
+            'title'        => 'required',
+            'workspace_id' => 'required|exists:workspaces,id',
+        ]);
 
         $tag = Tag::create($request->all());
-
 
         return api(TagResource::make($tag));
     }
@@ -26,7 +25,6 @@ class TagController extends Controller
     {
         $user = auth()->user();
 
-
         return api(TagResource::make($tag));
 
     }
@@ -34,8 +32,8 @@ class TagController extends Controller
     public function update(Tag $tag, Request $request)
     {
 
-
         $tag->update($request->all());
+
         return api(TagResource::make($tag));
     }
 }

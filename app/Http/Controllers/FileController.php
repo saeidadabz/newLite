@@ -12,9 +12,9 @@ class FileController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-//                               'file' => 'required|mimes:png,jpg,jpeg,webp' // TODO: changed for test
-'file' => 'mimes:png,jpg,jpeg,webp' // TODO: changed for test
-                           ]);
+            //                               'file' => 'required|mimes:png,jpg,jpeg,webp' // TODO: changed for test
+            'file' => 'mimes:png,jpg,jpeg,webp', // TODO: changed for test
+        ]);
 
         if ($request->hasFile('file')) {
             $path = Storage::disk('public')->put('images', $request->file);
@@ -22,15 +22,15 @@ class FileController extends Controller
 
         } else {
             $path = $request->path;
-            $mime = NULL;
+            $mime = null;
         }
         $file = File::create([
-                                 'path'      => $path,
-                                 'type'      => $request->type,
-                                 'mime_type' => $mime
-                             ]);
-        return api(FileResource::make($file));
+            'path'      => $path,
+            'type'      => $request->type,
+            'mime_type' => $mime,
+        ]);
 
+        return api(FileResource::make($file));
 
     }
 
@@ -41,7 +41,8 @@ class FileController extends Controller
             Storage::disk('public')->delete($file->path);
         }
         $file->delete();
-        return api(TRUE);
+
+        return api(true);
 
     }
 

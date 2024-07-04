@@ -21,6 +21,7 @@ class checkIsInWorkspace
             return error('You have no access to this workspace');
 
         }
+
         return $next($request);
     }
 }

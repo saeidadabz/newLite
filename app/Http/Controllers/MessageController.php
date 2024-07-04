@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\MessageListResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
-use App\Models\Direct;
 use App\Models\File;
 use App\Models\Message;
 use App\Models\Room;
@@ -26,7 +25,7 @@ class MessageController extends Controller
         $user = auth()->user();
         $eventName = Constants::roomMessages;
 
-        if ($request->room_id === NULL) {
+        if ($request->room_id === null) {
             $request->validate([
                                    'user_id' => 'required'
                                ]);
@@ -42,16 +41,16 @@ class MessageController extends Controller
 
             $room = Room::firstOrCreate(
                 ['title' => $roomTitle],
-                ['is_private' => TRUE]
+                ['is_private' => true]
             );
             $eventName = Constants::directMessages;
 
 
         } else {
             $room = Room::findOrFail($request->room_id);
-//            if (!$room->workspace->hasUser($user)) {
-//                return error('You are not authorized');
-//            }
+            //            if (!$room->workspace->hasUser($user)) {
+            //                return error('You are not authorized');
+            //            }
         }
 
 
@@ -109,9 +108,9 @@ class MessageController extends Controller
     {
         $user = auth()->user();
         $room = $message->room;
-//        if (!$room->participants()->contains('id', $user->id)) {
-//            return error('You cant seen this message');
-//        }
+        //        if (!$room->participants()->contains('id', $user->id)) {
+        //            return error('You cant seen this message');
+        //        }
 
         Seen::firstOrCreate([
                                 'user_id'    => $user->id,
@@ -122,7 +121,7 @@ class MessageController extends Controller
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
 
-        return api(TRUE);
+        return api(true);
 
 
     }
@@ -143,7 +142,7 @@ class MessageController extends Controller
         //TODO: check user can pin message in this room
 
         $message->update([
-                             'is_pinned' => TRUE
+                             'is_pinned' => true
                          ]);
 
     }
@@ -151,12 +150,12 @@ class MessageController extends Controller
 
     public function update(Message $message, Request $request)
     {
-//        $user = auth()->user();
+        //        $user = auth()->user();
 
         //TODO: check user owned msg
         $message->update([
                              'text'      => $request->text,
-                             'is_edited' => TRUE
+                             'is_edited' => true
                          ]);
 
 

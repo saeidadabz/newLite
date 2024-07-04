@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    const PERMISSIONS = [
+    public const PERMISSIONS = [
         'get-ws',
         'add-member-to-ws',
         'remove-member-from-ws',
@@ -28,15 +28,16 @@ class Role extends Model
         'delete-job',
 
     ];
-    const ROLES = [
+
+    public const ROLES = [
         'member' => [
             'get-ws',
             'get-room',
             'add-job-to-ws',
             'get-job',
-            'invite-member-to-job'
+            'invite-member-to-job',
         ],
-        'admin'  => [
+        'admin' => [
             'get-ws',
             'add-member-to-ws',
             'remove-member-from-ws',
@@ -45,16 +46,14 @@ class Role extends Model
             'get-room',
             'update-room',
             'delete-room',
-            'update-messages-in-room'
+            'update-messages-in-room',
         ],
 
-        'owner' => ['*']
+        'owner' => ['*'],
     ];
 
     protected $fillable = [
         'title',
-        'description'
+        'description',
     ];
-
-
 }

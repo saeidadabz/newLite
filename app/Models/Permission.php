@@ -9,7 +9,7 @@ class Permission extends Model
 {
     use HasFactory;
 
-    const permissions = [
+    public const permissions = [
         'get-ws',
         'add-member-to-ws',
         'remove-member-from-ws',
@@ -22,7 +22,7 @@ class Permission extends Model
         'update-room',
         'delete-room',
         'update-user-in-room', //mute,unmute,stop screen,change position of user.
-        'update-messages-in-room' //delete message,ping message,edit message
+        'update-messages-in-room', //delete message,ping message,edit message
 
     ];
 }

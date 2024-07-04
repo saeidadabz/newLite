@@ -1,14 +1,13 @@
 <?php
 
-
 use App\Utilities\Constants;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 
 function getPhoneNumber($phone)
 {
-    if ($phone === NULL) {
-        return NULL;
+    if ($phone === null) {
+        return null;
     }
     // Remove any non-digit characters
     $phone = convert($phone);
@@ -28,7 +27,6 @@ function getPhoneNumber($phone)
     return $phone;
 }
 
-
 function sendSocket($eventName, $channel, $data)
 {
     //TODO: has to go to queue.
@@ -36,7 +34,7 @@ function sendSocket($eventName, $channel, $data)
         $data = [
             'eventName' => $eventName,
             'channel'   => $channel,
-            'data'      => $data
+            'data'      => $data,
         ];
         Http::post(env('SOCKET_URL', 'http://localhost:3010').'/emit', $data);
     } catch (Exception $e) {
@@ -58,15 +56,19 @@ function sendSms($phone, $code)
     //TODO: // Have to go in queue.
 }
 
-function get_enum_values($cases): array
+function get_enum_values($cases, $key = false): array
 {
-    return array_column($cases, 'value');
+    return array_column($cases, 'value', $key ? 'name' : null);
 }
 
 /*---------------------------------------------------------------------API--------------------------------------------------------------------------------------------*/
 
-function api($data = NULL, $message = Constants::API_SUCCESS_MSG, $code = 1000,
-             $http_code = 200): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+function api(
+    $data = null,
+    $message = Constants::API_SUCCESS_MSG,
+    $code = 1000,
+    $http_code = 200
+): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
 {
     if ($message === Constants::API_SUCCESS_MSG) {
         $status = Constants::API_SUCCESS_MSG;
@@ -100,12 +102,10 @@ function error($message, $code = 400)
     throw new \RuntimeException(unConvert($message), $code);
 }
 
-
 function convert($value): array|string
 {
     $western = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     $eastern = ['۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '۰'];
-
 
     return str_replace($eastern, $western, $value);
 }
@@ -114,7 +114,6 @@ function unConvert($value): array|string
 {
     $western = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
     $eastern = ['۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹', '۰'];
-
 
     return str_replace($western, $eastern, $value);
 }

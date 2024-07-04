@@ -2,13 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Agence104\LiveKit\AccessToken;
-use Agence104\LiveKit\AccessTokenOptions;
-use Agence104\LiveKit\VideoGrant;
 use App\Http\Resources\InviteResource;
-use App\Http\Resources\JobResource;
-use App\Http\Resources\RoomResource;
-use App\Http\Resources\WorkspaceResource;
 use App\Models\Invite;
 use App\Models\Job;
 use App\Models\Room;
@@ -21,11 +15,10 @@ class InviteController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-                               'user_id'  => 'required|integer|exists:users,id',
-                               'model_id' => 'required|integer',
-                               'model'    => 'required',
-                           ]);
-
+            'user_id'  => 'required|integer|exists:users,id',
+            'model_id' => 'required|integer',
+            'model'    => 'required',
+        ]);
 
         $models = [
             'job'       => Job::class,
@@ -33,21 +26,18 @@ class InviteController extends Controller
             'workspace' => Workspace::class,
         ];
 
-
         $invite = Invite::create([
-                                     'owner_id'        => $user->id,
-                                     'user_id'         => $request->user_id,
-                                     'inviteable_type' => $models[$request->model],
-                                     'inviteable_id'   => $request->model_id,
-                                     'status'          => 'pending'
+            'owner_id'        => $user->id,
+            'user_id'         => $request->user_id,
+            'inviteable_type' => $models[$request->model],
+            'inviteable_id'   => $request->model_id,
+            'status'          => 'pending',
 
-                                 ]);
+        ]);
 
         return api(InviteResource::make($invite));
 
-
     }
-
 
     public function get($code)
     {
@@ -58,8 +48,8 @@ class InviteController extends Controller
             return error('Invite code expired');
 
         }
-        return api(InviteResource::make($invite));
 
+        return api(InviteResource::make($invite));
 
     }
 
@@ -71,6 +61,7 @@ class InviteController extends Controller
             $invite->status = 'declined';
             $invite->save();
         }
+
         return api(InviteResource::make($invite));
     }
 
@@ -89,9 +80,7 @@ class InviteController extends Controller
         $invite->status = 'joined';
         $invite->save();
 
-
         return api($invite->getResponseModel($inviteable));
-
 
     }
 }

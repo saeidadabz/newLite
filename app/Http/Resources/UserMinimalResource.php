@@ -27,7 +27,6 @@ class UserMinimalResource extends JsonResource
             'video_coordinates'       => $this->video_coordinates,
             'video_size'              => $this->video_size,
 
-
         ];
     }
 }

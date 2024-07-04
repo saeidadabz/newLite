@@ -13,7 +13,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         if (filter_var($request->username, FILTER_VALIDATE_EMAIL)) {
@@ -28,21 +28,18 @@ class AuthController extends Controller
             return error('Credentials are  incorrect');
         }
 
-
         $token = $user->createToken($request->username);
         $user->token = $token->plainTextToken;
 
         return api(UserResource::make($user));
-
 
     }
 
     public function register(Request $request)
     {
         $request->validate([
-            'username' => 'required', 'email' => 'required', 'password' => 'required'
+            'username' => 'required', 'email' => 'required', 'password' => 'required',
         ]);
-
 
         $user = User::where('username', $request->username)->where('email', $request->email)->first();
 
@@ -58,15 +55,12 @@ class AuthController extends Controller
 
         ]);
 
-
         $token = $user->createToken($request->username);
         $user->token = $token->plainTextToken;
 
         return api(UserResource::make($user));
 
-
     }
-
 
     public function checkUsername(Request $request)
     {
@@ -83,7 +77,6 @@ class AuthController extends Controller
         }
 
         return api($user === null);
-
 
     }
 }
