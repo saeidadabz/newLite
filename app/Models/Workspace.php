@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Model;
 
 class Workspace extends Model
 {
+
+    use Settingable;
 
     protected $fillable = [
         'title',
@@ -68,11 +71,16 @@ class Workspace extends Model
 //            $user->giveRole($role, $this);
             //TODO: Socket, user joined to ws.
 
-            $user->giveRole($role,$this);
+            $user->giveRole($role, $this);
 
         }
         return $this;
 
+    }
+
+    public function mentionedBy()
+    {
+        return $this->title;
     }
 
     public function getChannelAttribute($value)

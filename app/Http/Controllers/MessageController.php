@@ -10,6 +10,7 @@ use App\Models\Message;
 use App\Models\Room;
 use App\Models\Seen;
 use App\Models\User;
+use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
@@ -54,23 +55,38 @@ class MessageController extends Controller
 
 
         $message = Message::create([
-                                       'text'       => $request->text,
-                                       'reply_to'   => $request->reply_to,
-                                       'user_id'    => $user->id,
-                                       'room_id'    => $room->id,
-                                       'created_at' => now(),
-                                       'updated_at' => now()
+                                       'text'     => $request->text,
+                                       'reply_to' => $request->reply_to,
+                                       'user_id'  => $user->id,
+                                       'room_id'  => $room->id,
                                    ]);
+
+        if ($request->mentions) {
+            $models = [
+                'user'      => User::class,
+                'room'      => Room::class,
+                'workspace' => Workspace::class,
+            ];
+            foreach ($request->mentions as $mention) {
+                $message->mentions()->create([
+                                                 'user_id'          => $user->id,
+                                                 'start_position'   => $mention['start_position'],
+                                                 'mentionable_type' => $models[$mention['model_type']],
+                                                 'mentionable_id'   => $mention['model_id']
+
+                                             ]);
+            }
+        }
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
         sendSocket($eventName, $room->channel, $messageResponse);
 
 
         Seen::firstOrCreate([
-                         'user_id'    => $user->id,
-                         'room_id'    => $room->id,
-                         'message_id' => $message->id
-                     ]);
+                                'user_id'    => $user->id,
+                                'room_id'    => $room->id,
+                                'message_id' => $message->id
+                            ]);
 
 
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
@@ -97,10 +113,10 @@ class MessageController extends Controller
         //        }
 
         Seen::firstOrCreate([
-                         'user_id'    => $user->id,
-                         'room_id'    => $room->id,
-                         'message_id' => $message->id
-                     ]);
+                                'user_id'    => $user->id,
+                                'room_id'    => $room->id,
+                                'message_id' => $message->id
+                            ]);
 
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 

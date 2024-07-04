@@ -4,19 +4,17 @@ namespace App\Utilities;
 
 class Constants
 {
-    public const SCHEDULE_DATE_FORMAT = 'Y-m-d H:i:s';
+    const SCHEDULE_DATE_FORMAT = 'Y-m-d H:i:s';
+    const ONLINE = 'online';
+    const OFFLINE = 'offline';
 
-    public const API_SUCCESS_MSG = 'success';
+    const API_SUCCESS_MSG = 'success';
+    const API_FAILED_MSG = 'failed';
 
-    public const API_FAILED_MSG = 'failed';
+    const userUpdated = 'userUpdated';
+    const workspaceUpdated = 'workspaceUpdated';
+    const roomUpdated = 'roomUpdated';
+    const roomMessages = 'roomMessages';
+    const directMessages = 'directMessages';
 
-    public const userUpdated = 'userUpdated';
-
-    public const workspaceUpdated = 'workspaceUpdated';
-
-    public const roomUpdated = 'roomUpdated';
-
-    public const roomMessages = 'roomMessages';
-
-    public const directMessages = 'directMessages';
 }

@@ -37,6 +37,11 @@ class Message extends Model
         return $this->morphMany(File::class, 'fileable');
     }
 
+    public function mentions()
+    {
+        return $this->hasMany(Mention::class);
+    }
+
     public function replies()
     {
         return $this->hasMany(Message::class, 'reply_to');

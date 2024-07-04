@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,9 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
-    use HasFactory;
-    use Notifiable;
+    use HasFactory, Notifiable, HasApiTokens, Settingable;
 
     /**
      * The attributes that are mass assignable.
@@ -37,6 +36,7 @@ class User extends Authenticatable
         'video_coordinates',
         'video_size',
         'is_megaphone',
+        'socket_id',
     ];
 
     /**
@@ -61,6 +61,7 @@ class User extends Authenticatable
             'password'          => 'hashed',
         ];
     }
+
 
     public function avatar()
     {
@@ -87,6 +88,7 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
+
     public function workspace()
     {
         return $this->belongsTo(Workspace::class);
@@ -109,11 +111,19 @@ class User extends Authenticatable
         $abilities = $currentToken->abilities;
 
         foreach ($permissions as $permission) {
-            $abilities[] = $permission.'-'.$workspace->id;
+            $abilities[] = $permission . '-' . $workspace->id;
 
         }
 
         $currentToken->abilities = $abilities;
         $currentToken->save();
     }
+
+
+    public function mentionedBy()
+    {
+        return $this->username;
+    }
+
+
 }

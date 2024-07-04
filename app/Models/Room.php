@@ -5,10 +5,13 @@ namespace App\Models;
 use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
 use Agence104\LiveKit\VideoGrant;
+use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
+    use Settingable;
+
     protected $fillable = [
         'title',
         'active',
@@ -17,12 +20,17 @@ class Room extends Model
         'status',
         'landing_spot',
         'workspace_id',
-        'user_id',
+        'user_id'
     ];
 
     protected $appends = [
-        'channel',
+        'channel'
     ];
+
+    public function mentionedBy()
+    {
+        return $this->title;
+    }
 
     public function workspace()
     {
@@ -39,14 +47,16 @@ class Room extends Model
         return $this->files->where('type', 'background')->last();
     }
 
+
     public function participants()
     {
-        if ($this->workspace_id === null) {
+        if ($this->workspace_id === NULL) {
             return User::find(explode('-', $this->title));
 
         }
 
         return $this->users;
+
 
     }
 
@@ -57,7 +67,7 @@ class Room extends Model
 
     public function getChannelAttribute($value)
     {
-        return 'room-'.$this->id;
+        return 'room-' . $this->id;
 
     }
 
@@ -87,14 +97,16 @@ class Room extends Model
     {
         $workspace = $this->workspace;
         $workspace = $user->workspaces->find($workspace->id);
-        if ($workspace === null) {
+        if ($workspace === NULL) {
             return error('You have no access to this workspace');
 
         }
 
+
         $user->update([
-            'room_id' => $this->id,
-        ]);
+                          'room_id' => $this->id
+                      ]);
+
 
         $roomName = $this->id;
         $participantName = $user->username;
@@ -114,8 +126,8 @@ class Room extends Model
         //TODO: Socket, user joined to room.
 
         $this->token = $token;
-
         return $this;
+
 
     }
 
