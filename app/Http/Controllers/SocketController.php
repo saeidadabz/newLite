@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Utilities\Constants;
+use App\Utilities\EventType;
 use Illuminate\Http\Request;
 
 class SocketController extends Controller
@@ -18,6 +19,17 @@ class SocketController extends Controller
                       ]);
 
         return api(UserResource::make(auth()->user()));
+    }
+
+    public function events(Request $request)
+    {
+
+        $event = new EventType($request->all());
+
+
+        logger($request->all());
+
+        return api(TRUE);
     }
 
     public function disconnected()

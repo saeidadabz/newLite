@@ -126,6 +126,12 @@ class MessageController extends Controller
 
     }
 
+    public function searchMention(Request $request)
+    {
+
+
+    }
+
     public function get(Room $room)
     {
         $user = auth()->user();
