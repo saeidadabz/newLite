@@ -6,6 +6,8 @@ use App\Http\Requests\CalendarRequest;
 use App\Http\Resources\CalendarResource;
 use App\Http\Resources\ScheduleResource;
 use App\Models\Calendar;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -79,7 +81,14 @@ class CalendarController extends Controller
         return api();
     }
 
-    public function schedules(Request $request, Calendar $calendar): \Illuminate\Foundation\Application|Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    /**
+     * @param Request $request
+     * @param Calendar $calendar
+     * @LRDparam date_from string|format:"Y-m-d H:i:s"
+     * @LRDparam date_to string|format:"Y-m-d H:i:s"
+     * @return \Illuminate\Foundation\Application|Response|Application|ResponseFactory
+     */
+    public function schedules(Request $request, Calendar $calendar): \Illuminate\Foundation\Application|Response|Application|ResponseFactory
     {
         $dateFrom = $request->get(
             'date_from',
