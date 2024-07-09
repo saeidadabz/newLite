@@ -11,6 +11,7 @@
         "php": "^8.2",
         "agence104/livekit-server-sdk": "^1.2",
         "andreaselia/laravel-api-to-postman": "^2.0",
+        "dedoc/scramble": "^0.11.1",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
