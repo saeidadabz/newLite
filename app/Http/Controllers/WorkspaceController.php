@@ -11,6 +11,7 @@ use App\Http\Resources\WorkspaceResource;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Notifications\WorkspaceCreatedNotification;
+use App\Notifications\WorkspaceJoinedNotification;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
@@ -115,9 +116,11 @@ class WorkspaceController extends Controller
 
     public function join(Workspace $workspace)
     {
+        /** @var User $user */
         $user = auth()->user();
-
         $workspace->joinUser($user);
+
+        $user->notify(new WorkspaceJoinedNotification($workspace));
 
         return api(true);
     }
