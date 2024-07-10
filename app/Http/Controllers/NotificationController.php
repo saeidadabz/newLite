@@ -7,6 +7,7 @@ use App\Http\Requests\NotificationRequest;
 use App\Http\Resources\NotificationResource;
 use App\Jobs\ReadNotification;
 use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -23,7 +24,17 @@ class NotificationController extends Controller
 
     public function index(Request $request): \Illuminate\Contracts\Foundation\Application|ResponseFactory|Application|Response
     {
+        $data = $request->all();
         $query = Notification::query();
+        if (isset($data['status'])) {
+            $query->where('status', $data['status']);
+        }
+        if (isset($data['read'])) {
+            $query = $data['read'] ? $query->whereNotNull('read_at') : $query->whereNull('read_at');
+        }
+        // TODO - Admin should see all
+        $query->where('notifiable_type', User::class)->where('notifiable_id', $request->user()->id);
+
         $res = NotificationResource::make($query->paginate());
 
         return api($res);
