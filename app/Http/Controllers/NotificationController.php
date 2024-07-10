@@ -25,7 +25,7 @@ class NotificationController extends Controller
     public function index(Request $request): \Illuminate\Contracts\Foundation\Application|ResponseFactory|Application|Response
     {
         $data = $request->all();
-        $query = Notification::query();
+        $query = Notification::query()->latest();
         if (isset($data['status'])) {
             $query->where('status', $data['status']);
         }
