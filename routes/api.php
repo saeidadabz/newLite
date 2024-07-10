@@ -6,6 +6,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostmanExportController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
@@ -29,6 +30,7 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('notifications', NotificationController::class);
 
     Route::apiResource('calendars', CalendarController::class);
     Route::prefix('calendars')->controller(CalendarController::class)->group(function () {

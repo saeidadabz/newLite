@@ -26,14 +26,12 @@ class UserController extends Controller
         $user = auth()->user();
 
         return api(JobResource::collection($user->jobs()));
-
     }
 
 
 
     public function search(Request $request)
     {
-
         //TODO: have to use meiliserach instead
         $search = $request->search;
         $users = User::where(function ($query) use ($search) {

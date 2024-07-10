@@ -10,6 +10,8 @@ use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Notifications\WorkspaceCreatedNotification;
+use App\Notifications\WorkspaceJoinedNotification;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
@@ -60,12 +62,14 @@ class WorkspaceController extends Controller
 
     public function create(Request $request)
     {
-
         $request->validate(['title' => 'required']);
+        /** @var User $user */
         $user = auth()->user();
 
         $workspace = Workspace::create($request->all());
         $workspace->joinUser($user, 'owner');
+
+        $user->notify(new WorkspaceCreatedNotification($workspace));
 
         return api(WorkspaceResource::make($workspace));
     }
@@ -112,9 +116,11 @@ class WorkspaceController extends Controller
 
     public function join(Workspace $workspace)
     {
+        /** @var User $user */
         $user = auth()->user();
-
         $workspace->joinUser($user);
+
+        $user->notify(new WorkspaceJoinedNotification($workspace));
 
         return api(true);
     }
