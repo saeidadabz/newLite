@@ -2,8 +2,34 @@
 
 namespace App\Utilities;
 
+use App\Enums\Permission;
+
 class Constants
 {
+    public const ROLES = [
+        'member' => [
+            Permission::WS_GET,
+            Permission::ROOM_GET,
+            Permission::WS_ADD_JOB,
+            Permission::JOB_GET,
+            Permission::JOB_INVITE_MEMBER,
+        ],
+        'admin'  => [
+            Permission::WS_GET,
+            Permission::WS_ADD_MEMBER,
+            Permission::WS_REMOVE_MEMBER,
+            Permission::WS_ADD_ROOMS,
+            Permission::ROOMS_CHANGE_POSITION,
+            Permission::ROOM_GET,
+            Permission::ROOM_UPDATE,
+            Permission::ROOM_DELETE,
+            Permission::ROOM_UPDATE_MESSAGES,
+        ],
+        'owner'  => [
+            Permission::ALL,
+        ],
+    ];
+
     const BASE_DATE_FORMAT = 'Y-m-d H:i:s';
     const SCHEDULE_DATE_FORMAT = 'Y-m-d H:i:s';
     const ONLINE = 'online';

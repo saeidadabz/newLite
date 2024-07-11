@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Utilities\Constants;
 use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -106,12 +107,12 @@ class User extends Authenticatable
 
     public function giveRole($ability, $workspace)
     {
-        $permissions = Role::ROLES[$ability];
+        $permissions = Constants::ROLES[$ability];
         $currentToken = auth()->user()->currentAccessToken();
         $abilities = $currentToken->abilities;
 
         foreach ($permissions as $permission) {
-            $abilities[] = $permission . '-' . $workspace->id;
+            $abilities[] = $permission.'-'.$workspace->id;
 
         }
 
@@ -125,5 +126,8 @@ class User extends Authenticatable
         return $this->username;
     }
 
-
+    public function isOwner($id): bool
+    {
+        return intval($this->id) === intval($id);
+    }
 }
