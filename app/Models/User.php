@@ -107,7 +107,7 @@ class User extends Authenticatable
 
     public function giveRole($ability, $workspace)
     {
-        $permissions = Constants::ROLES[$ability];
+        $permissions = Constants::ROLE_PERMISSIONS[$ability];
         $currentToken = auth()->user()->currentAccessToken();
         $abilities = $currentToken->abilities;
 

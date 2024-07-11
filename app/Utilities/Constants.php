@@ -6,15 +6,15 @@ use App\Enums\Permission;
 
 class Constants
 {
-    public const ROLES = [
-        'member' => [
+    public const ROLE_PERMISSIONS = [
+        'member'      => [
             Permission::WS_GET,
             Permission::ROOM_GET,
             Permission::WS_ADD_JOB,
             Permission::JOB_GET,
             Permission::JOB_INVITE_MEMBER,
         ],
-        'admin'  => [
+        'admin'       => [
             Permission::WS_GET,
             Permission::WS_ADD_MEMBER,
             Permission::WS_REMOVE_MEMBER,
@@ -25,7 +25,7 @@ class Constants
             Permission::ROOM_DELETE,
             Permission::ROOM_UPDATE_MESSAGES,
         ],
-        'owner'  => [
+        'super-admin' => [
             Permission::ALL,
         ],
     ];
