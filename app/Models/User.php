@@ -100,6 +100,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Job::class)->withPivot('role');
     }
 
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
     public function directs()
     {
         return Room::where('title', 'regexp', "[[:<:]]$this->id[[:>:]]")->get();
