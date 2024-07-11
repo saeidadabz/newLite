@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\NewAccessToken;
 
 class User extends Authenticatable
 {
@@ -134,5 +135,30 @@ class User extends Authenticatable
     public function isOwner($id): bool
     {
         return intval($this->id) === intval($id);
+    }
+
+    public function createToken(string $name, DateTimeInterface $expiresAt = null)
+    {
+        $plainTextToken = $this->generateTokenString();
+
+        $abilities = $this->getAbilities();
+
+        $token = $this->tokens()->create([
+            'name'       => $name,
+            'token'      => hash('sha256', $plainTextToken),
+            'abilities'  => $abilities,
+            'expires_at' => $expiresAt,
+        ]);
+
+        return new NewAccessToken($token, $token->getKey().'|'.$plainTextToken);
+    }
+
+    public function getAbilities(): array
+    {
+        $roleIds = $this->roles()->pluck('id');
+        $permIds = PermissionRole::whereIn('role_id', $roleIds)->distinct()->pluck('permission_id');
+        $perms = Permission::query()->whereIn('id', $permIds)->pluck('name');
+
+        return $perms->toArray();
     }
 }
