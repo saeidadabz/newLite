@@ -111,7 +111,6 @@ class WorkspaceController extends Controller
         $workspace->users()->updateExistingPivot($wsUser, ['tag' => $request->role]);
 
         return api(WorkspaceResource::make($workspace));
-
     }
 
     public function join(Workspace $workspace)

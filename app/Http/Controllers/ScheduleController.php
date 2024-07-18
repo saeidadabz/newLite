@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Requests\ScheduleRequest;
 use App\Http\Resources\ScheduleResource;
 use App\Jobs\RecurSchedule;
 use App\Models\Calendar;
 use App\Models\Schedule;
+use App\Models\User;
 use App\Params\RecurParam;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -23,8 +25,10 @@ class ScheduleController extends Controller
         $data = $request->validated();
         $cal = Calendar::findOrFail($data['calendar_id']);
 
-        $hasPerm = $request->user()->id !== $cal->owner_id;
-        abort_if($hasPerm, Response::HTTP_FORBIDDEN);
+        /** @var User $user */
+        $user = $request->user();
+        $hasPerm = $user->isOwner($cal->owner_id) || $user->tokenCan(Permission::SCHEDULE_CREATE->value);
+        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
 
         $data['owner_id'] = $cal->owner_id;
         $sch = Schedule::create($data);
@@ -41,6 +45,11 @@ class ScheduleController extends Controller
      */
     public function show(Request $request, Schedule $schedule)
     {
+        /** @var User $user */
+        $user = $request->user();
+        $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_VIEW->value);
+        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
+
         /** @var Calendar $cal */
         $cal = $schedule->calendar;
 
@@ -61,8 +70,10 @@ class ScheduleController extends Controller
      */
     public function update(ScheduleRequest $request, Schedule $schedule)
     {
-        $hasPerm = $request->user()->id !== $schedule->owner_id;
-        abort_if($hasPerm, Response::HTTP_FORBIDDEN);
+        /** @var User $user */
+        $user = $request->user();
+        $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_UPDATE->value);
+        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
 
         if (! $schedule->update($request->validated())) {
             Log::error('Schedule Controller: Could not delete schedule '.$schedule->id);
@@ -81,8 +92,10 @@ class ScheduleController extends Controller
      */
     public function destroy(Request $request, Schedule $schedule)
     {
-        $hasPerm = $request->user()->id !== $schedule->owner_id;
-        abort_if($hasPerm, Response::HTTP_FORBIDDEN);
+        /** @var User $user */
+        $user = $request->user();
+        $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_DELETE->value);
+        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
 
         if (! $schedule->delete()) {
             Log::error('Schedule Controller: Could not delete schedule '.$schedule->id);

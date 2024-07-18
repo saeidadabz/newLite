@@ -47,6 +47,7 @@ class AuthController extends Controller
             return error('User already exists');
         }
 
+        /** @var User $user */
         $user = User::create([
             'name'     => $request->name,
             'username' => $request->username,

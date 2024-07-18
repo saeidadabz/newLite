@@ -3,11 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Utilities\Constants;
 use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\NewAccessToken;
 
 class User extends Authenticatable
 {
@@ -99,6 +101,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Job::class)->withPivot('role');
     }
 
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
     public function directs()
     {
         return Room::where('title', 'regexp', "[[:<:]]$this->id[[:>:]]")->get();
@@ -106,12 +113,12 @@ class User extends Authenticatable
 
     public function giveRole($ability, $workspace)
     {
-        $permissions = Role::ROLES[$ability];
+        $permissions = Constants::ROLE_PERMISSIONS[$ability];
         $currentToken = auth()->user()->currentAccessToken();
         $abilities = $currentToken->abilities;
 
         foreach ($permissions as $permission) {
-            $abilities[] = $permission . '-' . $workspace->id;
+            $abilities[] = $permission.'-'.$workspace->id;
 
         }
 
@@ -125,5 +132,33 @@ class User extends Authenticatable
         return $this->username;
     }
 
+    public function isOwner($id): bool
+    {
+        return intval($this->id) === intval($id);
+    }
 
+    public function createToken(string $name, DateTimeInterface $expiresAt = null)
+    {
+        $plainTextToken = $this->generateTokenString();
+
+        $abilities = $this->getAbilities();
+
+        $token = $this->tokens()->create([
+            'name'       => $name,
+            'token'      => hash('sha256', $plainTextToken),
+            'abilities'  => $abilities,
+            'expires_at' => $expiresAt,
+        ]);
+
+        return new NewAccessToken($token, $token->getKey().'|'.$plainTextToken);
+    }
+
+    public function getAbilities(): array
+    {
+        $roleIds = $this->roles()->pluck('id');
+        $permIds = PermissionRole::whereIn('role_id', $roleIds)->distinct()->pluck('permission_id');
+        $perms = Permission::query()->whereIn('id', $permIds)->pluck('name');
+
+        return $perms->toArray();
+    }
 }

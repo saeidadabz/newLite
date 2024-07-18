@@ -61,13 +61,14 @@ class Workspace extends Model
         return $this->users->contains($user->id);
     }
 
+    // TODO - This should be deleted because assigning roles must be done by admins not by just joining to a workspace. Actually if the user has member permission should be able to join to any workspace.
     public function joinUser($user, $role = 'member', $tag = NULL)
     {
-        if (!$this->users->contains($user->id)) {
+        if (! $this->users->contains($user->id)) {
             $this->users()->attach($user, ['role' => $role, 'tag_id' => $tag]);
             $user->update([
-                              'workspace_id' => $this->id
-                          ]);
+                'workspace_id' => $this->id
+            ]);
 //            $user->giveRole($role, $this);
             //TODO: Socket, user joined to ws.
 
@@ -85,7 +86,7 @@ class Workspace extends Model
 
     public function getChannelAttribute($value)
     {
-        return 'workspace-' . $this->id;
+        return 'workspace-'.$this->id;
 
     }
 
