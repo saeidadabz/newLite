@@ -19,14 +19,14 @@ class SocketController extends Controller
                           'status'    => Constants::ONLINE
                       ]);
 
-        Activity::create([
-                             'state' => Constants::ONLINE,
-                             'event_type',
-                             'user_id',
-                             'workspace_id',
-                             'user_id',
-                             'room_id',
-                         ]);
+//        Activity::create([
+//                             'state' => Constants::ONLINE,
+//                             'event_type',
+//                             'user_id',
+//                             'workspace_id',
+//                             'user_id',
+//                             'room_id',
+//                         ]);
 
         return api(UserResource::make(auth()->user()));
     }
