@@ -19,9 +19,7 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
 //})->middleware('auth:sanctum');
-require __DIR__.'/socket.php';
 
-Route::get('export-postman', PostmanExportController::class)->name('postman');
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('/login', 'login');
@@ -92,6 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::controller(MessageController::class)->prefix('messages')->group(function () {
+        Route::get('/searchMention', 'searchMention');
         Route::get('/{room}', 'get');
         Route::get('/{message}/seen', 'seen');
         Route::post('/', 'send');
@@ -118,3 +117,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 });
+
+
+
+
+
+Route::get('export-postman', PostmanExportController::class)->name('postman');
+
+require __DIR__.'/socket.php';

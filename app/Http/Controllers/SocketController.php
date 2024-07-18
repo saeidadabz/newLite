@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Models\Activity;
 use App\Utilities\Constants;
 use App\Utilities\EventType;
 use Illuminate\Http\Request;
@@ -17,6 +18,15 @@ class SocketController extends Controller
                           'socket_id' => $request->socket_id,
                           'status'    => Constants::ONLINE
                       ]);
+
+        Activity::create([
+                             'state' => Constants::ONLINE,
+                             'event_type',
+                             'user_id',
+                             'workspace_id',
+                             'user_id',
+                             'room_id',
+                         ]);
 
         return api(UserResource::make(auth()->user()));
     }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\MessageListResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
+use App\Http\Resources\UserMinimalResource;
+use App\Http\Resources\WorkspaceResource;
 use App\Models\File;
 use App\Models\Message;
 use App\Models\Room;
@@ -25,7 +27,7 @@ class MessageController extends Controller
         $user = auth()->user();
         $eventName = Constants::roomMessages;
 
-        if ($request->room_id === null) {
+        if ($request->room_id === NULL) {
             $request->validate([
                                    'user_id' => 'required'
                                ]);
@@ -41,7 +43,7 @@ class MessageController extends Controller
 
             $room = Room::firstOrCreate(
                 ['title' => $roomTitle],
-                ['is_private' => true]
+                ['is_private' => TRUE]
             );
             $eventName = Constants::directMessages;
 
@@ -121,7 +123,7 @@ class MessageController extends Controller
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
 
-        return api(true);
+        return api(TRUE);
 
 
     }
@@ -129,6 +131,15 @@ class MessageController extends Controller
     public function searchMention(Request $request)
     {
 
+        $users = User::where('username', 'LIKE', $request->q . '%')->get();
+        $workspaces = Workspace::where('title', 'LIKE', $request->q . '%')->get();
+        $rooms = Room::where('title', 'LIKE', $request->q . '%')->get();
+
+        return api([
+                       'users'      => UserMinimalResource::collection($users),
+                       'workspaces' => WorkspaceResource::collection($workspaces),
+                       'rooms'      => RoomResource::collection($rooms),
+                   ]);
 
     }
 
@@ -148,7 +159,7 @@ class MessageController extends Controller
         //TODO: check user can pin message in this room
 
         $message->update([
-                             'is_pinned' => true
+                             'is_pinned' => TRUE
                          ]);
 
     }
@@ -161,7 +172,7 @@ class MessageController extends Controller
         //TODO: check user owned msg
         $message->update([
                              'text'      => $request->text,
-                             'is_edited' => true
+                             'is_edited' => TRUE
                          ]);
 
 
