@@ -80,7 +80,7 @@ class User extends Authenticatable
         return $this->belongsTo(Room::class);
     }
 
-    public function activites()
+    public function activities()
     {
         return $this->hasMany(Activity::class);
     }
@@ -118,7 +118,7 @@ class User extends Authenticatable
         $abilities = $currentToken->abilities;
 
         foreach ($permissions as $permission) {
-            $abilities[] = $permission.'-'.$workspace->id;
+            $abilities[] = $permission . '-' . $workspace->id;
 
         }
 
@@ -137,20 +137,20 @@ class User extends Authenticatable
         return intval($this->id) === intval($id);
     }
 
-    public function createToken(string $name, DateTimeInterface $expiresAt = null)
+    public function createToken(string $name, DateTimeInterface $expiresAt = NULL)
     {
         $plainTextToken = $this->generateTokenString();
 
         $abilities = $this->getAbilities();
 
         $token = $this->tokens()->create([
-            'name'       => $name,
-            'token'      => hash('sha256', $plainTextToken),
-            'abilities'  => $abilities,
-            'expires_at' => $expiresAt,
-        ]);
+                                             'name'       => $name,
+                                             'token'      => hash('sha256', $plainTextToken),
+                                             'abilities'  => $abilities,
+                                             'expires_at' => $expiresAt,
+                                         ]);
 
-        return new NewAccessToken($token, $token->getKey().'|'.$plainTextToken);
+        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
     }
 
     public function getAbilities(): array

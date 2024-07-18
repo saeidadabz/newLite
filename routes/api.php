@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/me', 'me');
+        Route::get('/activities', 'activities');
         Route::get('/directs', 'directs');
         Route::get('/jobs', 'directs');
         Route::get('/', 'all');
@@ -119,9 +120,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-
-
-
 Route::get('export-postman', PostmanExportController::class)->name('postman');
 
-require __DIR__.'/socket.php';
+require __DIR__ . '/socket.php';

@@ -28,17 +28,14 @@ class SocketController extends Controller
 
         $event = new EventType($request->all());
 
-        $event->user()->activites()->create([
-                                                'event_id'     => $event->id,
-                                                'state'        => $event->state,
-                                                'event_type'   => $event->event,
-                                                'workspace_id' => $event->room()->workspace->id,
-                                                'room_id'      => $event->room()->id,
-                                            ]);
+        $event->user()->activities()->create([
+                                                 'event_id'     => $event->id,
+                                                 'state'        => $event->state,
+                                                 'event_type'   => $event->event,
+                                                 'workspace_id' => $event->room()->workspace->id,
+                                                 'room_id'      => $event->room()->id,
+                                             ]);
 
-        logger($request->all());
-
-        return api(TRUE);
     }
 
     public function disconnected()

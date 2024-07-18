@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ActivityResource;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserMinimalResource;
@@ -27,7 +28,6 @@ class UserController extends Controller
 
         return api(JobResource::collection($user->jobs()));
     }
-
 
 
     public function search(Request $request)
@@ -95,6 +95,32 @@ class UserController extends Controller
         return api($response);
     }
 
+    public function activities(Request $request)
+    {
+        $user = auth()->user();
+
+        $acts = $user->activities();
+
+        if ($request->today) {
+
+            $acts = $acts->where('created_at', '>=', today());
+
+
+        }
+
+        $sum = 0;
+        $acts = $acts->get();
+        foreach ($acts as $act) {
+            if ($act->event_type === Constants::JOINED) {
+                $left = $acts->where('event_type', Constants::LEFT)
+                             ->where('created_at', '>=', $act->created_at)
+                             ->first();
+
+                $sum += $act->created_at->diffInMinutes($left->created_at);
+            }
+        }
+        return api($sum);
+    }
 
     public function directs()
     {
