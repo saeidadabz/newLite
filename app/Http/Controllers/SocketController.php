@@ -19,14 +19,6 @@ class SocketController extends Controller
                           'status'    => Constants::ONLINE
                       ]);
 
-//        Activity::create([
-//                             'state' => Constants::ONLINE,
-//                             'event_type',
-//                             'user_id',
-//                             'workspace_id',
-//                             'user_id',
-//                             'room_id',
-//                         ]);
 
         return api(UserResource::make(auth()->user()));
     }
@@ -36,6 +28,13 @@ class SocketController extends Controller
 
         $event = new EventType($request->all());
 
+        $event->user()->activites()->create([
+                                                'event_id'     => $event->id,
+                                                'state'        => $event->state,
+                                                'event_type'   => $event->event,
+                                                'workspace_id' => $event->room()->workspace->id,
+                                                'room_id'      => $event->room()->id,
+                                            ]);
 
         logger($request->all());
 
