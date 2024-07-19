@@ -107,7 +107,7 @@ class UserController extends Controller
 
 
         }
-        if ($request->thismonth) {
+        if ($request->currentMonth) {
 
             $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
 
