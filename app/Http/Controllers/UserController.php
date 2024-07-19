@@ -118,12 +118,17 @@ class UserController extends Controller
         $sum = 0;
         $acts = $acts->get();
         foreach ($acts as $act) {
+            $start_time = $act->created_at;
             if ($act->event_type === Constants::JOINED) {
                 $left = $acts->where('event_type', Constants::LEFT)
-                    ->where('created_at', '>=', $act->created_at)
+                    ->where('created_at', '>=', $start_time)
                     ->first();
 
-                $sum += $act->created_at->diffInMinutes($left->created_at);
+                $end_time = $left->created_at;
+                if ($left === null) {
+                    $end_time = now();
+                }
+                $sum += $start_time->diffInMinutes($end_time);
             }
         }
         return api($sum);
