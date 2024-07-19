@@ -60,7 +60,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
         ];
     }
 
@@ -134,7 +134,7 @@ class User extends Authenticatable
 
     public function isOwner($id): bool
     {
-        return intval($this->id) === intval($id);
+        return (int)$this->id === (int)$id;
     }
 
     public function createToken(string $name, DateTimeInterface $expiresAt = NULL)
@@ -144,11 +144,11 @@ class User extends Authenticatable
         $abilities = $this->getAbilities();
 
         $token = $this->tokens()->create([
-                                             'name'       => $name,
-                                             'token'      => hash('sha256', $plainTextToken),
-                                             'abilities'  => $abilities,
-                                             'expires_at' => $expiresAt,
-                                         ]);
+            'name' => $name,
+            'token' => hash('sha256', $plainTextToken),
+            'abilities' => $abilities,
+            'expires_at' => $expiresAt,
+        ]);
 
         return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
     }
