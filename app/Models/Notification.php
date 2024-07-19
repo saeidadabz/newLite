@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Notification extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -23,7 +23,7 @@ class Notification extends Model
     ];
 
     protected $casts = [
-        'read_at'  => 'datetime',
+        'read_at' => 'datetime',
         'sends_at' => 'datetime',
     ];
 
