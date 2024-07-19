@@ -123,10 +123,11 @@ class UserController extends Controller
                 $left = $acts->where('event_type', Constants::LEFT)
                     ->where('created_at', '>=', $start_time)
                     ->first();
+                $end_time = now();
 
-                $end_time = $left->created_at;
-                if ($left === null) {
-                    $end_time = now();
+                if ($left !== null) {
+                    $end_time = $left->created_at;
+
                 }
                 $sum += $start_time->diffInMinutes($end_time);
             }
