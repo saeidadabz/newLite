@@ -31,7 +31,7 @@ class SocketController extends Controller
 
         $event->user()->activities()->create([
                                                  'event_id'     => $event->id,
-                                                 'state'        => $event->state,
+                                                 'state'        => $event->participant?->state,
                                                  'event_type'   => $event->event,
                                                  'workspace_id' => $event->room()->workspace->id,
                                                  'room_id'      => $event->room()->id,
