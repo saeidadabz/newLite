@@ -35,7 +35,7 @@ class SocketController extends Controller
                                                  'event_type'   => $event->event,
                                                  'workspace_id' => $event->room()->workspace->id,
                                                  'room_id'      => $event->room()->id,
-                                                 'data'         => $request->all(),
+                                                 'data'         => json_decode($request->all()),
                                              ]);
 
     }
