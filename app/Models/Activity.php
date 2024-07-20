@@ -14,6 +14,7 @@ class Activity extends Model
         'workspace_id',
         'user_id',
         'room_id',
+        'data',
     ];
 
     public function user()
