@@ -26,6 +26,7 @@ class SocketController extends Controller
     public function events(Request $request)
     {
 
+        logger($request->all());
         $event = new EventType($request->all());
 
         $event->user()->activities()->create([
