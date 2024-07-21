@@ -91,7 +91,7 @@ Route::get('/acts', function () {
 
 
     }
-    $sum = 0;
+    $sum_minutes = 0;
     $data = [];
     $acts = $acts->get();
     foreach ($acts as $act) {
@@ -108,13 +108,13 @@ Route::get('/acts', function () {
 
             }
             $data[] = 'Joined: ' . $start_time->toDateTimeString() . ' Left: ' . $end_time->toDateTimeString() . ' Diff: ' . $start_time->diffInMinutes($end_time);
-            $sum += $start_time->diffInMinutes($end_time);
+            $sum_minutes += $start_time->diffInMinutes($end_time);
         }
     }
     return [
         'count' => $acts->count(),
-        'sum_minutes' => $sum,
-        'sum_hours' => $sum / 60,
+        'sum_minutes' => $sum_minutes,
+        'sum_hours' => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
         'data' => $data,
         'activities' => $acts->map(function ($act) {
             return [
