@@ -104,15 +104,15 @@ class Room extends Model
 
 
         $user->update([
-                          'room_id' => $this->id
-                      ]);
+            'room_id' => $this->id
+        ]);
 
 
         $roomName = $this->id;
         $participantName = $user->username;
 
         $tokenOptions = (new AccessTokenOptions())
-            ->setIdentity($participantName);
+            ->setIdentity($participantName)->setTtl(99999);
 
         $videoGrant = (new VideoGrant())
             ->setRoomJoin()

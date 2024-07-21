@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\Constants;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,99 +10,132 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    $re = [
-        'event'       => 'track_published',
-        'room'        => [
-            'sid'  => 'RM_xZgVzDDtz7fj',
-            'name' => 'yourroom',
-        ],
-        'participant' => [
-            'sid'      => 'PA_b5NK9MzWSG2Z',
-            'identity' => 'publisher',
-        ],
-        'track'       => [
-            'sid'       => 'TR_VCNoJfCRhTs5GT',
-            'type'      => 'VIDEO',
-            'name'      => 'demo',
-            'width'     => 1280,
-            'height'    => 720,
-            'simulcast' => TRUE,
-            'source'    => 'CAMERA',
-            'layers'    =>
-                [
-                    0 =>
-                        [
-                            'width'   => 320,
-                            'height'  => 180,
-                            'bitrate' => 120000,
-                        ],
-                    1 =>
-                        [
-                            'quality' => 'MEDIUM',
-                            'width'   => 640,
-                            'height'  => 360,
-                            'bitrate' => 400000,
-                        ],
-                    2 =>
-                        [
-                            'quality' => 'HIGH',
-                            'width'   => 1280,
-                            'height'  => 720,
-                            'bitrate' => 1500000,
-                            'ssrc'    => 2149810279,
-                        ],
-                ],
-            'mimeType'  => 'video/H264',
-            'mid'       => '0',
-            'codecs'    =>
-                [
-                    0 =>
-                        [
-                            'mimeType' => 'video/H264',
-                            'mid'      => '0',
-                            'cid'      => 'demo-video',
-                            'layers'   =>
-                                [
-                                    0 =>
-                                        [
-                                            'width'   => 320,
-                                            'height'  => 180,
-                                            'bitrate' => 120000,
-                                        ],
-                                    1 =>
-                                        [
-                                            'quality' => 'MEDIUM',
-                                            'width'   => 640,
-                                            'height'  => 360,
-                                            'bitrate' => 400000,
-                                        ],
-                                    2 =>
-                                        [
-                                            'quality' => 'HIGH',
-                                            'width'   => 1280,
-                                            'height'  => 720,
-                                            'bitrate' => 1500000,
-                                            'ssrc'    => 2149810279,
-                                        ],
-                                ],
-                        ],
-                ],
-            'stream'    => 'camera',
-            'version'   =>
-                [
-                    'unixMicro' => '1720257776589891',
-                ],
-        ],
-        'id'          => 'EV_7NBnpajBViEN',
-        'createdAt'   => '1720257776',
+    $user = \App\Models\User::find(3);
+    $acts = $user->activities();
+
+    if (true) {
+
+//        $acts = $acts->where('created_at', '>=', today());
+
+
+    }
+    $acts = $acts->whereIn('event_type', [Constants::JOINED, Constants::LEFT])->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+    $sum = 0;
+    $acts = $acts->get();
+    foreach ($acts as $act) {
+        $start_time = $act->created_at;
+        if ($act->event_type === Constants::JOINED) {
+            $left = $acts->where('event_type', Constants::LEFT)
+                ->where('created_at', '>=', $start_time)
+                ->first();
+            $end_time = now();
+
+            if ($left !== null) {
+                $end_time = $left->created_at;
+
+            }
+            $sum += $start_time->diffInMinutes($end_time);
+        }
+    }
+    return [
+        'activities' => $acts,
+        'sum' => $sum,
     ];
+//    if ($request->yesterday) {
+//
+//        $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+//
+//
+//    }
+//
+//    if ($request->currentMonth) {
+//
+//        $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
+//
+//
+//    }
 
 
-    $event = new \App\Utilities\EventType($re);
-    dd($event);
-    $text = 'salam khobi @katerou22 chekhabar , khobi aghaye @habibi';
-
-
-    dd(\Illuminate\Support\Str::before(\Illuminate\Support\Str::after($text, '@'), ' '));
+    return api($sum);
 });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+
+
+Route::get('/acts', function () {
+
+    $request = request();
+    if ($request->user_id === null) {
+        return error('User id not specified');
+    }
+    $user = \App\Models\User::find($request->user_id);
+    $acts = $user->activities()->whereIn('event_type', [Constants::JOINED, Constants::LEFT])->orderByDesc('id');
+
+    if ($request->today) {
+
+        $acts = $acts->where('created_at', '>=', today());
+
+
+    }
+
+
+    if ($request->yesterday) {
+
+        $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+
+
+    }
+
+    if ($request->currentMonth) {
+
+        $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
+
+
+    }
+    $sum = 0;
+    $acts = $acts->get();
+    foreach ($acts as $act) {
+        $start_time = $act->created_at;
+        if ($act->event_type === Constants::JOINED) {
+            $left = $acts->where('event_type', Constants::LEFT)
+                ->where('created_at', '>=', $start_time)
+                ->first();
+            $end_time = now();
+
+            if ($left !== null) {
+                $end_time = $left->created_at;
+
+            }
+            $sum += $start_time->diffInMinutes($end_time);
+        }
+    }
+    return [
+        'count' => $acts->count(),
+        'sum_minutes' => $sum,
+        'sum_hours' => $sum / 60,
+        'sum_hours' => $sum / 60,
+
+        'activities' => $acts->map(function ($act) {
+            return [
+                'id' => $act->id,
+                'type' => $act->event_type,
+                'created_at' => $act->created_at,
+            ];
+        }),
+    ];
+//    if ($request->yesterday) {
+//
+//        $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+//
+//
+//    }
+//
+//    if ($request->currentMonth) {
+//
+//        $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
+//
+//
+//    }
+
+
+    return api($sum);
+});
