@@ -68,7 +68,7 @@ Route::get('/acts', function () {
         return error('User id not specified');
     }
     $user = \App\Models\User::find($request->user_id);
-    $acts = $user->activities()->whereIn('event_type', [Constants::JOINED, Constants::LEFT])->orderByDesc('id');
+    $acts = $user->activities()->whereIn('event_type', [Constants::JOINED, Constants::LEFT]);
 
     if ($request->today) {
 
@@ -92,10 +92,12 @@ Route::get('/acts', function () {
 
     }
     $sum = 0;
+    $data = [];
     $acts = $acts->get();
     foreach ($acts as $act) {
-        $start_time = $act->created_at;
         if ($act->event_type === Constants::JOINED) {
+            $start_time = $act->created_at;
+
             $left = $acts->where('event_type', Constants::LEFT)
                 ->where('created_at', '>=', $start_time)
                 ->first();
@@ -105,6 +107,7 @@ Route::get('/acts', function () {
                 $end_time = $left->created_at;
 
             }
+            $data[] = 'Joined: ' . $start_time->toDateTimeString() . ' Left: ' . $end_time->toDateTimeString() . ' Diff: ' . $start_time->diffInMinutes($end_time);
             $sum += $start_time->diffInMinutes($end_time);
         }
     }
@@ -112,8 +115,7 @@ Route::get('/acts', function () {
         'count' => $acts->count(),
         'sum_minutes' => $sum,
         'sum_hours' => $sum / 60,
-        'sum_hours' => $sum / 60,
-
+        'data' => $data,
         'activities' => $acts->map(function ($act) {
             return [
                 'id' => $act->id,
