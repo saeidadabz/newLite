@@ -29,8 +29,7 @@ class SocketController extends Controller
         $event = new EventType($request->all());
 
         $state = null;
-        logger(json_encode($event->participant));
-        if ($event->participant) {
+        if ($event->participant && $event->participant->state) {
             $state = $event->participant->state;
             if ($event->event === Constants::JOINED) {
                 if ($event->user()->room_id === null) {
