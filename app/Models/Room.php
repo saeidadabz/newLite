@@ -104,7 +104,8 @@ class Room extends Model
 
 
         $user->update([
-            'room_id' => $this->id
+            'room_id' => $this->id,
+            'workspace_id' => $workspace->id,
         ]);
 
 
