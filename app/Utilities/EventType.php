@@ -22,9 +22,15 @@ class EventType
 
     }
 
+    public function hasParticipant()
+    {
+        return $this->participant !== null;
+
+    }
+
     public function participant()
     {
-        dd($this->participant);
+        return new Participant();
 
     }
 
