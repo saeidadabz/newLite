@@ -30,7 +30,11 @@ class EventType
 
     public function user()
     {
-        return User::where('username', $this->args->participant?->identity)->first();
+        if ($this->args->participant) {
+            return User::where('username', $this->args->participant?->identity)->first();
+
+        }
+        return null;
     }
 
 
