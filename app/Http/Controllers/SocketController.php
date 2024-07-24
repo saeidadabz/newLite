@@ -28,9 +28,24 @@ class SocketController extends Controller
 
         $event = new EventType($request->all());
 
+        $state = null;
+
+        if ($event->participant) {
+            $state = $event->participant->state;
+            if ($event->event === Constants::JOINED) {
+                if ($event->user()->room_id === null) {
+                    $event->user()->update([
+                        'room_id' => $event->room()->id,
+                        'workspace_id' => $event->room()->workspace->id,
+                    ]);
+                }
+
+            }
+
+        }
         $event->user()->activities()->create([
             'event_id' => $event->id,
-            'state' => $event->participant?->state,
+            'state' => $state,
             'event_type' => $event->event,
             'workspace_id' => $event->room()->workspace->id,
             'room_id' => $event->room()->id,
