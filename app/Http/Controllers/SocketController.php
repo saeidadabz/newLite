@@ -25,12 +25,13 @@ class SocketController extends Controller
 
     public function events(Request $request)
     {
+        logger($request->all());
 
         $event = new EventType($request->all());
 
         $state = null;
         if ($event->participant) {
-            $state = $event->participant?->state;
+            $state = $event->participant->state;
 
             if ($event->event === Constants::JOINED) {
                 if ($event->user()->room_id === null) {

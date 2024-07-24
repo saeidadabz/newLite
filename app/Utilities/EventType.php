@@ -22,6 +22,11 @@ class EventType
 
     }
 
+    public function participant()
+    {
+        dd($this->participant);
+
+    }
 
     public function room()
     {
