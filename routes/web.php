@@ -1,5 +1,6 @@
 <?php
 
+use Agence104\LiveKit\RoomServiceClient;
 use App\Utilities\Constants;
 use Illuminate\Support\Facades\Route;
 
@@ -9,6 +10,17 @@ Route::get('/', function () {
 
 
 Route::get('/tester', function () {
+
+
+    $host = 'https://live-kit-server.cotopia.social';
+    $svc = new RoomServiceClient($host, 'devkey', 'secret');
+
+// List rooms.
+    $rooms = $svc->listParticipants('1');
+
+    dd($rooms->getParticipants());
+
+
     dd(now()->timezone('Asia/Tehran'));
 
     $user = \App\Models\User::find(3);
