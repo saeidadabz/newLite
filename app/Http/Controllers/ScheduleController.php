@@ -17,6 +17,21 @@ use Illuminate\Support\Facades\Log;
 
 class ScheduleController extends Controller
 {
+
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+
+
+
+        $schedules = $user->schedules;
+
+
+        $res = ScheduleResource::collection($schedules);
+
+        return api($res);
+    }
     /**
      * Store a newly created resource in storage.
      */

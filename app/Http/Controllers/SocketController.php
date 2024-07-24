@@ -15,9 +15,9 @@ class SocketController extends Controller
 
         $user = auth()->user();
         $user->update([
-                          'socket_id' => $request->socket_id,
-                          'status'    => Constants::ONLINE
-                      ]);
+            'socket_id' => $request->socket_id,
+            'status' => Constants::ONLINE
+        ]);
 
 
         return api(UserResource::make(auth()->user()));
@@ -26,17 +26,16 @@ class SocketController extends Controller
     public function events(Request $request)
     {
 
-        logger($request->all());
         $event = new EventType($request->all());
 
         $event->user()->activities()->create([
-                                                 'event_id'     => $event->id,
-                                                 'state'        => $event->participant?->state,
-                                                 'event_type'   => $event->event,
-                                                 'workspace_id' => $event->room()->workspace->id,
-                                                 'room_id'      => $event->room()->id,
-                                                 'data'         => json_encode($request->all()),
-                                             ]);
+            'event_id' => $event->id,
+            'state' => $event->participant?->state,
+            'event_type' => $event->event,
+            'workspace_id' => $event->room()->workspace->id,
+            'room_id' => $event->room()->id,
+            'data' => json_encode($request->all()),
+        ]);
 
     }
 
@@ -45,10 +44,12 @@ class SocketController extends Controller
 
         $user = auth()->user();
         $user->update([
-                          'socket_id' => NULL,
-                          'status'    => Constants::OFFLINE
+            'socket_id' => NULL,
+            'status' => Constants::OFFLINE,
+            'room_id' => null,
+            'workspace_id' => null,
 
-                      ]);
+        ]);
 
         return api(UserResource::make(auth()->user()));
     }

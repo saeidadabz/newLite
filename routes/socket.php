@@ -10,6 +10,7 @@ Route::prefix('socket')->group(function () {
         Route::controller(SocketController::class)->group(function () {
             Route::post('/connected', 'connected');
             Route::get('/disconnected', 'disconnected');
+
         });
     });
 

@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{calendar}/schedules', 'schedules');
     });
 
-    Route::apiResource('schedules', ScheduleController::class)->except('index');
+    Route::apiResource('schedules', ScheduleController::class);
 
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/me', 'me');
