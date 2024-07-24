@@ -41,6 +41,13 @@ class SocketController extends Controller
                 }
 
             }
+            if ($event->event === Constants::LEFT) {
+                $event->user()->update([
+                    'room_id' => null,
+                    'workspace_id' => null,
+                ]);
+
+            }
 
         }
         $event->user()->activities()->create([
