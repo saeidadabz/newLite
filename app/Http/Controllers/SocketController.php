@@ -29,7 +29,6 @@ class SocketController extends Controller
         $event = new EventType($request->all());
 
         $state = null;
-        logger($event->participant);
         if ($event->participant) {
             $state = $event->participant?->state;
 
