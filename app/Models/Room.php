@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
+use Agence104\LiveKit\RoomServiceClient;
 use Agence104\LiveKit\VideoGrant;
 use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Model;
@@ -47,6 +48,11 @@ class Room extends Model
         return $this->files->where('type', 'background')->last();
     }
 
+
+    public function isDirectRoom()
+    {
+        return $this->workspace_id === NULL;
+    }
 
     public function participants()
     {
@@ -128,6 +134,16 @@ class Room extends Model
 
         $this->token = $token;
         return $this;
+
+
+    }
+
+
+    public function lkUsers()
+    {
+        $host = 'https://live-kit-server.cotopia.social';
+        $svc = new RoomServiceClient($host, 'devkey', 'secret');
+        return $svc->listParticipants($this->id)->getParticipants()->getIterator();
 
 
     }

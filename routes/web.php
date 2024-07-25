@@ -11,72 +11,77 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
+//
+//    $e = array(
+//        'event' => 'participant_left',
+//        'room' =>
+//            array(
+//                'sid' => 'RM_k5kESqHwxEyt',
+//                'name' => '1',
+//                'emptyTimeout' => 300,
+//                'departureTimeout' => 20,
+//                'creationTime' => '1721849273',
+//                'turnPassword' => 'vpJFoEFWkG01UQfOxuy12gp56IXmFNcsr7xL2EPf0xn',
+//                'enabledCodecs' =>
+//                    array(
+//                        0 =>
+//                            array(
+//                                'mime' => 'audio/opus',
+//                            ),
+//                        1 =>
+//                            array(
+//                                'mime' => 'audio/red',
+//                            ),
+//                        2 =>
+//                            array(
+//                                'mime' => 'video/VP8',
+//                            ),
+//                        3 =>
+//                            array(
+//                                'mime' => 'video/H264',
+//                            ),
+//                        4 =>
+//                            array(
+//                                'mime' => 'video/VP9',
+//                            ),
+//                        5 =>
+//                            array(
+//                                'mime' => 'video/AV1',
+//                            ),
+//                    ),
+//            ),
+//        'participant' =>
+//            array(
+//                'sid' => 'PA_WsJqW4catifU',
+//                'identity' => 'Katerou22',
+//                'state' => 'DISCONNECTED',
+//                'joinedAt' => '1721850935',
+//                'version' => 4,
+//                'permission' =>
+//                    array(
+//                        'canSubscribe' => true,
+//                        'canPublish' => true,
+//                        'canPublishData' => true,
+//                    ),
+//                'isPublisher' => true,
+//            ),
+//        'id' => 'EV_AceC9wcszMJW',
+//        'createdAt' => '1721851109',
+//    );
+//    dd((new \App\Utilities\EventType($e))->participant()->state);
+//
+//    $host = 'https://live-kit-server.cotopia.social';
+//    $svc = new RoomServiceClient($host, 'devkey', 'secret');
+//
+//// List rooms.
+//    $rooms = $svc->listParticipants('1');
 
-    $e = array(
-        'event' => 'participant_left',
-        'room' =>
-            array(
-                'sid' => 'RM_k5kESqHwxEyt',
-                'name' => '1',
-                'emptyTimeout' => 300,
-                'departureTimeout' => 20,
-                'creationTime' => '1721849273',
-                'turnPassword' => 'vpJFoEFWkG01UQfOxuy12gp56IXmFNcsr7xL2EPf0xn',
-                'enabledCodecs' =>
-                    array(
-                        0 =>
-                            array(
-                                'mime' => 'audio/opus',
-                            ),
-                        1 =>
-                            array(
-                                'mime' => 'audio/red',
-                            ),
-                        2 =>
-                            array(
-                                'mime' => 'video/VP8',
-                            ),
-                        3 =>
-                            array(
-                                'mime' => 'video/H264',
-                            ),
-                        4 =>
-                            array(
-                                'mime' => 'video/VP9',
-                            ),
-                        5 =>
-                            array(
-                                'mime' => 'video/AV1',
-                            ),
-                    ),
-            ),
-        'participant' =>
-            array(
-                'sid' => 'PA_WsJqW4catifU',
-                'identity' => 'Katerou22',
-                'state' => 'DISCONNECTED',
-                'joinedAt' => '1721850935',
-                'version' => 4,
-                'permission' =>
-                    array(
-                        'canSubscribe' => true,
-                        'canPublish' => true,
-                        'canPublishData' => true,
-                    ),
-                'isPublisher' => true,
-            ),
-        'id' => 'EV_AceC9wcszMJW',
-        'createdAt' => '1721851109',
-    );
-    dd((new \App\Utilities\EventType($e))->participant()->state);
-
-    $host = 'https://live-kit-server.cotopia.social';
-    $svc = new RoomServiceClient($host, 'devkey', 'secret');
-
-// List rooms.
-    $rooms = $svc->listParticipants('1');
-
-    dd($rooms->getParticipants());
+    $rooms = \App\Models\Room::whereNot('workspace_id', null)->get();
+    foreach ($rooms as $room) {
+        foreach ($room->lkUsers() as $lkUser) {
+            dd($room->users);
+        }
+    }
 
 
     dd(now()->timezone('Asia/Tehran'));
