@@ -41,7 +41,7 @@ class EventType
 
     public function user()
     {
-        if ($this->args->participant) {
+        if (isset($this->args->participant)) {
             return User::where('username', $this->args->participant?->identity)->first();
 
         }

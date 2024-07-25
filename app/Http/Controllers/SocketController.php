@@ -29,27 +29,27 @@ class SocketController extends Controller
         $event = new EventType($request->all());
 
         $state = $event->participant()->state;
-
-        if ($event->hasParticipant()) {
-
-            if ($event->event === Constants::JOINED) {
-                if ($event->user()->room_id === null) {
-                    $event->user()->update([
-                        'room_id' => $event->room()->id,
-                        'workspace_id' => $event->room()->workspace->id,
-                    ]);
-                }
-
-            }
-            if ($event->event === Constants::LEFT) {
-                $event->user()->update([
-                    'room_id' => null,
-                    'workspace_id' => null,
-                ]);
-
-            }
-
-        }
+//
+//        if ($event->hasParticipant()) {
+//
+//            if ($event->event === Constants::JOINED) {
+//                if ($event->user()->room_id === null) {
+//                    $event->user()->update([
+//                        'room_id' => $event->room()->id,
+//                        'workspace_id' => $event->room()->workspace->id,
+//                    ]);
+//                }
+//
+//            }
+//            if ($event->event === Constants::LEFT) {
+//                $event->user()->update([
+//                    'room_id' => null,
+//                    'workspace_id' => null,
+//                ]);
+//
+//            }
+//
+//        }
         $event->user()->activities()->create([
             'event_id' => $event->id,
             'state' => $state,
@@ -68,8 +68,8 @@ class SocketController extends Controller
         $user->update([
             'socket_id' => NULL,
             'status' => Constants::OFFLINE,
-            'room_id' => null,
-            'workspace_id' => null,
+//            'room_id' => null,
+//            'workspace_id' => null,
 
         ]);
 
