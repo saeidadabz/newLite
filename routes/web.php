@@ -11,10 +11,11 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-
-    $host = 'https://live-kit-server.cotopia.social';
-    $svc = new RoomServiceClient($host, 'devkey', 'secret');
-    return $svc->removeParticipant('1', 'Katerou22');
+    dd('Tester');
+//
+//    $host = 'https://live-kit-server.cotopia.social';
+//    $svc = new RoomServiceClient($host, 'devkey', 'secret');
+//    return $svc->removeParticipant('1', 'Katerou22');
 //
 //    $e = array(
 //        'event' => 'participant_left',
