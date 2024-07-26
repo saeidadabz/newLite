@@ -57,7 +57,9 @@ class SocketController extends Controller
         $last_activity = $user->activities()->orderBy('id', 'desc')->first();
         if ($last_activity !== null && $last_activity->left_at === null) {
             $last_activity->update([
-                'left_at' => now()
+                'left_at' => now(),
+                'data' => json_encode($request->all()),
+
             ]);
         }
 
