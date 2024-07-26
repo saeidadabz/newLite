@@ -32,28 +32,33 @@ class SocketController extends Controller
             $user = $event->user();
             $room = $event->room();
             if ($user !== null) {
-                $last_activity = $user->activities()->whereNull('left_at')->first();
-                if ($last_activity !== null) {
-                    $last_activity->update([
-                        'left_at' => now(),
-                        'data' => json_encode($request->all()),
 
-                    ]);
+
+                if ($event->event === Constants::JOINED || $event->event === Constants::LEFT) {
+                    $last_activity = $user->activities()->whereNull('left_at')->first();
+                    if ($last_activity !== null) {
+                        $last_activity->update([
+                            'left_at' => now(),
+                            'data' => json_encode($request->all()),
+
+                        ]);
+                    }
+
+                    if ($event->event === Constants::JOINED) {
+
+
+                        $event->user()->activities()->create([
+                            'join_at' => now(),
+                            'left_at' => null,
+                            'workspace_id' => $room->workspace->id,
+                            'room_id' => $room->id,
+                            'data' => json_encode($request->all()),
+                        ]);
+
+
+                    }
                 }
 
-                if ($event->event === Constants::JOINED) {
-
-
-                    $event->user()->activities()->create([
-                        'join_at' => now(),
-                        'left_at' => null,
-                        'workspace_id' => $room->workspace->id,
-                        'room_id' => $room->id,
-                        'data' => json_encode($request->all()),
-                    ]);
-
-
-                }
             }
 
         } catch (\Exception $e) {
