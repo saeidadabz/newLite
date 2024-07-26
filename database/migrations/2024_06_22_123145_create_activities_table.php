@@ -12,9 +12,8 @@ return new class () extends Migration {
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->string('event_type');
-            $table->string('state')->nullable();
-            $table->string('event_id')->nullable();
+            $table->timestamp('join_at')->default(now());
+            $table->timestamp('left_at')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('workspace_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('room_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');

@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Activity extends Model
 {
     protected $fillable = [
-        'event_id',
-        'state',
-        'event_type',
+        'join_at',
+        'left_at',
         'user_id',
         'workspace_id',
-        'user_id',
         'room_id',
         'data',
     ];

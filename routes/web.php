@@ -76,12 +76,33 @@ Route::get('/tester', function () {
 //// List rooms.
 //    $rooms = $svc->listParticipants('1');
 
-    $rooms = \App\Models\Room::whereNot('workspace_id', null)->get();
-    foreach ($rooms as $room) {
-        foreach ($room->lkUsers() as $lkUser) {
-            dd($room->users);
-        }
-    }
+
+//    $users = \App\Models\User::all();
+//
+//    foreach ($users as $user) {
+//        $last_activity = $user->activities()->orderBy('id', 'desc')->first();
+//        if ($last_activity->event_type !== Constants::LEFT) {
+//            $user->checkIsInRoomForReal();
+//        }
+//    }
+//
+//    $rooms = \App\Models\Room::whereNot('workspace_id', null)->get();
+//    foreach ($rooms as $room) {
+//        foreach ($room->lkUsers() as $lkUser) {
+//            $user = $room->users->where('username', $lkUser->getIdentity())->first();
+//            if ($user === null) {
+//                $u = \App\Models\User::where('username', $lkUser->getIdentity())->first();
+//                $u->activities()->create([
+//                    'event_id' => $event->id,
+//                    'state' => $state,
+//                    'event_type' => $event->event,
+//                    'workspace_id' => $event->room()->workspace->id,
+//                    'room_id' => $event->room()->id,
+//                    'data' => 'Disconn',
+//                ]);
+//            }
+//        }
+//    }
 
 
     dd(now()->timezone('Asia/Tehran'));

@@ -111,6 +111,16 @@ class User extends Authenticatable
         return Room::where('title', 'regexp', "[[:<:]]$this->id[[:>:]]")->get();
     }
 
+
+    public function checkIsInRoomForReal()
+    {
+
+
+        if ($this->room_id === null){
+
+        }
+
+    }
     public function giveRole($ability, $workspace)
     {
         $permissions = Constants::ROLE_PERMISSIONS[$ability];
