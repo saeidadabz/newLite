@@ -32,7 +32,7 @@ class SocketController extends Controller
             $user = $event->user();
             $room = $event->room();
             if ($user !== null) {
-                $last_activity = $user->activities()->where('last_at', null)->first();
+                $last_activity = $user->activities()->whereNull('left_at')->first();
                 if ($last_activity !== null) {
                     $last_activity->update([
                         'left_at' => now(),
