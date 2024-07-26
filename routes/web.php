@@ -10,7 +10,9 @@ Route::get('/', function () {
 
 
 Route::get('/tester', function () {
-
+    $host = 'https://live-kit-server.cotopia.social';
+    $svc = new RoomServiceClient($host, 'devkey', 'secret');
+    dd($svc->listParticipants('1')->getParticipants()->getIterator());
 //
 //    $e = array(
 //        'event' => 'participant_left',
