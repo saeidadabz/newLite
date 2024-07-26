@@ -44,6 +44,8 @@ class SocketController extends Controller
                         ]);
                     }
 
+                    $user->left(json_encode($request->all()));
+
                     if ($event->event === Constants::JOINED) {
 
 
@@ -102,6 +104,8 @@ class SocketController extends Controller
             'workspace_id' => null,
 
         ]);
+        $user->left();
+
 
         return api(UserResource::make(auth()->user()));
     }

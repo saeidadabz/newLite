@@ -164,6 +164,20 @@ class User extends Authenticatable
 //        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
 //    }
 
+    public function left($data = null)
+    {
+
+        $last_activity = $this->activities()->whereNull('left_at')->first();
+        if ($last_activity !== null) {
+            $last_activity->update([
+                'left_at' => now(),
+                'data' => $data,
+
+            ]);
+        }
+
+    }
+
 
     public function getTime($period = null)
     {
