@@ -55,7 +55,7 @@ class SocketController extends Controller
         $room = $event->room();
 
         $last_activity = $user->activities()->orderBy('id', 'desc')->first();
-        if ($last_activity->left_at === null) {
+        if ($last_activity !== null && $last_activity->left_at === null) {
             $last_activity->update([
                 'left_at' => now()
             ]);
