@@ -109,7 +109,7 @@ class SocketController extends Controller
 
         $host = 'https://live-kit-server.cotopia.social';
         $svc = new RoomServiceClient($host, 'devkey', 'secret');
-        $svc->removeParticipant($user->room_id, $user->username);
+        $svc->removeParticipant((string)$user->room_id, $user->username);
 
 
         return api(UserResource::make(auth()->user()));
