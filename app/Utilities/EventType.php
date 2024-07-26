@@ -36,7 +36,7 @@ class EventType
 
     public function room()
     {
-        return Room::find($this->room->name);
+        return Room::find($this->room?->name);
     }
 
     public function user()

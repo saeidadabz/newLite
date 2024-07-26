@@ -26,8 +26,39 @@ class SocketController extends Controller
     public function events(Request $request)
     {
 
+        try {
 
-        $event = new EventType($request->all());
+            $event = new EventType($request->all());
+            $user = $event->user();
+            $room = $event->room();
+            if ($user !== null) {
+                $last_activity = $user->activities()->where('last_at', null)->first();
+                if ($last_activity !== null) {
+                    $last_activity->update([
+                        'left_at' => now(),
+                        'data' => json_encode($request->all()),
+
+                    ]);
+                }
+
+                if ($event->event === Constants::JOINED) {
+
+
+                    $event->user()->activities()->create([
+                        'join_at' => now(),
+                        'left_at' => null,
+                        'workspace_id' => $room->workspace->id,
+                        'room_id' => $room->id,
+                        'data' => json_encode($request->all()),
+                    ]);
+
+
+                }
+            }
+
+        } catch (\Exception $e) {
+            logger($request->all());
+        }
 
 ////
 //        if ($event->hasParticipant()) {
@@ -50,32 +81,6 @@ class SocketController extends Controller
 ////            }
 //
 //        }
-
-        $user = $event->user();
-        $room = $event->room();
-
-        $last_activity = $user->activities()->orderBy('id', 'desc')->first();
-        if ($last_activity !== null && $last_activity->left_at === null) {
-            $last_activity->update([
-                'left_at' => now(),
-                'data' => json_encode($request->all()),
-
-            ]);
-        }
-
-        if ($event->event === Constants::JOINED) {
-
-
-            $event->user()->activities()->create([
-                'join_at' => now(),
-                'left_at' => null,
-                'workspace_id' => $room->workspace->id,
-                'room_id' => $room->id,
-                'data' => json_encode($request->all()),
-            ]);
-
-
-        }
 
 
     }
