@@ -57,6 +57,7 @@ class SocketController extends Controller
             }
 
         } catch (\Exception $e) {
+            logger($e);
             logger($request->all());
         }
 
