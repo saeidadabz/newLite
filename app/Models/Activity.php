@@ -15,6 +15,12 @@ class Activity extends Model
         'data',
     ];
 
+
+    protected $casts = [
+        'join_at' => 'datetime',
+        'left_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

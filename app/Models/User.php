@@ -116,11 +116,12 @@ class User extends Authenticatable
     {
 
 
-        if ($this->room_id === null){
+        if ($this->room_id === null) {
 
         }
 
     }
+
     public function giveRole($ability, $workspace)
     {
         $permissions = Constants::ROLE_PERMISSIONS[$ability];
@@ -162,6 +163,75 @@ class User extends Authenticatable
 //
 //        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
 //    }
+
+
+    public function getTime($period = null)
+    {
+        $acts = $this->activities();
+
+        if ($period === 'today') {
+
+            $acts = $acts->where('created_at', '>=', today());
+
+
+        }
+
+
+        if ($period === 'yesterday') {
+
+            $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+
+
+        }
+
+        if ($period === 'currentMonth') {
+
+            $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
+
+
+        }
+        $sum_minutes = 0;
+        $data = [];
+        $acts = $acts->get();
+        foreach ($acts as $act) {
+
+
+            $left_at = now();
+
+            if ($act->left_at !== null) {
+                $left_at = $act->left_at;
+            }
+
+            $diff = $act->join_at->diffInMinutes($left_at);
+
+            $sum_minutes += $diff;
+            $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
+                    ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
+                    ->toDateTimeString() . ' Diff: ' . $diff;
+
+
+        }
+        \Carbon\CarbonInterval::setCascadeFactors([
+            'minute' => [60, 'seconds'],
+            'hour' => [60, 'minutes'],
+        ]);
+        return [
+            'user' => $this,
+            'count' => $acts->count(),
+            'sum_minutes' => $sum_minutes,
+            'sum_hours' => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
+            'data' => $data,
+            'activities' => $acts->map(function ($act) {
+                return [
+                    'id' => $act->id,
+                    'join_at' => $act->join_at->timezone('Asia/Tehran'),
+                    'left_at' => $act->left_at?->timezone('Asia/Tehran'),
+                    'created_at' => $act->created_at->timezone('Asia/Tehran'),
+                ];
+            }),
+        ];
+
+    }
 
     public function getAbilities(): array
     {

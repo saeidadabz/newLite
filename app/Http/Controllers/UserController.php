@@ -98,51 +98,9 @@ class UserController extends Controller
 
     public function activities(Request $request)
     {
-        $user = auth()->user();
-
-        $acts = $user->activities();
-
-        if ($request->today) {
-
-            $acts = $acts->where('created_at', '>=', today());
 
 
-        }
-
-
-        if ($request->yesterday) {
-
-            $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
-
-
-        }
-
-        if ($request->currentMonth) {
-
-            $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
-
-
-        }
-
-
-        $sum = 0;
-        $acts = $acts->get();
-        foreach ($acts as $act) {
-            $start_time = $act->created_at;
-            if ($act->event_type === Constants::JOINED) {
-                $left = $acts->where('event_type', Constants::LEFT)
-                    ->where('created_at', '>=', $start_time)
-                    ->first();
-                $end_time = now();
-
-                if ($left !== null) {
-                    $end_time = $left->created_at;
-
-                }
-                $sum += $start_time->diffInMinutes($end_time);
-            }
-        }
-        return api($sum);
+        return api(auth()->user()->getTime($request->period)['sum_minutes']);
     }
 
     public function directs()
