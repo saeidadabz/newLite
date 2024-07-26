@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Agence104\LiveKit\RoomServiceClient;
 use App\Http\Resources\UserResource;
 use App\Models\Activity;
 use App\Utilities\Constants;
@@ -105,6 +106,10 @@ class SocketController extends Controller
 
         ]);
         $user->left();
+
+        $host = 'https://live-kit-server.cotopia.social';
+        $svc = new RoomServiceClient($host, 'devkey', 'secret');
+        $svc->removeParticipant($user->room_id, $user->username);
 
 
         return api(UserResource::make(auth()->user()));
