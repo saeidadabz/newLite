@@ -101,8 +101,8 @@ class SocketController extends Controller
         $user->update([
             'socket_id' => NULL,
             'status' => Constants::OFFLINE,
-//            'room_id' => null,
-//            'workspace_id' => null,
+            'room_id' => null,
+            'workspace_id' => null,
 
         ]);
         $user->left();
