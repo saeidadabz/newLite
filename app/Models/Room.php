@@ -6,6 +6,7 @@ use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
 use Agence104\LiveKit\RoomServiceClient;
 use Agence104\LiveKit\VideoGrant;
+use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserResource;
 use App\Utilities\Constants;
 use App\Utilities\Settingable;
@@ -142,6 +143,7 @@ class Room extends Model
             'user_id' => $user->id
         ]);
 
+        sendSocket(Constants::roomUpdated, $this->channel, RoomResource::make($this));
 
         return $this;
 
