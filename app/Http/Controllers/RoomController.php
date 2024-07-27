@@ -46,7 +46,17 @@ class RoomController extends Controller
 
         $room = $room->joinUser($user);
 
-        return api(RoomResource::make($room));
+
+        $res = RoomResource::make($room);
+
+        sendSocket(Constants::joinedRoom, $room->channel, [
+            'room_id' => $room->id,
+            'user_id' => $user->id
+        ]);
+
+        sendSocket(Constants::roomUpdated, $room->channel, $res);
+
+        return api($res);
 
     }
 
