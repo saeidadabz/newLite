@@ -6,6 +6,8 @@ use Agence104\LiveKit\AccessToken;
 use Agence104\LiveKit\AccessTokenOptions;
 use Agence104\LiveKit\RoomServiceClient;
 use Agence104\LiveKit\VideoGrant;
+use App\Http\Resources\UserResource;
+use App\Utilities\Constants;
 use App\Utilities\Settingable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -133,6 +135,11 @@ class Room extends Model
         //TODO: Socket, user joined to room.
 
         $this->token = $token;
+
+
+        sendSocket(Constants::joinedRoom, $user->room->channel, $this->id);
+
+
         return $this;
 
 

@@ -42,6 +42,7 @@ class Constants
     const API_SUCCESS_MSG = 'success';
     const API_FAILED_MSG = 'failed';
 
+    const joinedRoom = 'joinedRoom';
     const userUpdated = 'userUpdated';
     const workspaceUpdated = 'workspaceUpdated';
     const roomUpdated = 'roomUpdated';
