@@ -137,7 +137,10 @@ class Room extends Model
         $this->token = $token;
 
 
-        sendSocket(Constants::joinedRoom, $user->room->channel, $this->id);
+        sendSocket(Constants::joinedRoom, $user->room->channel, [
+            'room_id' => $this->id,
+            'user_id' => $user->id
+        ]);
 
 
         return $this;
