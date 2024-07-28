@@ -8,6 +8,7 @@ Route::prefix('socket')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::controller(SocketController::class)->group(function () {
+            Route::post('/updateCoordinates', 'updateCoordinates');
             Route::post('/connected', 'connected');
             Route::get('/disconnected', 'disconnected');
 

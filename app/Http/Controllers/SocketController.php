@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Agence104\LiveKit\RoomServiceClient;
 use App\Http\Resources\UserResource;
 use App\Models\Activity;
+use App\Models\User;
 use App\Utilities\Constants;
 use App\Utilities\EventType;
 use Illuminate\Http\Request;
@@ -91,6 +92,22 @@ class SocketController extends Controller
 //
 //        }
 
+
+    }
+
+
+    public function updateCoordinates(Request $request)
+    {
+
+        $user = auth()->user();
+
+
+        if ($user !== null) {
+
+            $user->update([
+                'coordinates' => $request->coordinates
+            ]);
+        }
 
     }
 

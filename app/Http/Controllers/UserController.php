@@ -54,8 +54,11 @@ class UserController extends Controller
         ]);
 
         $response = UserMinimalResource::make($user);
-        sendSocket(Constants::userUpdated, $user->room->channel, $response);
 
+        if ($user->room !== NULL) {
+            sendSocket(Constants::userUpdated, $user->room->channel, $response);
+
+        }
         return api($response);
 
     }
@@ -70,7 +73,10 @@ class UserController extends Controller
         ]);
 
         $response = UserMinimalResource::make($user);
-        sendSocket(Constants::userUpdated, $user->room->channel, $response);
+        if ($user->room !== NULL) {
+            sendSocket(Constants::userUpdated, $user->room->channel, $response);
+
+        }
 
         return api($response);
 
