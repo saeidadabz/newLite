@@ -35,7 +35,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{calendar}/schedules', 'schedules');
     });
 
-    Route::apiResource('schedules', ScheduleController::class);
+//    Route::apiResource('schedules', ScheduleController::class);
+
+
+    Route::controller(ScheduleController::class)->prefix('schedules')->group(function () {
+        Route::post('/', 'create');
+
+    });
 
     Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::get('/me', 'me');

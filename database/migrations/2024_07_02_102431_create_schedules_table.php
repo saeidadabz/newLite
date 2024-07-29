@@ -13,11 +13,11 @@ return new class () extends Migration {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
 
-            $table->tinyInteger('availability_type');
-            $table->foreignId('calendar_id')->constrained();
-            $table->foreignId('owner_id')->constrained('users');
-            $table->datetime('starts_at');
-            $table->datetime('ends_at');
+            $table->string('availability_type');
+            $table->foreignId('user_id')->constrained('users');
+            $table->time('start_at')->default('08:00:00');
+            $table->time('end_at')->default('18:00:00');
+            $table->string('timezone')->default('Asia/Tehran');
 
             $table->timestamps();
         });

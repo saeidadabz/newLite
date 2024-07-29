@@ -24,7 +24,6 @@ class ScheduleController extends Controller
         $user = $request->user();
 
 
-
         $schedules = $user->schedules;
 
 
@@ -32,27 +31,24 @@ class ScheduleController extends Controller
 
         return api($res);
     }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ScheduleRequest $request)
+    public function create(ScheduleRequest $request)
     {
         $data = $request->validated();
-        $cal = Calendar::findOrFail($data['calendar_id']);
 
-        /** @var User $user */
         $user = $request->user();
-        $hasPerm = $user->isOwner($cal->owner_id) || $user->tokenCan(Permission::SCHEDULE_CREATE->value);
-        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
+        $schedule = $user->schedules()->create([
+            'availability_type' => $request->types,
+            'days' => $request->days,
+            'start_at' => $request->start_at,
+            'end_at' => $request->end_at,
+        ]);
 
-        $data['owner_id'] = $cal->owner_id;
-        $sch = Schedule::create($data);
-        if (isset($data['recurrence_pattern'])) {
-            $param = new RecurParam($data['recurrence_pattern'], $data['recurrence_end_date'], $data['recurrence_days'] ?? []);
-            dispatch(new RecurSchedule($sch, $param));
-        }
 
-        return api();
+        return api(ScheduleResource::make($schedule));
     }
 
     /**
@@ -63,13 +59,13 @@ class ScheduleController extends Controller
         /** @var User $user */
         $user = $request->user();
         $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_VIEW->value);
-        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
+        abort_if(!$hasPerm, Response::HTTP_FORBIDDEN);
 
         /** @var Calendar $cal */
         $cal = $schedule->calendar;
 
         $hasPerm = $cal->canUserAccess($request->user());
-        throw_if(! $hasPerm, new AuthorizationException());
+        throw_if(!$hasPerm, new AuthorizationException());
 
         if ($expand = $request->get('expand')) {
             $schedule->loadExpands($expand);
@@ -88,10 +84,10 @@ class ScheduleController extends Controller
         /** @var User $user */
         $user = $request->user();
         $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_UPDATE->value);
-        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
+        abort_if(!$hasPerm, Response::HTTP_FORBIDDEN);
 
-        if (! $schedule->update($request->validated())) {
-            Log::error('Schedule Controller: Could not delete schedule '.$schedule->id);
+        if (!$schedule->update($request->validated())) {
+            Log::error('Schedule Controller: Could not delete schedule ' . $schedule->id);
 
             return api_gateway_error();
         }
@@ -110,10 +106,10 @@ class ScheduleController extends Controller
         /** @var User $user */
         $user = $request->user();
         $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_DELETE->value);
-        abort_if(! $hasPerm, Response::HTTP_FORBIDDEN);
+        abort_if(!$hasPerm, Response::HTTP_FORBIDDEN);
 
-        if (! $schedule->delete()) {
-            Log::error('Schedule Controller: Could not delete schedule '.$schedule->id);
+        if (!$schedule->delete()) {
+            Log::error('Schedule Controller: Could not delete schedule ' . $schedule->id);
 
             return api_gateway_error();
         }

@@ -34,8 +34,8 @@ class Constants
     const JOINED = 'participant_joined';
     const LEFT = 'participant_left';
 
-    const BASE_DATE_FORMAT = 'Y-m-d H:i:s';
-    const SCHEDULE_DATE_FORMAT = 'Y-m-d H:i:s';
+    const BASE_DATE_FORMAT = 'H:i:s';
+    const SCHEDULE_DATE_FORMAT = 'H:i:s';
     const ONLINE = 'online';
     const OFFLINE = 'offline';
 

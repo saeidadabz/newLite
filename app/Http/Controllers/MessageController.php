@@ -21,16 +21,16 @@ class MessageController extends Controller
     public function send(Request $request)
     {
         $request->validate([
-                               'text' => 'required'
-                           ]);
+            'text' => 'required'
+        ]);
 
         $user = auth()->user();
         $eventName = Constants::roomMessages;
 
         if ($request->room_id === NULL) {
             $request->validate([
-                                   'user_id' => 'required'
-                               ]);
+                'user_id' => 'required'
+            ]);
 
 
             $users = [
@@ -57,26 +57,26 @@ class MessageController extends Controller
 
 
         $message = Message::create([
-                                       'text'     => $request->text,
-                                       'reply_to' => $request->reply_to,
-                                       'user_id'  => $user->id,
-                                       'room_id'  => $room->id,
-                                   ]);
+            'text' => $request->text,
+            'reply_to' => $request->reply_to,
+            'user_id' => $user->id,
+            'room_id' => $room->id,
+        ]);
 
         if ($request->mentions) {
             $models = [
-                'user'      => User::class,
-                'room'      => Room::class,
+                'user' => User::class,
+                'room' => Room::class,
                 'workspace' => Workspace::class,
             ];
             foreach ($request->mentions as $mention) {
                 $message->mentions()->create([
-                                                 'user_id'          => $user->id,
-                                                 'start_position'   => $mention['start_position'],
-                                                 'mentionable_type' => $models[$mention['model_type']],
-                                                 'mentionable_id'   => $mention['model_id']
+                    'user_id' => $user->id,
+                    'start_position' => $mention['start_position'],
+                    'mentionable_type' => $models[$mention['model_type']],
+                    'mentionable_id' => $mention['model_id']
 
-                                             ]);
+                ]);
             }
         }
         $messageResponse = MessageResource::make($message);
@@ -85,10 +85,10 @@ class MessageController extends Controller
 
 
         Seen::firstOrCreate([
-                                'user_id'    => $user->id,
-                                'room_id'    => $room->id,
-                                'message_id' => $message->id
-                            ]);
+            'user_id' => $user->id,
+            'room_id' => $room->id,
+            'message_id' => $message->id
+        ]);
 
 
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
@@ -115,12 +115,12 @@ class MessageController extends Controller
         //        }
 
         Seen::firstOrCreate([
-                                'user_id'    => $user->id,
-                                'room_id'    => $room->id,
-                                'message_id' => $message->id
-                            ]);
+            'user_id' => $user->id,
+            'room_id' => $room->id,
+            'message_id' => $message->id
+        ]);
 
-        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+        sendSocket(Constants::roomUpdated, $user->socket_id, RoomResource::make($room));
 
 
         return api(TRUE);
@@ -136,10 +136,10 @@ class MessageController extends Controller
         $rooms = Room::where('title', 'LIKE', $request->q . '%')->get();
 
         return api([
-                       'users'      => UserMinimalResource::collection($users),
-                       'workspaces' => WorkspaceResource::collection($workspaces),
-                       'rooms'      => RoomResource::collection($rooms),
-                   ]);
+            'users' => UserMinimalResource::collection($users),
+            'workspaces' => WorkspaceResource::collection($workspaces),
+            'rooms' => RoomResource::collection($rooms),
+        ]);
 
     }
 
@@ -159,8 +159,8 @@ class MessageController extends Controller
         //TODO: check user can pin message in this room
 
         $message->update([
-                             'is_pinned' => TRUE
-                         ]);
+            'is_pinned' => TRUE
+        ]);
 
     }
 
@@ -171,9 +171,9 @@ class MessageController extends Controller
 
         //TODO: check user owned msg
         $message->update([
-                             'text'      => $request->text,
-                             'is_edited' => TRUE
-                         ]);
+            'text' => $request->text,
+            'is_edited' => TRUE
+        ]);
 
 
         File::syncFile($request->file_id, $message);
