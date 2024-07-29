@@ -54,7 +54,8 @@ class RoomController extends Controller
 //            'user_id' => $user->id
 //        ]);
 //
-//        sendSocket(Constants::roomUpdated, $room->channel, $res);
+        sendSocket(Constants::roomUpdated, $room->channel, $res);
+
 
         return api($res);
 
