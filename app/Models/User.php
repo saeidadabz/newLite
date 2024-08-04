@@ -239,9 +239,9 @@ class User extends Authenticatable
             'activities' => $acts->map(function ($act) {
                 return [
                     'id' => $act->id,
-                    'join_at' => $act->join_at->toDayDateTimeString()->timezone('Asia/Tehran'),
-                    'left_at' => $act->left_at?->toDayDateTimeString()->timezone('Asia/Tehran'),
-                    'created_at' => $act->created_at->toDayDateTimeString()->timezone('Asia/Tehran'),
+                    'join_at' => $act->join_at->timezone('Asia/Tehran')->toDayDateTimeString(),
+                    'left_at' => $act->left_at?->timezone('Asia/Tehran')->toDayDateTimeString(),
+                    'created_at' => $act->created_at->timezone('Asia/Tehran')->toDayDateTimeString(),
                 ];
             }),
         ];
