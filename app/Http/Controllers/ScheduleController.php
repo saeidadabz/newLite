@@ -38,13 +38,18 @@ class ScheduleController extends Controller
     public function create(ScheduleRequest $request)
     {
         $data = $request->validated();
-
         $user = $request->user();
+
+
         $schedule = $user->schedules()->create([
-            'availability_type' => $request->types,
-            'days' => $request->days,
-            'start_at' => $request->start_at,
-            'end_at' => $request->end_at,
+            'availability_type' => json_encode($data['availability_type']),
+            'days' => json_encode($data['availability_type']),
+            'start_time' => $request->start_time ?? '08:00:00',
+            'end_time' => $request->end_time ?? '18:00:00',
+            'is_recurrence' => $request->is_recurrence,
+            'recurrence_start_at' => $request->recurrence_start_at ?? now(),
+            'recurrence_end_at' => $request->recurrence_end_at,
+            'timezone' => $request->timezone ?? 'Asia/Tehran',
         ]);
 
 

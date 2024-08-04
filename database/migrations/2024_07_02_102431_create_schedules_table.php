@@ -15,8 +15,13 @@ return new class () extends Migration {
 
             $table->string('availability_type');
             $table->foreignId('user_id')->constrained('users');
-            $table->time('start_at')->default('08:00:00');
-            $table->time('end_at')->default('18:00:00');
+            $table->time('start_time')->default('08:00:00');
+            $table->time('end_time')->default('18:00:00');
+
+            $table->boolean('is_recurrence')->default(false);
+
+            $table->timestamp('recurrence_start_at')->default(now());
+            $table->timestamp('recurrence_end_at')->nullable();
             $table->string('timezone')->default('Asia/Tehran');
 
             $table->timestamps();

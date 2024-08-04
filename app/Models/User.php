@@ -229,6 +229,7 @@ class User extends Authenticatable
             'minute' => [60, 'seconds'],
             'hour' => [60, 'minutes'],
         ]);
+
         return [
             'user' => $this,
             'count' => $acts->count(),
@@ -238,13 +239,19 @@ class User extends Authenticatable
             'activities' => $acts->map(function ($act) {
                 return [
                     'id' => $act->id,
-                    'join_at' => $act->join_at->timezone('Asia/Tehran'),
-                    'left_at' => $act->left_at?->timezone('Asia/Tehran'),
-                    'created_at' => $act->created_at->timezone('Asia/Tehran'),
+                    'join_at' => $act->join_at->toDayDateTimeString()->timezone('Asia/Tehran'),
+                    'left_at' => $act->left_at?->toDayDateTimeString()->timezone('Asia/Tehran'),
+                    'created_at' => $act->created_at->toDayDateTimeString()->timezone('Asia/Tehran'),
                 ];
             }),
         ];
 
+    }
+
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
     }
 
     public function getAbilities(): array

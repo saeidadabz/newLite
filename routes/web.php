@@ -11,7 +11,14 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    dd('Tester');
+
+
+
+    $auth = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMDkzODEwMDg0OTAiLCJ1c2VySWQiOiIxMzYwMjMiLCJtb2JpbGVwaG9uZSI6IjA5MzgxMDA4NDkwIiwiZXhwIjoxODI2MzY0Mzk2LCJpc3MiOiJhdGFhaXIuaXIiLCJhdWQiOiJhcHAuYXRhYWlyLmlyIn0.5N9q541amqS-0Jg8v4qnKUS-ou0zcAgZdKbHlWDlXE0';
+    $url= 'https://coreapis.app.ataair.ir/reservation/v1/booking-api/AvailableFlights?source=NJF&target=IKA&day=4&month=6&adultQty=2&childQty=0&infantQty=0';
+
+    \Illuminate\Support\Facades\Http::get('https://coreapis.app.ataair.ir/reservation/v1/booking-api/AvailableFlights?source=NJF&target=IKA&day=4&month=6&adultQty=2&childQty=0&infantQty=0');
+    dd(json_encode([1, 2, 3, 4]));
 //
 //    $host = 'https://live-kit-server.cotopia.social';
 //    $svc = new RoomServiceClient($host, 'devkey', 'secret');

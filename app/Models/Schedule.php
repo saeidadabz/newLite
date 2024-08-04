@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Schedule extends Model
 {
@@ -14,8 +15,12 @@ class Schedule extends Model
         'availability_type',
         'user_id',
         'days',
-        'starts_at',
-        'ends_at',
+        'start_time',
+        'end_time',
+        'is_recurrence',
+        'recurrence_start_at',
+        'recurrence_end_at',
+        'timezone',
     ];
 
 //    protected $casts = [
@@ -26,6 +31,23 @@ class Schedule extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+
+    protected function availability_type(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => json_decode($value),
+//            set: fn($value) => json_encode($value),
+        );
+    }
+
+    protected function days(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => json_decode($value),
+//            set: fn($value) => json_encode($value),
+        );
     }
 
 //    public function loadExpands(string $relations)

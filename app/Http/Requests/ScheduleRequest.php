@@ -25,6 +25,8 @@ class ScheduleRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
+    //TODO: validate for is_recurrence and ...
     public function rules(): array
     {
         $types = get_enum_values(AvailabilityType::cases());
@@ -34,8 +36,8 @@ class ScheduleRequest extends FormRequest
         return [
 //            'calendar_id' => 'required|exists:calendars,id',
 
-            "types" => "required|array",
-            "types.*" => Rule::in($types),
+            "availability_type" => "required|array",
+            "availability_type.*" => Rule::in($types),
             "days" => 'required|array',
             "days.*" => Rule::in($days),
 
