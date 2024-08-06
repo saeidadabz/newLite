@@ -14,6 +14,7 @@
         "dedoc/scramble": "^0.11.1",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
+        "laravel/telescope": "^5.1",
         "laravel/tinker": "^2.9",
         "predis/predis": "^2.0",
         "rakutentech/laravel-request-docs": "^2.38",

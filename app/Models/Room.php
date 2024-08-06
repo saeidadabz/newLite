@@ -146,10 +146,10 @@ class Room extends Model
 
     public function lkUsers()
     {
-        return [];
-//        $host = 'https://live-kit-server.cotopia.social';
-//        $svc = new RoomServiceClient($host, 'devkey', 'secret');
-//        return $svc->listParticipants($this->id)->getParticipants()->getIterator();
+//        return [];
+        $host = 'https://live-kit-server.cotopia.social';
+        $svc = new RoomServiceClient($host, 'devkey', 'secret');
+        return $svc->listParticipants($this->id)->getParticipants()->getIterator();
 
 
     }
