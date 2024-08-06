@@ -53,7 +53,7 @@ class WorkspaceController extends Controller
 
     public function get(Workspace $workspace)
     {
-        if (auth()->user()->can('get-'.$workspace->id)) {
+        if (auth()->user()->can('get-' . $workspace->id)) {
             return api(WorkspaceResource::make($workspace));
 
         }
@@ -67,7 +67,7 @@ class WorkspaceController extends Controller
         $user = auth()->user();
 
         $workspace = Workspace::create($request->all());
-        $workspace->joinUser($user, 'owner');
+        $workspace->joinUser($user, 'super-admin');
 
         $user->notify(new WorkspaceCreatedNotification($workspace));
 
@@ -89,12 +89,14 @@ class WorkspaceController extends Controller
     public function addRole(Workspace $workspace, Request $request)
     {
         $request->validate([
-            'role'    => 'required',
+            'role' => 'required',
             'user_id' => 'required',
         ]);
 
         $wsUser = User::find($request->user_id);
         $workspace->users()->updateExistingPivot($wsUser, ['role' => $request->role]);
+
+        //TODO: add role to the user token.
 
         return api(WorkspaceResource::make($workspace));
 
@@ -103,7 +105,7 @@ class WorkspaceController extends Controller
     public function addTag(Workspace $workspace, Request $request)
     {
         $request->validate([
-            'tag'     => 'required',
+            'tag' => 'required',
             'user_id' => 'required',
         ]);
 
