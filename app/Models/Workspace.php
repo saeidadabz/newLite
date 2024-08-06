@@ -72,7 +72,7 @@ class Workspace extends Model
 //            $user->giveRole($role, $this);
             //TODO: Socket, user joined to ws.
 
-            $user->giveRole($role, $this);
+//            $user->giveRole($role, $this);
 
         }
         return $this;
