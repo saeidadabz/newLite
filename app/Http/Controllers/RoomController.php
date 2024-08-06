@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Agence104\LiveKit\RoomServiceClient;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\RoomResource;
 use App\Models\File;
@@ -69,6 +70,12 @@ class RoomController extends Controller
     public function join(Room $room)
     {
         $user = auth()->user();
+
+        if ($user->room_id !== NULL) {
+            $host = 'https://live-kit-server.cotopia.social';
+            $svc = new RoomServiceClient($host, 'devkey', 'secret');
+            $svc->removeParticipant("$user->room_id", $user->username);
+        }
 
         $room = $room->joinUser($user);
 
