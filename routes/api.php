@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/activities', 'activities');
         Route::get('/directs', 'directs');
         Route::get('/jobs', 'directs');
+        Route::get('/schedules', 'schedules');
         Route::get('/', 'all');
         Route::post('/', 'update');
         Route::post('/updateCoordinates', 'updateCoordinates');
@@ -74,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::controller(RoomController::class)->prefix('rooms')->group(function () {
+        Route::post('/', 'create');
         Route::get('/{room}/', 'get');
         Route::put('/{room}/', 'update');
         Route::get('/{room}/join', 'join');

@@ -14,9 +14,14 @@ return new class () extends Migration {
             $table->id();
 
             $table->string('availability_type');
+            $table->string('days');
+
             $table->foreignId('user_id')->constrained('users');
             $table->time('start_time')->default('08:00:00');
             $table->time('end_time')->default('18:00:00');
+
+
+
 
             $table->boolean('is_recurrence')->default(false);
 

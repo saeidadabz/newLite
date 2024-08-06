@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
+use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\UserResource;
 use App\Models\File;
@@ -36,8 +37,8 @@ class UserController extends Controller
         $search = $request->search;
         $users = User::where(function ($query) use ($search) {
             $query->where('name', 'LIKE', $search . '%')
-                ->orWhere('username', 'LIKE', $search . '%')
-                ->orWhere('email', 'LIKE', $search . '%');
+                  ->orWhere('username', 'LIKE', $search . '%')
+                  ->orWhere('email', 'LIKE', $search . '%');
         })->get();
         return api(UserMinimalResource::collection($users));
     }
@@ -46,12 +47,12 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $request->validate([
-            'coordinates' => 'required'
-        ]);
+                               'coordinates' => 'required'
+                           ]);
 
         $user->update([
-            'coordinates' => $request->coordinates
-        ]);
+                          'coordinates' => $request->coordinates
+                      ]);
 
         $response = UserMinimalResource::make($user);
 
@@ -69,8 +70,8 @@ class UserController extends Controller
 
 
         $user->update([
-            'is_megaphone' => !$user->is_megaphone
-        ]);
+                          'is_megaphone' => !$user->is_megaphone
+                      ]);
 
         $response = UserMinimalResource::make($user);
         if ($user->room !== NULL) {
@@ -87,8 +88,8 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $user->update([
-            'name' => $request->name ?? $user->name,
-        ]);
+                          'name' => $request->name ?? $user->name,
+                      ]);
 
         File::syncFile($request->avatar_id, $user, 'avatar');
         $response = UserMinimalResource::make($user);
@@ -113,4 +114,11 @@ class UserController extends Controller
     {
         return api(RoomResource::collection(auth()->user()->directs()));
     }
+
+
+    public function schedules()
+    {
+        return api(ScheduleResource::collection(auth()->user()->schedules));
+    }
+
 }

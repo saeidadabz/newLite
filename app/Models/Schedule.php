@@ -34,10 +34,10 @@ class Schedule extends Model
     }
 
 
-    protected function availability_type(): Attribute
+    protected function availabilityType(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => json_decode($value),
+            get: fn ($value) => json_decode($value),
 //            set: fn($value) => json_encode($value),
         );
     }
@@ -45,7 +45,7 @@ class Schedule extends Model
     protected function days(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => json_decode($value),
+            get: fn ($value) => json_decode($value),
 //            set: fn($value) => json_encode($value),
         );
     }
