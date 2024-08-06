@@ -11,7 +11,7 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-    $room = \App\Models\Room::first();
+    $room = \App\Models\Room::find(2);
     dd($room->lkUsers());
 //
 //    $host = 'https://live-kit-server.cotopia.social';
@@ -123,15 +123,15 @@ Route::get('/tester', function () {
 
     }
     $acts = $acts->whereIn('event_type', [Constants::JOINED, Constants::LEFT])
-        ->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+                 ->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
     $sum = 0;
     $acts = $acts->get();
     foreach ($acts as $act) {
         $start_time = $act->created_at;
         if ($act->event_type === Constants::JOINED) {
             $left = $acts->where('event_type', Constants::LEFT)
-                ->where('created_at', '>=', $start_time)
-                ->first();
+                         ->where('created_at', '>=', $start_time)
+                         ->first();
             $end_time = now();
 
             if ($left !== NULL) {
@@ -143,7 +143,7 @@ Route::get('/tester', function () {
     }
     return [
         'activities' => $acts,
-        'sum' => $sum,
+        'sum'        => $sum,
     ];
 //    if ($request->yesterday) {
 //
