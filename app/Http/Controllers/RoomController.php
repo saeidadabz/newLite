@@ -72,9 +72,14 @@ class RoomController extends Controller
         $user = auth()->user();
 
         if ($user->room_id !== NULL) {
-            $host = 'https://live-kit-server.cotopia.social';
-            $svc = new RoomServiceClient($host, 'devkey', 'secret');
-            $svc->removeParticipant("$user->room_id", $user->username);
+            try {
+                $host = 'https://live-kit-server.cotopia.social';
+                $svc = new RoomServiceClient($host, 'devkey', 'secret');
+                $svc->removeParticipant("$user->room_id", $user->username);
+            } catch (\Exception $e) {
+
+            }
+
         }
 
         $room = $room->joinUser($user);
