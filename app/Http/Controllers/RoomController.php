@@ -7,6 +7,7 @@ use App\Http\Resources\RoomResource;
 use App\Models\File;
 use App\Models\Room;
 use App\Models\Seen;
+use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,31 @@ class RoomController extends Controller
         File::syncFile($request->logo_id, $room, 'logo');
 
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+
+        return api(RoomResource::make($room));
+
+    }
+
+
+    public function create(Request $request)
+    {
+
+
+        $request->validate([
+                               'workspace_id' => 'required',
+                               'title'        => 'required',
+                           ]);
+
+        //TODO:check has create room permission
+
+        $workspace = Workspace::findOrFail($request->workspace_id);
+        $user = auth()->user();
+
+        $room = $workspace->rooms()->create([
+                                                'title'   => $request->title,
+                                                'user_id' => $user->id
+                                            ]);
+
 
         return api(RoomResource::make($room));
 
@@ -84,10 +110,10 @@ class RoomController extends Controller
         $user = auth()->user();
 
         $user->update([
-            'room_id' => null,
-        ]);
+                          'room_id' => NULL,
+                      ]);
 
-        return api(true);
+        return api(TRUE);
 
     }
 }

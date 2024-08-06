@@ -2,6 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Resources\RoomResource;
+use App\Models\Room;
+use App\Models\User;
+use App\Utilities\Constants;
 use Illuminate\Console\Command;
 
 class CheckUsersOnline extends Command
@@ -25,22 +29,40 @@ class CheckUsersOnline extends Command
      */
     public function handle()
     {
-        $rooms = \App\Models\Room::whereNot('workspace_id', null)->get();
+        $rooms = Room::whereNotNull('workspace_id')->get();
         foreach ($rooms as $room) {
             foreach ($room->lkUsers() as $lkUser) {
-                $user = $room->users->where('username', $lkUser->getIdentity())->first();
-                if ($user === null) {
-                    $u = \App\Models\User::where('username', $lkUser->getIdentity())->first();
-                    $u->activities()->create([
-                        'event_id' => $event->id,
-                        'state' => $state,
-                        'event_type' => $event->event,
-                        'workspace_id' => $event->room()->workspace->id,
-                        'room_id' => $event->room()->id,
-                        'data' => 'Disconn',
-                    ]);
+
+                $username = $lkUser->getIdentity();
+                $user = $room->users->where('username', $username)->first();
+                if ($user !== NULL) {
+                    $last_activity = $user->lastActivity();
+                    if ($last_activity === NULL) {
+                        $user->activities()->create([
+                                                        'join_at'      => now(),
+                                                        'left_at'      => NULL,
+                                                        'workspace_id' => $room->workspace->id,
+                                                        'room_id'      => $room->id,
+                                                        'data'         => NULL,
+                                                    ]);
+                    }
+
+
+                } else {
+
+                    $user = User::byUsername($username);
+                    $room = $room->joinUser($user, FALSE);
+
+
+                    $res = RoomResource::make($room);
+
+
+                    sendSocket(Constants::roomUpdated, $room->channel, $res);
                 }
+
+
             }
         }
+
     }
 }

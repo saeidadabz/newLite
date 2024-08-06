@@ -102,40 +102,42 @@ class Room extends Model
 
     }
 
-    public function joinUser($user)
+    public function joinUser($user, $joinLivekit = TRUE)
     {
         $workspace = $this->workspace;
-        $workspace = $user->workspaces->find($workspace->id);
-        if ($workspace === NULL) {
-            return error('You have no access to this workspace');
-
-        }
+//        $workspace = $user->workspaces->find($workspace->id);
+//        if ($workspace === NULL) {
+//            return error('You have no access to this workspace');
+//
+//        }
 
 
         $user->update([
-            'room_id' => $this->id,
-            'workspace_id' => $workspace->id,
-        ]);
+                          'room_id'      => $this->id,
+                          'workspace_id' => $workspace->id,
+                      ]);
 
 
-        $roomName = $this->id;
-        $participantName = $user->username;
+        if ($joinLivekit) {
+            $roomName = $this->id;
+            $participantName = $user->username;
 
-        $tokenOptions = (new AccessTokenOptions())
-            ->setIdentity($participantName)->setTtl(99999);
+            $tokenOptions = (new AccessTokenOptions())
+                ->setIdentity($participantName)->setTtl(99999);
 
-        $videoGrant = (new VideoGrant())
-            ->setRoomJoin()
-            ->setRoomName($roomName);
+            $videoGrant = (new VideoGrant())
+                ->setRoomJoin()
+                ->setRoomName($roomName);
 
-        $token = (new AccessToken('devkey', 'secret'))
-            ->init($tokenOptions)
-            ->setGrant($videoGrant)
-            ->toJwt();
+            $token = (new AccessToken('devkey', 'secret'))
+                ->init($tokenOptions)
+                ->setGrant($videoGrant)
+                ->toJwt();
 
-        //TODO: Socket, user joined to room.
+            //TODO: Socket, user joined to room.
 
-        $this->token = $token;
+            $this->token = $token;
+        }
 
 
         return $this;
