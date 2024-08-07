@@ -9,6 +9,7 @@ use App\Http\Resources\RoomListResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\UserMinimalResource;
 use App\Http\Resources\WorkspaceResource;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Notifications\WorkspaceCreatedNotification;
@@ -72,9 +73,9 @@ class WorkspaceController extends Controller
 
 
         $workspace->rooms()->create([
-                                        'title'   => 'general',
-                                        'user_id' => $user->id
-                                    ]);
+            'title' => 'general',
+            'user_id' => $user->id
+        ]);
 
 
         $user->notify(new WorkspaceCreatedNotification($workspace));
@@ -96,15 +97,23 @@ class WorkspaceController extends Controller
 
     public function addRole(Workspace $workspace, Request $request)
     {
+
         $request->validate([
-                               'role'    => 'required',
-                               'user_id' => 'required',
-                           ]);
+            'role' => 'required',
+            'user_id' => 'required',
+        ]);
 
-        $wsUser = User::find($request->user_id);
-        $workspace->users()->updateExistingPivot($wsUser, ['role' => $request->role]);
+        $user = auth()->user();
+        if ($user->isSuperAdmin($workspace)) {
 
-        //TODO: add role to the user token.
+            $role = Role::findOrFail($request->role_id);
+            $wsUser = User::findOrFail($request->user_id);
+
+            $wsUser->giveRole($role, $workspace->id);
+
+
+        }
+
 
         return api(WorkspaceResource::make($workspace));
 
@@ -113,9 +122,9 @@ class WorkspaceController extends Controller
     public function addTag(Workspace $workspace, Request $request)
     {
         $request->validate([
-                               'tag'     => 'required',
-                               'user_id' => 'required',
-                           ]);
+            'tag' => 'required',
+            'user_id' => 'required',
+        ]);
 
         $wsUser = User::find($request->user_id);
         $workspace->users()->updateExistingPivot($wsUser, ['tag' => $request->role]);

@@ -60,7 +60,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
         ];
     }
 
@@ -118,6 +118,12 @@ class User extends Authenticatable
     }
 
 
+    public function isSuperAdmin($workspace)
+    {
+        return $this->roles->where('title', 'super-admin')->where('workspace_id', $workspace->id)->first() !== null;
+    }
+
+
     public function checkIsInRoomForReal()
     {
 
@@ -165,7 +171,7 @@ class User extends Authenticatable
 
     public function isOwner($id): bool
     {
-        return (int) $this->id === (int) $id;
+        return (int)$this->id === (int)$id;
     }
 
     public function createToken(string $name, $abilities = [], $expiresAt = NULL): NewAccessToken
@@ -174,11 +180,11 @@ class User extends Authenticatable
 
         $abilities = $this->getAbilities();
         $token = $this->tokens()->create([
-                                             'name'       => $name,
-                                             'token'      => hash('sha256', $plainTextToken),
-                                             'abilities'  => $abilities,
-                                             'expires_at' => $expiresAt,
-                                         ]);
+            'name' => $name,
+            'token' => hash('sha256', $plainTextToken),
+            'abilities' => $abilities,
+            'expires_at' => $expiresAt,
+        ]);
 
         return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
     }
@@ -197,10 +203,10 @@ class User extends Authenticatable
         $last_activity = $this->lastActivity();
         if ($last_activity !== NULL) {
             $last_activity->update([
-                                       'left_at' => now(),
-                                       'data'    => $data,
+                'left_at' => now(),
+                'data' => $data,
 
-                                   ]);
+            ]);
         }
 
     }
@@ -247,27 +253,27 @@ class User extends Authenticatable
 
             $sum_minutes += $diff;
             $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')
-                                                ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
-                                                                                           ->toDateTimeString() . ' Diff: ' . $diff;
+                    ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
+                    ->toDateTimeString() . ' Diff: ' . $diff;
 
 
         }
         \Carbon\CarbonInterval::setCascadeFactors([
-                                                      'minute' => [60, 'seconds'],
-                                                      'hour'   => [60, 'minutes'],
-                                                  ]);
+            'minute' => [60, 'seconds'],
+            'hour' => [60, 'minutes'],
+        ]);
 
         return [
-            'user'        => $this,
-            'count'       => $acts->count(),
+            'user' => $this,
+            'count' => $acts->count(),
             'sum_minutes' => $sum_minutes,
-            'sum_hours'   => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
-            'data'        => $data,
-            'activities'  => $acts->map(function ($act) {
+            'sum_hours' => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
+            'data' => $data,
+            'activities' => $acts->map(function ($act) {
                 return [
-                    'id'         => $act->id,
-                    'join_at'    => $act->join_at->timezone('Asia/Tehran')->toDayDateTimeString(),
-                    'left_at'    => $act->left_at?->timezone('Asia/Tehran')->toDayDateTimeString(),
+                    'id' => $act->id,
+                    'join_at' => $act->join_at->timezone('Asia/Tehran')->toDayDateTimeString(),
+                    'left_at' => $act->left_at?->timezone('Asia/Tehran')->toDayDateTimeString(),
                     'created_at' => $act->created_at->timezone('Asia/Tehran')->toDayDateTimeString(),
                 ];
             }),
