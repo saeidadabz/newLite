@@ -16,18 +16,20 @@ class RolePermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = get_enum_values(PermissionEnum::cases());
-        $permissions = array_map(fn($name) => Permission::firstOrCreate([
-            'name' => $name,
-        ]), $permissions);
-        $permissions = array_column($permissions, 'id', 'name');
+        $permissions = array_map(fn ($name) => Permission::firstOrCreate([
+                                                                             'title' => $name,
+                                                                         ]), $permissions);
+        $permissions = array_column($permissions, 'id', 'title');
+
+
 
         $defaultRolePerms = Constants::ROLE_PERMISSIONS;
         foreach ($defaultRolePerms as $role => $perms) {
             /** @var Role $role */
             $role = Role::firstOrCreate([
-                'name' => $role,
-            ]);
-            $perms = array_map(fn(PermissionEnum $name) => $permissions[$name->value], $perms);
+                                            'title' => $role,
+                                        ]);
+            $perms = array_map(fn (PermissionEnum $name) => $permissions[$name->value], $perms);
             $role->permissions()->sync($perms);
         }
     }

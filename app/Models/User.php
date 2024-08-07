@@ -109,7 +109,7 @@ class User extends Authenticatable
 
     public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class)->withPivot('workspace_id', 'room_id');
     }
 
     public function directs()
@@ -128,19 +128,33 @@ class User extends Authenticatable
 
     }
 
-    public function giveRole($ability, $workspace)
+    public function giveRole($role, $workspace_id, $attach = TRUE)
     {
-        $permissions = Constants::ROLE_PERMISSIONS[$ability];
-        $currentToken = auth()->user()->currentAccessToken();
-        $abilities = $currentToken->abilities;
 
-        foreach ($permissions as $permission) {
-            $abilities[] = $permission . '-' . $workspace->id;
+
+        if (!$role instanceof Role) {
+            $role = Role::where('title', $role)->firstOrFail();
 
         }
+        $permissions = $role->permissions;
+        $currentToken = $this->currentAccessToken();
+//        $abilities = $currentToken->abilities;
+        $abilities = [];
 
+        foreach ($permissions as $permission) {
+            $abilities[] = $permission->title . '-' . $workspace_id;
+
+        }
         $currentToken->abilities = $abilities;
         $currentToken->save();
+
+
+        if ($attach) {
+            $this->roles()->attach($role, [
+                'workspace_id' => $workspace_id,
+                //                'room_id'      => $room?->id,
+            ]);
+        }
     }
 
 
@@ -154,21 +168,20 @@ class User extends Authenticatable
         return (int) $this->id === (int) $id;
     }
 
-//    public function createToken(string $name, DateTimeInterface $expiresAt = NULL)
-//    {
-//        $plainTextToken = $this->generateTokenString();
-//
-//        $abilities = $this->getAbilities();
-//
-//        $token = $this->tokens()->create([
-//            'name' => $name,
-//            'token' => hash('sha256', $plainTextToken),
-//            'abilities' => $abilities,
-//            'expires_at' => $expiresAt,
-//        ]);
-//
-//        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
-//    }
+    public function createToken(string $name, $abilities = [], $expiresAt = NULL): NewAccessToken
+    {
+        $plainTextToken = $this->generateTokenString();
+
+        $abilities = $this->getAbilities();
+        $token = $this->tokens()->create([
+                                             'name'       => $name,
+                                             'token'      => hash('sha256', $plainTextToken),
+                                             'abilities'  => $abilities,
+                                             'expires_at' => $expiresAt,
+                                         ]);
+
+        return new NewAccessToken($token, $token->getKey() . '|' . $plainTextToken);
+    }
 
 
     public function lastActivity()
@@ -270,10 +283,18 @@ class User extends Authenticatable
 
     public function getAbilities(): array
     {
-        $roleIds = $this->roles()->pluck('id');
-        $permIds = PermissionRole::whereIn('role_id', $roleIds)->distinct()->pluck('permission_id');
-        $perms = Permission::query()->whereIn('id', $permIds)->pluck('name');
 
-        return $perms->toArray();
+        $abilities = [];
+
+        foreach ($this->roles as $role) {
+            $permissions = $role->permissions;
+
+            foreach ($permissions as $permission) {
+                $abilities[] = $permission->title . '-' . $role->pivot->workspace_id;
+
+            }
+        }
+        return $abilities;
+
     }
 }

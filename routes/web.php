@@ -11,6 +11,15 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
+    $user = \App\Models\User::first();
+
+//
+//    $workspace = \App\Models\Workspace::first();
+//    $user->giveRole('member', $workspace);
+
+
+    $token = $user->createToken('1');
+    dd($token);
     $room = \App\Models\Room::find(2);
     dd($room->lkUsers());
 //

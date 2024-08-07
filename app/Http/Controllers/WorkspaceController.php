@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permission;
 use App\Http\Resources\CalendarResource;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomListResource;
@@ -53,11 +54,11 @@ class WorkspaceController extends Controller
 
     public function get(Workspace $workspace)
     {
-        if (auth()->user()->can('get-' . $workspace->id)) {
+        if (auth()->user()->tokenCan(Permission::WS_GET->value . '-' . $workspace->id)) {
             return api(WorkspaceResource::make($workspace));
 
         }
-        dd('Cant');
+        return error('Permission Denied');
     }
 
     public function create(Request $request)

@@ -10,15 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('role_user', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained('users');
+        Schema::create('role_workspace', function (Blueprint $table) {
             $table->foreignId('role_id')->constrained('roles');
             $table->foreignId('workspace_id')->constrained('workspaces');
-            $table->foreignId('room_id')->nullable()->constrained('workspaces');
 
-            $table->primary(['user_id', 'role_id']);
-
-            $table->timestamps();
+            $table->primary(['workspace_id', 'role_id']);
         });
     }
 
@@ -27,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('role_workspace');
     }
 };

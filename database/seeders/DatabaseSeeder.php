@@ -17,16 +17,16 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RolePermissionSeeder::class);
 
-        User::factory()->create([
-            'name'  => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
-        /** @var User $admin */
-        $admin = User::factory()->create([
-            'name'  => 'Super Admin User',
-            'email' => 'admin@example.com',
-        ]);
-        $admin->roles()->attach(Role::whereName('super-admin')->first());
+//        User::factory()->create([
+//            'name'  => 'Test User',
+//            'email' => 'test@example.com',
+//        ]);
+//
+//        /** @var User $admin */
+//        $admin = User::factory()->create([
+//            'name'  => 'Super Admin User',
+//            'email' => 'admin@example.com',
+//        ]);
+//        $admin->roles()->attach(Role::whereName('super-admin')->first());
     }
 }
