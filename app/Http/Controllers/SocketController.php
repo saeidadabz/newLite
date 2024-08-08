@@ -115,6 +115,8 @@ class SocketController extends Controller
     {
 
         $user = auth()->user();
+
+        $room_id = $user->room_id;
         $user->update([
             'socket_id' => NULL,
             'status' => Constants::OFFLINE,
@@ -127,7 +129,7 @@ class SocketController extends Controller
         try {
             $host = 'https://live-kit-server.cotopia.social';
             $svc = new RoomServiceClient($host, 'devkey', 'secret');
-            $svc->removeParticipant("$user->room_id", $user->username);
+            $svc->removeParticipant("$room_id", $user->username);
         } catch (\Exception $e) {
             logger($e);
         }
