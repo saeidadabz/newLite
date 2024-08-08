@@ -31,6 +31,13 @@ class UserController extends Controller
     }
 
 
+    public function workspaces()
+    {
+        $user = auth()->user();
+
+        return api(JobResource::collection($user->workspaces()));
+    }
+
     public function search(Request $request)
     {
         //TODO: have to use meiliserach instead

@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::controller(WorkspaceController::class)->prefix('workspaces')->group(function () {
-//        Route::get('/', 'all');
+        Route::get('/', 'all');
         Route::post('/', 'create');
         //        Route::get('/{workspace}', 'get')->middleware('ownedWorkspace');
         Route::get('/{workspace}', 'get');

@@ -24,7 +24,7 @@ class AuthController extends Controller
 
         }
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if ($user === null || !Hash::check($request->password, $user->password)) {
             return error('Credentials are  incorrect');
         }
 
