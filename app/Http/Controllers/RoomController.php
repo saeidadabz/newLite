@@ -34,9 +34,9 @@ class RoomController extends Controller
 
 
         $request->validate([
-                               'workspace_id' => 'required',
-                               'title'        => 'required',
-                           ]);
+            'workspace_id' => 'required',
+            'title' => 'required',
+        ]);
 
         //TODO:check has create room permission
 
@@ -44,9 +44,9 @@ class RoomController extends Controller
         $user = auth()->user();
 
         $room = $workspace->rooms()->create([
-                                                'title'   => $request->title,
-                                                'user_id' => $user->id
-                                            ]);
+            'title' => $request->title,
+            'user_id' => $user->id
+        ]);
 
 
         return api(RoomResource::make($room));
@@ -71,6 +71,10 @@ class RoomController extends Controller
     {
         $user = auth()->user();
 
+
+        $before_room = $user->room_id;
+
+
         if ($user->room_id !== NULL) {
             try {
                 $host = 'https://live-kit-server.cotopia.social';
@@ -87,6 +91,11 @@ class RoomController extends Controller
 
         $res = RoomResource::make($room);
 
+        if ($before_room !== null) {
+            $before_room = Room::find($before_room);
+            sendSocket(Constants::roomUpdated, $before_room->channel, RoomResource::make($before_room));
+
+        }
 
         sendSocket(Constants::roomUpdated, $room->channel, $res);
 
@@ -122,8 +131,8 @@ class RoomController extends Controller
         $user = auth()->user();
 
         $user->update([
-                          'room_id' => NULL,
-                      ]);
+            'room_id' => NULL,
+        ]);
 
         return api(TRUE);
 
