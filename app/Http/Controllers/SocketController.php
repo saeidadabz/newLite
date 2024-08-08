@@ -129,7 +129,7 @@ class SocketController extends Controller
             $svc = new RoomServiceClient($host, 'devkey', 'secret');
             $svc->removeParticipant("$user->room_id", $user->username);
         } catch (\Exception $e) {
-
+            logger($e);
         }
 
 
