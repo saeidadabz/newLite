@@ -11,6 +11,11 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
+
+    $host = 'https://live-kit-server.cotopia.social';
+    $svc = new RoomServiceClient($host, 'devkey', 'secret');
+    $svc->removeParticipant("1", 'Katerou22');
+    dd('Here');
     $user = \App\Models\User::first();
 
 //
@@ -132,15 +137,15 @@ Route::get('/tester', function () {
 
     }
     $acts = $acts->whereIn('event_type', [Constants::JOINED, Constants::LEFT])
-                 ->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
+        ->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
     $sum = 0;
     $acts = $acts->get();
     foreach ($acts as $act) {
         $start_time = $act->created_at;
         if ($act->event_type === Constants::JOINED) {
             $left = $acts->where('event_type', Constants::LEFT)
-                         ->where('created_at', '>=', $start_time)
-                         ->first();
+                ->where('created_at', '>=', $start_time)
+                ->first();
             $end_time = now();
 
             if ($left !== NULL) {
@@ -152,7 +157,7 @@ Route::get('/tester', function () {
     }
     return [
         'activities' => $acts,
-        'sum'        => $sum,
+        'sum' => $sum,
     ];
 //    if ($request->yesterday) {
 //
@@ -183,9 +188,9 @@ Route::get('/acts', function () {
         foreach ($users as $user) {
 
 
-            $d[] = $user->getTime($request->period);
+            $d[] = collect($user->getTime($request->period));
         }
-        return $d;
+        return collect($d)->sortByDesc('sum_minutes')->values()->toArray();
     }
     $user = \App\Models\User::find($request->user_id);
     return $user->getTime($request->period);
