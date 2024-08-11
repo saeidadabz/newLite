@@ -214,7 +214,7 @@ class User extends Authenticatable
 
     public function getTime($period = NULL)
     {
-        $acts = $this->activities()->orderBy('id', 'DESC');
+        $acts = $this->activities();
 
         if ($period === 'today') {
 
