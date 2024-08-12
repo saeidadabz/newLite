@@ -1,3 +1,7 @@
 <?php
 
-\Illuminate\Support\Facades\Schedule::command('app:check-users-online')->everyFiveMinutes();
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('app:check-users-online')->everyFiveMinutes();
+Schedule::command('telescope:prune')->hourly();
+
