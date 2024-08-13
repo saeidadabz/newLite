@@ -113,9 +113,9 @@ class Room extends Model
 
 
         $user->update([
-                          'room_id'      => $this->id,
-                          'workspace_id' => $workspace->id,
-                      ]);
+            'room_id' => $this->id,
+            'workspace_id' => $workspace->id,
+        ]);
 
 
         if ($joinLivekit) {
@@ -124,14 +124,14 @@ class Room extends Model
 
             $tokenOptions = (new AccessTokenOptions())
                 ->setIdentity($participantName)->setTtl(99999);
-
-            $videoGrant = (new VideoGrant())
-                ->setRoomJoin()
-                ->setRoomName($roomName);
+//
+//            $videoGrant = (new VideoGrant())
+//                ->setRoomJoin()
+//                ->setRoomName($roomName);
 
             $token = (new AccessToken('devkey', 'secret'))
                 ->init($tokenOptions)
-                ->setGrant($videoGrant)
+//                ->setGrant($videoGrant)
                 ->toJwt();
 
             //TODO: Socket, user joined to room.
