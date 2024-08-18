@@ -165,6 +165,14 @@ class MessageController extends Controller
     }
 
 
+    public function delete(Message $message)
+    {
+        //TODO: check user owned msg
+        $message->delete();
+        return api(MessageResource::make($message));
+
+    }
+
     public function update(Message $message, Request $request)
     {
         //        $user = auth()->user();

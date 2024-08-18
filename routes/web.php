@@ -12,8 +12,9 @@ Route::get('/', function () {
 Route::get('/tester', function () {
 
 
-    $host = 'https://live-kit-server.cotopia.social';
-    $svc = new RoomServiceClient($host, 'devkey', 'secret');
+    $host = config('livekit.host');
+    dd($host);
+    $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
     $svc->removeParticipant("1", 'Katerou22');
     dd('Here');
     $user = \App\Models\User::first();
@@ -29,7 +30,7 @@ Route::get('/tester', function () {
     dd($room->lkUsers());
 //
 //    $host = 'https://live-kit-server.cotopia.social';
-//    $svc = new RoomServiceClient($host, 'devkey', 'secret');
+//    $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
 //    return $svc->removeParticipant('1', 'Katerou22');
 //
 //    $e = array(
@@ -91,7 +92,7 @@ Route::get('/tester', function () {
 //    dd((new \App\Utilities\EventType($e))->participant()->state);
 //
 //    $host = 'https://live-kit-server.cotopia.social';
-//    $svc = new RoomServiceClient($host, 'devkey', 'secret');
+//    $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
 //
 //// List rooms.
 //    $rooms = $svc->listParticipants('1');
@@ -187,13 +188,12 @@ Route::get('/acts', function () {
         $d = [];
         foreach ($users as $user) {
 
-
-            $d[] = collect($user->getTime($request->period));
+            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded));
         }
         return collect($d)->sortByDesc('sum_minutes')->values()->toArray();
     }
     $user = \App\Models\User::find($request->user_id);
-    return $user->getTime($request->period);
+    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded);
 
 
 });

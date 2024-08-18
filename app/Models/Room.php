@@ -113,9 +113,9 @@ class Room extends Model
 
 
         $user->update([
-                          'room_id'      => $this->id,
-                          'workspace_id' => $workspace->id,
-                      ]);
+            'room_id' => $this->id,
+            'workspace_id' => $workspace->id,
+        ]);
 
 
         if ($joinLivekit) {
@@ -129,7 +129,7 @@ class Room extends Model
                 ->setRoomJoin()
                 ->setRoomName($roomName);
 
-            $token = (new AccessToken('devkey', 'secret'))
+            $token = (new AccessToken(config('livekit.apiKey'), config('livekit.apiSecret')))
                 ->init($tokenOptions)
                 ->setGrant($videoGrant)
                 ->toJwt();
@@ -149,8 +149,8 @@ class Room extends Model
     public function lkUsers()
     {
 //        return [];
-        $host = 'https://live-kit-server.cotopia.social';
-        $svc = new RoomServiceClient($host, 'devkey', 'secret');
+        $host = config('livekit.host');
+        $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
         return $svc->listParticipants($this->id)->getParticipants()->getIterator();
 
 

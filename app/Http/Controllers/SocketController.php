@@ -127,8 +127,8 @@ class SocketController extends Controller
         $user->left();
 
         try {
-            $host = 'https://live-kit-server.cotopia.social';
-            $svc = new RoomServiceClient($host, 'devkey', 'secret');
+            $host = config('livekit.host');
+            $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
             $svc->removeParticipant("$room_id", $user->username);
         } catch (\Exception $e) {
             logger($e);

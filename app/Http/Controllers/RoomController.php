@@ -77,8 +77,8 @@ class RoomController extends Controller
 
         if ($user->room_id !== NULL) {
             try {
-                $host = 'https://live-kit-server.cotopia.social';
-                $svc = new RoomServiceClient($host, 'devkey', 'secret');
+                $host = config('livekit.host');
+                $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
                 $svc->removeParticipant("$user->room_id", $user->username);
             } catch (\Exception $e) {
 

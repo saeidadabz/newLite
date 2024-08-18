@@ -33,7 +33,7 @@ return [
         'reverb' => [
             'driver'  => 'reverb',
             'key'     => env('REVERB_APP_KEY'),
-            'secret'  => env('REVERB_APP_SECRET'),
+            config('livekit.apiSecret')  => env('REVERB_APP_SECRET'),
             'app_id'  => env('REVERB_APP_ID'),
             'options' => [
                 'host'   => env('REVERB_HOST'),
@@ -49,7 +49,7 @@ return [
         'pusher' => [
             'driver'  => 'pusher',
             'key'     => env('PUSHER_APP_KEY'),
-            'secret'  => env('PUSHER_APP_SECRET'),
+            config('livekit.apiSecret')  => env('PUSHER_APP_SECRET'),
             'app_id'  => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster'   => env('PUSHER_APP_CLUSTER'),

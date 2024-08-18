@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Utilities\Constants;
 use App\Utilities\Settingable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -212,7 +213,7 @@ class User extends Authenticatable
     }
 
 
-    public function getTime($period = NULL)
+    public function getTime($period = NULL, $startAt = null, $endAt = null, bool $expanded = true)
     {
         $acts = $this->activities();
 
@@ -237,6 +238,16 @@ class User extends Authenticatable
 
 
         }
+        if ($startAt !== null) {
+            $acts = $acts->where('created_at', '>=', Carbon::createFromDate($startAt));
+
+        }
+
+        if ($endAt !== null) {
+            $acts = $acts->where('created_at', '<=', Carbon::createFromDate($endAt));
+
+        }
+
         $sum_minutes = 0;
         $data = [];
         $acts = $acts->get();
@@ -256,7 +267,6 @@ class User extends Authenticatable
                     ->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')
                     ->toDateTimeString() . ' Diff: ' . $diff;
 
-
         }
         \Carbon\CarbonInterval::setCascadeFactors([
             'minute' => [60, 'seconds'],
@@ -268,15 +278,15 @@ class User extends Authenticatable
             'count' => $acts->count(),
             'sum_minutes' => $sum_minutes,
             'sum_hours' => \Carbon\CarbonInterval::minutes($sum_minutes)->cascade()->forHumans(),
-            'data' => $data,
-            'activities' => $acts->map(function ($act) {
+            'data' => $expanded ? $data : [],
+            'activities' => $expanded ? $acts->map(function ($act) {
                 return [
                     'id' => $act->id,
                     'join_at' => $act->join_at->timezone('Asia/Tehran')->toDayDateTimeString(),
                     'left_at' => $act->left_at?->timezone('Asia/Tehran')->toDayDateTimeString(),
                     'created_at' => $act->created_at->timezone('Asia/Tehran')->toDayDateTimeString(),
                 ];
-            }),
+            }) : [],
         ];
 
     }

@@ -15,14 +15,18 @@ class MessageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'user'       => UserMinimalResource::make($this->user),
-            'text'       => $this->text,
-            'files'      => FileResource::collection($this->files),
-            'room'       => RoomResource::make($this->room),
+            'id' => $this->id,
+            'user' => UserMinimalResource::make($this->user),
+            'text' => $this->text,
+            'files' => FileResource::collection($this->files),
+            'room' => RoomResource::make($this->room),
             'created_at' => $this->created_at->timestamp,
             'updated_at' => $this->updated_at?->timestamp,
-            'seen'       => $this->saw(auth()->user()),
+            'seen' => $this->saw(auth()->user()),
+            'is_edited' => $this->is_edited,
+            'is_pinned' => $this->is_pinned,
+            'reply_to' => MessageResource::make($this->reply_to)
+
         ];
     }
 }
