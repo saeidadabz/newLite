@@ -120,7 +120,7 @@ class MessageController extends Controller
             'message_id' => $message->id
         ]);
 
-        sendSocket(Constants::roomUpdated, $user->socket_id, RoomResource::make($room));
+        sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
 
 
         return api(TRUE);
@@ -162,6 +162,8 @@ class MessageController extends Controller
             'is_pinned' => TRUE
         ]);
 
+        sendSocket(Constants::messagePinned, $message->room->channel, MessageResource::make($message));
+
     }
 
 
@@ -169,7 +171,12 @@ class MessageController extends Controller
     {
         //TODO: check user owned msg
         $message->delete();
-        return api(MessageResource::make($message));
+
+        $res = MessageResource::make($message);
+        sendSocket(Constants::messageDeleted, $message->room->channel, $res);
+
+
+        return api($res);
 
     }
 
@@ -186,7 +193,11 @@ class MessageController extends Controller
 
         File::syncFile($request->file_id, $message);
 
-        return api(MessageResource::make($message));
+
+        $res = MessageResource::make($message);
+        sendSocket(Constants::messageUpdated, $message->room->channel, $res);
+
+        return api($res);
 
 
     }
