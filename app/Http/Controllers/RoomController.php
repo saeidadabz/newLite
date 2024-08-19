@@ -107,8 +107,6 @@ class RoomController extends Controller {
                                                 'mentions',
                                                 'user',
                                                 'files',
-                                                'room',
-                                                'seens'
                                             ])->orderByDesc('id')->paginate(10);
 
 

@@ -16,8 +16,7 @@ class Room extends Model {
     use Settingable;
 
 
-    protected $with = ['seens', 'users', 'files'];
-    protected $withCount = ['messages'];
+    protected $with = ['users', 'files'];
     protected $fillable = [
         'title',
         'active',

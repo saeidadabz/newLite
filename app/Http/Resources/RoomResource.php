@@ -21,7 +21,9 @@ class RoomResource extends JsonResource {
             'participants' => UserMinimalResource::collection($this->participants()),
             'landing_spot' => $this->landing_spot,
             'background'   => FileResource::make($this->background()),
-            'unseens'      => $this->unseens(auth()->user()),
+            //TODO: has to have another req for seens
+
+            'unseens' => 1,
         ];
     }
 }
