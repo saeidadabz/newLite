@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AvailabilityType;
+use App\Enums\Days;
 use App\Enums\Permission;
 use App\Http\Requests\ScheduleRequest;
 use App\Http\Resources\ScheduleResource;
@@ -14,110 +16,66 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
-class ScheduleController extends Controller
-{
-
-
-    public function index(Request $request)
-    {
-        $user = $request->user();
+class ScheduleController extends Controller {
 
 
-        $schedules = $user->schedules;
+    public function all() {
 
 
-        $res = ScheduleResource::collection($schedules);
+        return api(ScheduleResource::collection(Schedule::orderByDesk('id')->get()));
 
-        return api($res);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function create(ScheduleRequest $request)
-    {
-        $data = $request->validated();
-        $user = $request->user();
+    public function create(Request $request) {
 
+        $types = get_enum_values(AvailabilityType::cases());
+        $days = get_enum_values(Days::cases());
 
-        $schedule = $user->schedules()->create([
-                                                   'availability_type'   => json_encode($data['availability_type']),
-                                                   'days'                => json_encode($data['availability_type']),
-                                                   'start_time'          => $request->start_time ?? '08:00:00',
-                                                   'end_time'            => $request->end_time ?? '18:00:00',
-                                                   'is_recurrence'       => $request->is_recurrence ?? FALSE,
-                                                   'recurrence_start_at' => $request->recurrence_start_at ?? now(),
-                                                   'recurrence_end_at'   => $request->recurrence_end_at,
-                                                   'timezone'            => $request->timezone ?? 'Asia/Tehran',
-                                               ]);
+        $request->validate([
+
+                               "availability_type" => ["required", Rule::in($types)],
+                               "days"              => 'required|array',
+                               "days.*"            => Rule::in($days),
+
+                           ]);
+
+        $timezone = $request->timezone ?? 'Asia/Tehran';
+
+        $schedule = auth()->user()->schedules()->create([
+                                                            'availability_type'   => $request->availability_type,
+                                                            'days'                => json_encode($request->days, JSON_THROW_ON_ERROR),
+                                                            'start_time'          => $request->start_time ?? '08:00:00',
+                                                            'end_time'            => $request->end_time ?? '18:00:00',
+                                                            'is_recurrence'       => $request->is_recurrence ?? FALSE,
+                                                            'recurrence_start_at' => $request->recurrence_start_at ?? now()->timezone($timezone),
+                                                            'recurrence_end_at'   => $request->recurrence_end_at,
+                                                            'timezone'            => $timezone,
+                                                        ]);
 
 
         return api(ScheduleResource::make($schedule));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Request $request, Schedule $schedule)
-    {
-        /** @var User $user */
-        $user = $request->user();
-        $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_VIEW->value);
-        abort_if(!$hasPerm, Response::HTTP_FORBIDDEN);
 
-        /** @var Calendar $cal */
-        $cal = $schedule->calendar;
+    public function update(Request $request, Schedule $schedule) {
 
-        $hasPerm = $cal->canUserAccess($request->user());
-        throw_if(!$hasPerm, new AuthorizationException());
-
-        if ($expand = $request->get('expand')) {
-            $schedule->loadExpands($expand);
+        if (auth()->user()->isOwner($schedule->user_id)) {
+            $schedule->update($request->all());
         }
 
-        $res = ScheduleResource::make($schedule);
 
-        return api($res);
+        return api(ScheduleResource::make($schedule));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(ScheduleRequest $request, Schedule $schedule)
-    {
-        /** @var User $user */
-        $user = $request->user();
-        $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_UPDATE->value);
-        abort_if(!$hasPerm, Response::HTTP_FORBIDDEN);
 
-        if (!$schedule->update($request->validated())) {
-            Log::error('Schedule Controller: Could not delete schedule ' . $schedule->id);
+    public function delete(Schedule $schedule) {
 
-            return api_gateway_error();
+        if (auth()->user()->isOwner($schedule->user_id)) {
+            $schedule->delete();
         }
 
-        $schedule->fresh();
-        $res = ScheduleResource::make($schedule);
-
-        return api($res);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Request $request, Schedule $schedule)
-    {
-        /** @var User $user */
-        $user = $request->user();
-        $hasPerm = $user->isOwner($schedule->owner_id) || $user->tokenCan(Permission::SCHEDULE_DELETE->value);
-        abort_if(!$hasPerm, Response::HTTP_FORBIDDEN);
-
-        if (!$schedule->delete()) {
-            Log::error('Schedule Controller: Could not delete schedule ' . $schedule->id);
-
-            return api_gateway_error();
-        }
 
         return api();
     }

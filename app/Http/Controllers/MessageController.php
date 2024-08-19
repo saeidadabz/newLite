@@ -16,35 +16,23 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class MessageController extends Controller
-{
-    public function send(Request $request)
-    {
-        $request->validate([
-            'text' => 'required'
-        ]);
+class MessageController extends Controller {
+    public function send(Request $request) {
+        $request->validate(['text' => 'required']);
 
         $user = auth()->user();
         $eventName = Constants::roomMessages;
 
         if ($request->room_id === NULL) {
-            $request->validate([
-                'user_id' => 'required'
-            ]);
+            $request->validate(['user_id' => 'required']);
 
 
-            $users = [
-                $request->user_id,
-                $user->id
-            ];
+            $users = [$request->user_id, $user->id];
             asort($users);
             $roomTitle = implode('-', $users);
 
 
-            $room = Room::firstOrCreate(
-                ['title' => $roomTitle],
-                ['is_private' => TRUE]
-            );
+            $room = Room::firstOrCreate(['title' => $roomTitle], ['is_private' => TRUE]);
             $eventName = Constants::directMessages;
 
 
@@ -57,38 +45,42 @@ class MessageController extends Controller
 
 
         $message = Message::create([
-            'text' => $request->text,
-            'reply_to' => $request->reply_to,
-            'user_id' => $user->id,
-            'room_id' => $room->id,
-        ]);
+                                       'text'     => $request->text,
+                                       'reply_to' => $request->reply_to,
+                                       'user_id'  => $user->id,
+                                       'room_id'  => $room->id,
+                                   ]);
 
         if ($request->mentions) {
-            $models = [
-                'user' => User::class,
-                'room' => Room::class,
-                'workspace' => Workspace::class,
-            ];
+            $models = ['user' => User::class, 'room' => Room::class, 'workspace' => Workspace::class,];
             foreach ($request->mentions as $mention) {
                 $message->mentions()->create([
-                    'user_id' => $user->id,
-                    'start_position' => $mention['start_position'],
-                    'mentionable_type' => $models[$mention['model_type']],
-                    'mentionable_id' => $mention['model_id']
+                                                 'user_id'          => $user->id,
+                                                 'start_position'   => $mention['start_position'],
+                                                 'mentionable_type' => $models[$mention['model_type']],
+                                                 'mentionable_id'   => $mention['model_id']
 
-                ]);
+                                             ]);
             }
         }
+
+        if ($request->links) {
+
+            foreach ($request->links as $link) {
+                $message->links()->create([
+                                              'start_position' => $link['start_position'],
+                                              'url'            => $link['url'],
+                                              'text'           => $link['text'],
+                                          ]);
+            }
+        }
+
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
         sendSocket($eventName, $room->channel, $messageResponse);
 
 
-        Seen::firstOrCreate([
-            'user_id' => $user->id,
-            'room_id' => $room->id,
-            'message_id' => $message->id
-        ]);
+        Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
 
 
         sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
@@ -106,19 +98,14 @@ class MessageController extends Controller
 
     }
 
-    public function seen(Message $message)
-    {
+    public function seen(Message $message) {
         $user = auth()->user();
         $room = $message->room;
         //        if (!$room->participants()->contains('id', $user->id)) {
         //            return error('You cant seen this message');
         //        }
 
-        Seen::firstOrCreate([
-            'user_id' => $user->id,
-            'room_id' => $room->id,
-            'message_id' => $message->id
-        ]);
+        Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
 
         sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
 
@@ -128,23 +115,21 @@ class MessageController extends Controller
 
     }
 
-    public function searchMention(Request $request)
-    {
+    public function searchMention(Request $request) {
 
         $users = User::where('username', 'LIKE', $request->q . '%')->get();
         $workspaces = Workspace::where('title', 'LIKE', $request->q . '%')->get();
         $rooms = Room::where('title', 'LIKE', $request->q . '%')->get();
 
         return api([
-            'users' => UserMinimalResource::collection($users),
-            'workspaces' => WorkspaceResource::collection($workspaces),
-            'rooms' => RoomResource::collection($rooms),
-        ]);
+                       'users'      => UserMinimalResource::collection($users),
+                       'workspaces' => WorkspaceResource::collection($workspaces),
+                       'rooms'      => RoomResource::collection($rooms),
+                   ]);
 
     }
 
-    public function get(Room $room)
-    {
+    public function get(Room $room) {
         $user = auth()->user();
         //TODO check if user is in room
 
@@ -154,21 +139,17 @@ class MessageController extends Controller
 
     }
 
-    public function pin(Message $message)
-    {
+    public function pin(Message $message) {
         //TODO: check user can pin message in this room
 
-        $message->update([
-            'is_pinned' => TRUE
-        ]);
+        $message->update(['is_pinned' => TRUE]);
 
         sendSocket(Constants::messagePinned, $message->room->channel, MessageResource::make($message));
 
     }
 
 
-    public function delete(Message $message)
-    {
+    public function delete(Message $message) {
         //TODO: check user owned msg
         $message->delete();
 
@@ -180,15 +161,11 @@ class MessageController extends Controller
 
     }
 
-    public function update(Message $message, Request $request)
-    {
+    public function update(Message $message, Request $request) {
         //        $user = auth()->user();
 
         //TODO: check user owned msg
-        $message->update([
-            'text' => $request->text,
-            'is_edited' => TRUE
-        ]);
+        $message->update(['text' => $request->text, 'is_edited' => TRUE]);
 
 
         File::syncFile($request->file_id, $message);

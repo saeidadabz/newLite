@@ -12,10 +12,8 @@ use App\Models\Workspace;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 
-class RoomController extends Controller
-{
-    public function update(Room $room, Request $request)
-    {
+class RoomController extends Controller {
+    public function update(Room $room, Request $request) {
         //TODO CHECK PERMISSION
         $room->update($request->all());
 
@@ -29,14 +27,13 @@ class RoomController extends Controller
     }
 
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
 
 
         $request->validate([
-            'workspace_id' => 'required',
-            'title' => 'required',
-        ]);
+                               'workspace_id' => 'required',
+                               'title'        => 'required',
+                           ]);
 
         //TODO:check has create room permission
 
@@ -44,17 +41,16 @@ class RoomController extends Controller
         $user = auth()->user();
 
         $room = $workspace->rooms()->create([
-            'title' => $request->title,
-            'user_id' => $user->id
-        ]);
+                                                'title'   => $request->title,
+                                                'user_id' => $user->id
+                                            ]);
 
 
         return api(RoomResource::make($room));
 
     }
 
-    public function get(Room $room)
-    {
+    public function get(Room $room) {
         //        $user = auth()->user();
         //        $workspace = $user->workspaces()->find($workspace);
         //        if ($workspace === NULL) {
@@ -67,8 +63,7 @@ class RoomController extends Controller
         return api(RoomResource::make($room));
     }
 
-    public function join(Room $room)
-    {
+    public function join(Room $room) {
         $user = auth()->user();
 
 
@@ -91,7 +86,7 @@ class RoomController extends Controller
 
         $res = RoomResource::make($room);
 
-        if ($before_room !== null) {
+        if ($before_room !== NULL) {
             $before_room = Room::find($before_room);
             sendSocket(Constants::roomUpdated, $before_room->channel, RoomResource::make($before_room));
 
@@ -104,35 +99,28 @@ class RoomController extends Controller
 
     }
 
-    public function messages(Room $room)
-    {
+    public function messages(Room $room) {
         $user = auth()->user();
 
-        $messages = $room->messages()->orderByDesc('id')->paginate(10);
-        //        foreach ($messages->items() as $msg) {
-        //
-        //            Seen::firstOrCreate([
-        //                                    'user_id'    => $user->id,
-        //                                    'room_id'    => $room->id,
-        //                                    'message_id' => $msg->id
-        //                                ]);
-        //        }
-        //
-        //        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
-        //
-        //        // TODO: CODE UPPER HAS TO DELETED, JUST SET FOR MEHDI RASTI TILL SEEN MESSAGES ON VIEWPORT
+        $messages = $room->messages()->with([
+                                                'links',
+                                                'mentions',
+                                                'user',
+                                                'files',
+                                                'room',
+                                                'seens'
+                                            ])->orderByDesc('id')->paginate(10);
 
 
         return api(MessageResource::collection($messages));
     }
 
-    public function leave()
-    {
+    public function leave() {
         $user = auth()->user();
 
         $user->update([
-            'room_id' => NULL,
-        ]);
+                          'room_id' => NULL,
+                      ]);
 
         return api(TRUE);
 

@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Http\Resources\JobResource;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\WorkspaceResource;
+use App\Utilities\Codeable;
 use Illuminate\Database\Eloquent\Model;
 
-class Invite extends Model
-{
+class Invite extends Model {
+    use Codeable;
+
     protected $fillable = [
         'owner_id',
         'user_id',
@@ -17,32 +19,16 @@ class Invite extends Model
         'inviteable_id',
     ];
 
-    protected $appends = ['code'];
 
-    public function getCodeAttribute($value)
-    {
-        return base_convert(10000000 - $this->id, 10, 36);
-
-    }
-
-    public static function findByCode($value)
-    {
-        return self::findOrFail(10000000 - base_convert($value, 36, 10));
-
-    }
-
-    public function owner()
-    {
+    public function owner() {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(User::class);
     }
 
-    public function type()
-    {
+    public function type() {
         if ($this->inviteable instanceof Workspace) {
 
             return 'workspace';
@@ -57,9 +43,8 @@ class Invite extends Model
         }
     }
 
-    public function getResponseModel($inviteable = null)
-    {
-        if ($inviteable === null) {
+    public function getResponseModel($inviteable = NULL) {
+        if ($inviteable === NULL) {
             $inviteable = $this->inviteable;
         }
         if ($this->inviteable instanceof Workspace) {
@@ -76,8 +61,7 @@ class Invite extends Model
         }
     }
 
-    public function inviteable()
-    {
+    public function inviteable() {
         return $this->morphTo();
     }
 }
