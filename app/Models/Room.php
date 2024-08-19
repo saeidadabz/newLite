@@ -121,6 +121,8 @@ class Room extends Model {
             $this->token = $token;
         }
 
+        $this->load('users');
+
 
         return $this;
 
