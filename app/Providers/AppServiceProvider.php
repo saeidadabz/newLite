@@ -18,7 +18,6 @@ class AppServiceProvider extends ServiceProvider {
      * Bootstrap any application services.
      */
     public function boot(): void {
-        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
     }
 }
