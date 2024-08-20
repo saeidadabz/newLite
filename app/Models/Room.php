@@ -139,6 +139,16 @@ class Room extends Model {
 
     }
 
+    public function isUserInLk($user) {
+
+        foreach ($this->lkUsers() as $lkUser) {
+            if ($lkUser->getIdentity() === $user->username) {
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+
     public function messages() {
         return $this->hasMany(Message::class);
     }

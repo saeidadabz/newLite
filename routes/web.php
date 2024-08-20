@@ -11,17 +11,11 @@ Route::get('/', function () {
 
 Route::get('/tester', function () {
 
-
-    return \App\Models\Link::create([
-                                        'text'           => 'https://google.com',
-                                        'url'            => 'https://google.com',
-                                        'start_position' => '12',
-                                    ]);
-
+    $room = \App\Models\Room::first();
+    dd($room->isUserInLk(\App\Models\User::find(3)));
     $host = config('livekit.host');
     dd($host);
     $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
-    $svc->removeParticipant("1", 'Katerou22');
     dd('Here');
     $user = \App\Models\User::first();
 

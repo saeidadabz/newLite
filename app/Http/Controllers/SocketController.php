@@ -111,7 +111,7 @@ class SocketController extends Controller {
 
         $user = auth()->user();
 
-        $room_id = $user->room_id;
+        $room = $user->room;
         $user->update([
                           'socket_id'    => NULL,
                           'status'       => Constants::OFFLINE,
@@ -120,14 +120,12 @@ class SocketController extends Controller {
 
                       ]);
         $user->left();
-        //TODO: has to check is lk user in room or not before request
 
-        try {
+
+        if ($room->isUserInLk($user)) {
             $host = config('livekit.host');
             $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
-            $svc->removeParticipant("$room_id", $user->username);
-        } catch (\Exception $e) {
-            //            logger($e);
+            $svc->removeParticipant("$room->id", $user->username);
         }
 
 
