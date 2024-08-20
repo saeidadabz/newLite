@@ -23,7 +23,7 @@ class MessageResource extends JsonResource {
             //TODO: has to have another req for seens
             'is_edited'  => $this->is_edited,
             'is_pinned'  => $this->is_pinned,
-            'reply_to'   => $this->reply_to,
+            'reply_to'   => self::make($this->replyTo),
             'mentions'   => $this->mentions,
             'links'      => $this->links,
             'created_at' => $this->created_at->timestamp,
