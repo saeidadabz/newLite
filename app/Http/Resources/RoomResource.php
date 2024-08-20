@@ -23,7 +23,8 @@ class RoomResource extends JsonResource {
             'background'   => FileResource::make($this->background()),
             //TODO: has to have another req for seens
 
-            'unseens' => 1,
+            'last_message' => $this->isDirectRoom() ? MessageResource::make($this->messages()->orderByDesc('id')->first()) : NULL,
+            'unseens'      => 1,
         ];
     }
 }
