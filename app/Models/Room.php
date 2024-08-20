@@ -69,6 +69,9 @@ class Room extends Model {
     }
 
     public function getChannelAttribute($value) {
+        if ($this->isDirectRoom()) {
+            return 'direct-' . $this->id;
+        }
         return 'room-' . $this->id;
 
     }

@@ -35,10 +35,8 @@ class MessageController extends Controller {
             $room = Room::firstOrCreate(['title' => $roomTitle], ['is_private' => TRUE]);
             $eventName = Constants::directMessages;
 
-            $channel = User::find($request->user_id)->socket_id;
         } else {
             $room = Room::findOrFail($request->room_id);
-            $channel = $room->channel;
             //            if (!$room->workspace->hasUser($user)) {
             //                return error('You are not authorized');
             //            }
@@ -78,7 +76,7 @@ class MessageController extends Controller {
 
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
-        sendSocket($eventName, $channel, $messageResponse);
+        sendSocket($eventName, $room->channel, $messageResponse);
 
 
         Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
@@ -108,7 +106,7 @@ class MessageController extends Controller {
 
         Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
 
-        sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
+        //        sendSocket(Constants::messageSeen, $message->room->channel, MessageResource::make($message));
 
 
         return api(TRUE);
