@@ -89,10 +89,13 @@ class RoomController extends Controller {
         if ($before_room !== NULL) {
             $before_room = Room::find($before_room);
             sendSocket(Constants::roomUpdated, $before_room->channel, RoomResource::make($before_room));
+            sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($before_room));
+
 
         }
 
         sendSocket(Constants::roomUpdated, $room->channel, $res);
+        sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, $res);
 
 
         return api($res);

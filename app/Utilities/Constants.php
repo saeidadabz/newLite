@@ -4,17 +4,16 @@ namespace App\Utilities;
 
 use App\Enums\Permission;
 
-class Constants
-{
+class Constants {
     public const ROLE_PERMISSIONS = [
-        'member' => [
+        'member'      => [
             Permission::WS_GET,
             Permission::ROOM_GET,
             Permission::WS_ADD_JOB,
             Permission::JOB_GET,
             Permission::JOB_INVITE_MEMBER,
         ],
-        'admin' => [
+        'admin'       => [
             Permission::WS_GET,
             Permission::WS_ADD_MEMBER,
             Permission::WS_REMOVE_MEMBER,
@@ -52,5 +51,6 @@ class Constants
     const messageDeleted = 'messageDeleted';
     const messagePinned = 'messagePinned';
     const messageSeen = 'messageSeen';
+    const workspaceRoomUpdated = 'workspaceRoomUpdated';
 
 }
