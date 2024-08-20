@@ -122,7 +122,7 @@ class SocketController extends Controller {
         $user->left();
 
 
-        if ($room->isUserInLk($user)) {
+        if ($room !== NULL && $room->isUserInLk($user)) {
             $host = config('livekit.host');
             $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
             $svc->removeParticipant("$room->id", $user->username);
