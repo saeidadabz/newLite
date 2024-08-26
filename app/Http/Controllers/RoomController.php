@@ -110,7 +110,7 @@ class RoomController extends Controller {
                                                 'mentions',
                                                 'user',
                                                 'files',
-                                            ])->orderByDesc('id')->paginate(10);
+                                            ])->orderByDesc('id')->paginate(\request('perPage', 10));
 
 
         return api(MessageResource::collection($messages));
