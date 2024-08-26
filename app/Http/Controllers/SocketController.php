@@ -127,8 +127,8 @@ class SocketController extends Controller {
             $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
             $svc->removeParticipant("$room->id", $user->username);
         }
+        return TRUE;
 
-
-        return api(UserResource::make(auth()->user()));
+        //        return api(UserResource::make(auth()->user()));
     }
 }

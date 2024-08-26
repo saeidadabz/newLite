@@ -147,6 +147,15 @@ class MessageController extends Controller {
 
     }
 
+    public function unPin(Message $message) {
+        //TODO: check user can pin message in this room
+
+        $message->update(['is_pinned' => FALSE]);
+
+        sendSocket(Constants::messagePinned, $message->room->channel, MessageResource::make($message));
+
+    }
+
 
     public function delete(Message $message) {
         //TODO: check user owned msg

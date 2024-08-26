@@ -191,12 +191,28 @@ Route::get('/acts', function () {
         $d = [];
         foreach ($users as $user) {
 
-            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded));
+            $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
         }
         return collect($d)->sortByDesc('sum_minutes')->values()->toArray();
     }
     $user = \App\Models\User::find($request->user_id);
-    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded);
+    return $user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace);
+
+
+});
+
+
+Route::get('/scoreboard', function () {
+
+    $request = request();
+
+    $users = \App\Models\User::all();
+    $d = [];
+    foreach ($users as $user) {
+
+        $d[] = collect($user->getTime($request->period, $request->startAt, $request->endAt, $request->expanded, $request->workspace));
+    }
+    return collect($d)->sortByDesc('sum_minutes')->pluck('sum_hours', 'user.username')->all();
 
 
 });

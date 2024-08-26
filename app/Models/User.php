@@ -196,9 +196,13 @@ class User extends Authenticatable {
     }
 
 
-    public function getTime($period = NULL, $startAt = NULL, $endAt = NULL, bool $expanded = TRUE) {
+    public function getTime($period = NULL, $startAt = NULL, $endAt = NULL, bool|null $expanded = TRUE, $workspace = NULL) {
         $acts = $this->activities();
 
+
+        if ($workspace !== NULL) {
+            $acts->where('workspace_id', $workspace);
+        }
         if ($period === 'today') {
 
             $acts = $acts->where('created_at', '>=', today());
@@ -226,7 +230,7 @@ class User extends Authenticatable {
         }
 
         if ($endAt !== NULL) {
-            $acts = $acts->where('created_at', '<=', Carbon::createFromDate($endAt));
+            $acts = $acts->where('created_at', '<', Carbon::createFromDate($endAt));
 
         }
 
