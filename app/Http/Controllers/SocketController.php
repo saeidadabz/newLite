@@ -113,14 +113,6 @@ class SocketController extends Controller {
         $user = auth()->user();
 
         $room = $user->room;
-        $user->update([
-                          'socket_id'    => NULL,
-                          'status'       => Constants::OFFLINE,
-                          'room_id'      => NULL,
-                          'workspace_id' => NULL,
-
-                      ]);
-        $user->left();
 
 
         sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
@@ -131,6 +123,16 @@ class SocketController extends Controller {
             $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
             $svc->removeParticipant("$room->id", $user->username);
         }
+
+
+        $user->update([
+                          'socket_id'    => NULL,
+                          'status'       => Constants::OFFLINE,
+                          'room_id'      => NULL,
+                          'workspace_id' => NULL,
+
+                      ]);
+        $user->left();
         return TRUE;
 
         //        return api(UserResource::make(auth()->user()));
