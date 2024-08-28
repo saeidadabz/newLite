@@ -74,13 +74,13 @@ class MessageController extends Controller {
 
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
-        sendSocket($this->isDirectRoom() ? Constants::directMessages : Constants::roomMessages, $room->channel, $messageResponse);
+        sendSocket($room->isDirectRoom() ? Constants::directMessages : Constants::roomMessages, $room->channel, $messageResponse);
 
 
         Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
 
 
-//        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+        //        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
 
         if ($request->get('files')) {
