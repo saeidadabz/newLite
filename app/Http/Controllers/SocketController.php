@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Agence104\LiveKit\RoomServiceClient;
+use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserResource;
 use App\Models\Activity;
 use App\Models\User;
@@ -120,6 +121,9 @@ class SocketController extends Controller {
 
                       ]);
         $user->left();
+
+
+        sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
 
 
         if ($room !== NULL && $room->isUserInLk($user)) {
