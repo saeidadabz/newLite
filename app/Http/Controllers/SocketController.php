@@ -6,6 +6,7 @@ use Agence104\LiveKit\RoomServiceClient;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\UserResource;
 use App\Models\Activity;
+use App\Models\Room;
 use App\Models\User;
 use App\Utilities\Constants;
 use App\Utilities\EventType;
@@ -112,9 +113,19 @@ class SocketController extends Controller {
 
         $user = auth()->user();
 
-        $room = $user->room;
+        $room_id = $user->room_id;
+
+        $user->update([
+                          'socket_id'    => NULL,
+                          'status'       => Constants::OFFLINE,
+                          'room_id'      => NULL,
+                          'workspace_id' => NULL,
+
+                      ]);
+        $user->left();
 
 
+        $room = Room::find($room_id);
         sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
 
 
@@ -125,14 +136,6 @@ class SocketController extends Controller {
         }
 
 
-        $user->update([
-                          'socket_id'    => NULL,
-                          'status'       => Constants::OFFLINE,
-                          'room_id'      => NULL,
-                          'workspace_id' => NULL,
-
-                      ]);
-        $user->left();
         return TRUE;
 
         //        return api(UserResource::make(auth()->user()));
