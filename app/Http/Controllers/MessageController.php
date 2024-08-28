@@ -21,7 +21,6 @@ class MessageController extends Controller {
         $request->validate(['text' => 'required']);
 
         $user = auth()->user();
-        $eventName = Constants::roomMessages;
 
         if ($request->room_id === NULL) {
             $request->validate(['user_id' => 'required']);
@@ -33,7 +32,6 @@ class MessageController extends Controller {
 
 
             $room = Room::firstOrCreate(['title' => $roomTitle], ['is_private' => TRUE]);
-            $eventName = Constants::directMessages;
 
         } else {
             $room = Room::findOrFail($request->room_id);
@@ -76,13 +74,13 @@ class MessageController extends Controller {
 
         $messageResponse = MessageResource::make($message);
         //EMIT TO USER
-        sendSocket($eventName, $room->channel, $messageResponse);
+        sendSocket($this->isDirectRoom() ? Constants::directMessages : Constants::roomMessages, $room->channel, $messageResponse);
 
 
         Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
 
 
-        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
+//        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
 
         if ($request->get('files')) {

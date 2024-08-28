@@ -24,7 +24,7 @@ class RoomResource extends JsonResource {
             //TODO: has to have another req for seens
 
             'last_message' => $this->isDirectRoom() ? MessageResource::make($this->messages()->orderByDesc('id')->first()) : NULL,
-            'unseens'      => 1,
+            'unseens'      => 0,
         ];
     }
 }
