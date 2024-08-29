@@ -66,6 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{workspace}/rooms', 'rooms');
         Route::get('/{workspace}/jobs', 'jobs');
         Route::get('/{workspace}/users', 'users');
+        Route::get('/{workspace}/leaderboard', 'leaderboard');
         Route::get('/{workspace}/calendars', 'calendars');
         Route::get('/{workspace}/tags', 'tags');
         Route::post('/{workspace}/addRole', 'addRole');
