@@ -119,6 +119,7 @@ class SocketController extends Controller
         $user = auth()->user();
 
         $room_id = $user->room_id;
+        logger($room_id);
 
         $user->update([
                           'socket_id'    => NULL,
