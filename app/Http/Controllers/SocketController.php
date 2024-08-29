@@ -132,11 +132,16 @@ class SocketController extends Controller
         $room = Room::find($room_id);
 
 
-        if ($room !== NULL && $room->isUserInLk($user)) {
+        if ($room !== NULL) {
             sendSocket(Constants::workspaceRoomUpdated, $room->workspace->channel, RoomResource::make($room));
-            $host = config('livekit.host');
-            $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
-            $svc->removeParticipant("$room->id", $user->username);
+
+
+            if ($room->isUserInLk($user)) {
+                $host = config('livekit.host');
+                $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
+                $svc->removeParticipant("$room->id", $user->username);
+            }
+
         }
         $user->left();
 
