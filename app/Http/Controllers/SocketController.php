@@ -127,7 +127,6 @@ class SocketController extends Controller
                           'workspace_id' => NULL,
 
                       ]);
-        $user->left();
 
         $room = Room::find($room_id);
 
@@ -138,6 +137,7 @@ class SocketController extends Controller
             $svc = new RoomServiceClient($host, config('livekit.apiKey'), config('livekit.apiSecret'));
             $svc->removeParticipant("$room->id", $user->username);
         }
+        $user->left();
 
 
         return TRUE;

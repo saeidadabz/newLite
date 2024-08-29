@@ -118,10 +118,10 @@ class RoomController extends Controller {
 
     public function leave() {
         $user = auth()->user();
-
-        $user->update([
-                          'room_id' => NULL,
-                      ]);
+//
+//        $user->update([
+//                          'room_id' => NULL,
+//                      ]);
 
         return api(TRUE);
 
