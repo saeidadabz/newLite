@@ -116,14 +116,5 @@ class RoomController extends Controller {
         return api(MessageResource::collection($messages));
     }
 
-    public function leave() {
-        $user = auth()->user();
 
-        $user->update([
-                          'room_id' => NULL,
-                      ]);
-
-        return api(TRUE);
-
-    }
 }

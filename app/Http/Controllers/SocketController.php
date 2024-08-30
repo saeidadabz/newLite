@@ -112,12 +112,14 @@ class SocketController extends Controller {
     public function disconnected() {
 
         $user = auth()->user();
+        $request = \request();
+
 
         $room_id = $user->room_id;
 
         $user->update([
-                          'socket_id'    => NULL,
-                          'status'       => Constants::OFFLINE,
+                          'socket_id'    => $request->offline ? NULL : $user->socket_id,
+                          'status'       => $request->offline ? NULL : $user->status,
                           'room_id'      => NULL,
                           'workspace_id' => NULL,
 
@@ -140,4 +142,6 @@ class SocketController extends Controller {
 
         //        return api(UserResource::make(auth()->user()));
     }
+
+
 }

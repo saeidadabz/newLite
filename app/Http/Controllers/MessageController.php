@@ -80,6 +80,7 @@ class MessageController extends Controller {
         Seen::firstOrCreate(['user_id' => $user->id, 'room_id' => $room->id, 'message_id' => $message->id]);
 
 
+        // FOR SHITTY UNSEEN.
         //        sendSocket(Constants::roomUpdated, $room->channel, RoomResource::make($room));
 
 
