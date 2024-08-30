@@ -16,9 +16,10 @@ return new class () extends Migration {
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password')->nullable();
-            $table->boolean('active')->default(true);
+            $table->boolean('active')->default(TRUE);
             $table->string('status')->nullable();
             $table->string('bio')->nullable();
+            $table->string('avatar', 4096)->nullable();
 
             $table->integer('workspace_id')->nullable();
             $table->integer('room_id')->nullable();
@@ -29,7 +30,7 @@ return new class () extends Migration {
             $table->string('screenshare_size')->nullable();
             $table->string('video_coordinates')->nullable();
             $table->string('video_size')->nullable();
-            $table->boolean('is_megaphone')->default(false);
+            $table->boolean('is_megaphone')->default(FALSE);
 
 
             $table->string('socket_id')->nullable();
