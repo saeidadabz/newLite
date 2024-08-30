@@ -160,11 +160,6 @@ class MessageController extends Controller {
         //TODO: check user owned msg
         $message->delete();
 
-        foreach ($message->replies as $reply) {
-            $reply->update([
-                               'reply_to' => NULL,
-                           ]);
-        }
 
         $res = MessageResource::make($message);
         sendSocket(Constants::messageDeleted, $message->room->channel, $res);

@@ -21,6 +21,7 @@ class Message extends Model {
         'created_at',
         'deleted_at',
         'updated_at',
+        'is_replied_to_deleted',
     ];
 
     public function room() {

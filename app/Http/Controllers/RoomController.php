@@ -105,12 +105,12 @@ class RoomController extends Controller {
     public function messages(Room $room) {
         $user = auth()->user();
 
-        $messages = $room->messages()->with([
-                                                'links',
-                                                'mentions',
-                                                'user',
-                                                'files',
-                                            ])->orderByDesc('id')->paginate(\request('perPage', 10));
+        $messages = $room->messages()->withTrashed()->with([
+                                                               'links',
+                                                               'mentions',
+                                                               'user',
+                                                               'files',
+                                                           ])->orderByDesc('id')->paginate(\request('perPage', 10));
 
 
         return api(MessageResource::collection($messages));

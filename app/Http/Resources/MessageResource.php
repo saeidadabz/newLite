@@ -14,20 +14,22 @@ class MessageResource extends JsonResource {
     public function toArray(Request $request): array {
 
         return [
-            'id'         => $this->id,
-            'user'       => UserMinimalResource::make($this->user),
-            'text'       => $this->text,
-            'files'      => FileResource::collection($this->files),
-            'room_id'    => $this->room_id,
-            'seen'       => FALSE,
+            'id'                    => $this->id,
+            'user'                  => UserMinimalResource::make($this->user),
+            'text'                  => $this->deleted_at === NULL ? $this->text : 'This message has been deleted',
+            'files'                 => FileResource::collection($this->files),
+            'room_id'               => $this->room_id,
+            'seen'                  => FALSE,
             //TODO: has to have another req for seens
-            'is_edited'  => $this->is_edited,
-            'is_pinned'  => $this->is_pinned,
-            'reply_to'   => self::make($this->replyTo),
-            'mentions'   => $this->mentions,
-            'links'      => $this->links,
-            'created_at' => $this->created_at->timestamp,
-            'updated_at' => $this->updated_at?->timestamp,
+            'is_edited'             => $this->is_edited,
+            'is_pinned'             => $this->is_pinned,
+            'reply_to'              => self::make($this->replyTo),
+            'mentions'              => $this->mentions,
+            'is_replied_to_deleted' => $this->is_replied_to_deleted,
+            'links'                 => $this->links,
+            'created_at'            => $this->created_at->timestamp,
+            'updated_at'            => $this->updated_at?->timestamp,
+            'deleted_at'            => $this->deleted_at?->timestamp,
 
         ];
     }
