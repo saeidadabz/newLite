@@ -210,7 +210,7 @@ class User extends Authenticatable {
         }
         if ($period === 'today') {
 
-            $acts = $acts->where('created_at', '>=', $today);
+            $acts = $acts->where('created_at', '>=', today());
 
 
         }
@@ -218,14 +218,14 @@ class User extends Authenticatable {
 
         if ($period === 'yesterday') {
 
-            $acts = $acts->where('created_at', '>=', $today->copy()->subDay())->where('created_at', '<=', $today);
+            $acts = $acts->where('created_at', '>=', today()->subDay())->where('created_at', '<=', today());
 
 
         }
 
         if ($period === 'currentMonth') {
 
-            $acts = $acts->where('created_at', '>=', $now->firstOfMonth());
+            $acts = $acts->where('created_at', '>=', now()->firstOfMonth());
 
 
         }
@@ -245,12 +245,12 @@ class User extends Authenticatable {
         foreach ($acts as $act) {
 
 
-            $left_at = $now;
+            $left_at = now();
             if ($act->left_at !== NULL) {
                 $left_at = $act->left_at;
             }
 
-            $diff = abs($act->join_at->diffInMinutes($left_at));
+            $diff = $act->join_at->diffInMinutes($left_at);
             $sum_minutes += $diff;
             $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')->toDateTimeString() . ' Diff: ' . $diff;
 
