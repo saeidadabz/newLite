@@ -91,7 +91,7 @@ class UserController extends Controller {
         ]);
         
         $user->update([
-        'screenshare_coordinates' => $request->coordinates
+        'screenshare_coordinates' => $request->screenshare_coordinates
         ]);
         
         $response = UserMinimalResource::make($user);
