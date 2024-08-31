@@ -128,7 +128,7 @@ class WorkspaceController extends Controller {
         $users = $workspace->users;
         $d = [];
         foreach ($users as $user) {
-            $d[] = collect($user->getTime(\request()->timezone, 'currentMonth', NULL, NULL, FALSE, $workspace->id));
+            $d[] = collect($user->getTime('currentMonth', NULL, NULL, FALSE, $workspace->id));
         }
         return api(collect($d)->sortByDesc('sum_minutes')->values()->toArray());
 

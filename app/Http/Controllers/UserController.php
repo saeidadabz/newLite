@@ -102,7 +102,7 @@ class UserController extends Controller {
 
     public function activities(Request $request) {
 
-        return api(auth()->user()->getTime($request->timezone, $request->period)['sum_minutes']);
+        return api(auth()->user()->getTime($request->period)['sum_minutes']);
     }
 
     public function directs() {

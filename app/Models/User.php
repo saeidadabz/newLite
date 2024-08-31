@@ -198,15 +198,12 @@ class User extends Authenticatable {
     }
 
 
-    public function getTime($timezone = 'UTC', $period = NULL, $startAt = NULL, $endAt = NULL, bool|null $expanded = TRUE, $workspace = NULL) {
-        //        DB::update("SET time_zone = '+03:30';");
-        if ($timezone === NULL) {
-            $timezone = 'UTC';
-        }
+    public function getTime($period = NULL, $startAt = NULL, $endAt = NULL, bool|null $expanded = TRUE, $workspace = NULL) {
+
         $acts = $this->activities();
 
-        $today = today()->timezone($timezone);
-        $now = now()->timezone($timezone);
+        $today = today();
+        $now = now();
 
         if ($workspace !== NULL) {
             $acts->where('workspace_id', $workspace);
@@ -250,10 +247,10 @@ class User extends Authenticatable {
 
             $left_at = $now;
             if ($act->left_at !== NULL) {
-                $left_at = $act->left_at->timezone($timezone);
+                $left_at = $act->left_at;
             }
 
-            $diff = abs($act->join_at->timezone($timezone)->diffInMinutes($left_at));
+            $diff = abs($act->join_at->diffInMinutes($left_at));
             $sum_minutes += $diff;
             $data[] = 'Joined: ' . $act->join_at->timezone('Asia/Tehran')->toDateTimeString() . ' Left: ' . $left_at->timezone('Asia/Tehran')->toDateTimeString() . ' Diff: ' . $diff;
 
