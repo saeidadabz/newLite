@@ -63,6 +63,48 @@ class UserController extends Controller {
 
     }
 
+        public function updateVideoCoordinates(Request $request)
+        {
+        $user = auth()->user();
+        $request->validate([
+        'video_coordinates' => 'required'
+        ]);
+        
+        $user->update([
+        'video_coordinates' => $request->video_coordinates
+        ]);
+        
+        $response = UserMinimalResource::make($user);
+        
+        if ($user->room !== NULL) {
+        sendSocket(Constants::userUpdated, $user->room->channel, $response);
+        
+        }
+        return api($response);
+        
+        }
+        public function updateScreenshareCoordinates(Request $request)
+        {
+        $user = auth()->user();
+        $request->validate([
+        'screenshare_coordinates' => 'required'
+        ]);
+        
+        $user->update([
+        'screenshare_coordinates' => $request->coordinates
+        ]);
+        
+        $response = UserMinimalResource::make($user);
+        
+        if ($user->room !== NULL) {
+        sendSocket(Constants::userUpdated, $user->room->channel, $response);
+        
+        }
+        return api($response);
+        
+        }
+        
+
     public function toggleMegaphone() {
         $user = auth()->user();
 

@@ -52,6 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'all');
         Route::post('/', 'update');
         Route::post('/updateCoordinates', 'updateCoordinates');
+        Route::post('/updateVideoCoordinates', 'updateVideoCoordinates');
+        Route::post('/updateScreenshareCoordinates', 'updateScrennshareCoordinates');
         Route::get('/toggleMegaphone', 'toggleMegaphone');
         Route::post('/search', 'search');
         Route::put('/update', 'update');
