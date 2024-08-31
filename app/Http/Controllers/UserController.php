@@ -102,7 +102,6 @@ class UserController extends Controller {
 
     public function activities(Request $request) {
 
-
         return api(auth()->user()->getTime($request->timezone, $request->period)['sum_minutes']);
     }
 

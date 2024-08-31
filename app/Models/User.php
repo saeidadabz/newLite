@@ -199,8 +199,10 @@ class User extends Authenticatable {
 
 
     public function getTime($timezone = 'UTC', $period = NULL, $startAt = NULL, $endAt = NULL, bool|null $expanded = TRUE, $workspace = NULL) {
-
         //        DB::update("SET time_zone = '+03:30';");
+        if ($timezone === NULL) {
+            $timezone = 'UTC';
+        }
         $acts = $this->activities();
 
         $today = today()->timezone($timezone);
