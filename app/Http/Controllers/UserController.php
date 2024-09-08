@@ -53,6 +53,20 @@ class UserController extends Controller {
                           'coordinates' => $request->coordinates
                       ]);
 
+        $xy= explode(',',$request->coordinates);
+        $x=$xy[0];
+        $y=$xy[1];
+
+        $closestUser = User::where('id', '!=', $user->id) 
+        ->orderByRaw('
+            (POW((CAST(SUBSTRING_INDEX(coordinates, ",", 1) AS DECIMAL) - ?), 2) + 
+            POW((CAST(SUBSTRING_INDEX(coordinates, ",", -1) AS DECIMAL) - ?), 2)) ASC', 
+            [$x, $y])
+        ->first(); 
+        
+        //??????????????
+
+
         $response = UserMinimalResource::make($user);
 
         if ($user->room !== NULL) {
