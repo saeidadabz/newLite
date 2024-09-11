@@ -44,6 +44,9 @@ class UserController extends Controller {
     }
 
     public function updateCoordinates(Request $request) {
+
+      
+
         $user = auth()->user();
         $request->validate([
                                'coordinates' => 'required'
@@ -53,17 +56,51 @@ class UserController extends Controller {
                           'coordinates' => $request->coordinates
                       ]);
 
-        $xy= explode(',',$request->coordinates);
-        $x=$xy[0];
-        $y=$xy[1];
+    
+        $user = auth()->user();
+        
+        $XY=explode(',',$user->coordinates);
+        $X=$XY[0];
+        $Y=$XY[1];
 
-        $closestUser = User::where('id', '!=', $user->id) 
+        $users=User::where('id','!=',$user->id)->get();
+        $userscoordiantes=[];
+        foreach ($users as $usr)
+        {
+            $userscoordiantes[$usr->id]=$usr->coordinates;
+
+             
+        }
+    
+        $distances=[];
+        foreach($userscoordiantes as $key=>$usercoordinates)
+        {
+            $xy=explode(',',$usercoordinates);
+            $x=$xy[0];
+            $y=$xy[1];
+            $distances[$key]  = abs(pow(($x-$X),2)- pow(($y-$Y),2));
+
+        }
+       
+        $closestdistance=min($distances);
+        $closestUserId=array_search($closestdistance, $distances);
+        //dd($closestUserId);
+
+        $closestUser=User::where('id','=',$closestUserId)->get();
+        dd($closestUser);
+        
+            
+
+
+
+       /* $closestUser = User::where('id', '!=', $user->id)
         ->orderByRaw('
             (POW((CAST(SUBSTRING_INDEX(coordinates, ",", 1) AS DECIMAL) - ?), 2) + 
             POW((CAST(SUBSTRING_INDEX(coordinates, ",", -1) AS DECIMAL) - ?), 2)) ASC', 
             [$x, $y])
-        ->first(); 
+        ->first(); */
         
+
         //??????????????
 
 
